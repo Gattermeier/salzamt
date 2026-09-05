@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="de-AT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beschwerde einreichen · Salzamt</title>
+    <meta
+      name="description"
+      content="Formular SA-47/B: Reichen Sie Ihre Beschwerde beim Salzamt ein. Sie wird ordnungsgemäß entgegengenommen, geprüft, für nicht zuständig befunden, abgelegt und eingesalzen."
+    />
+    <meta property="og:title" content="Beschwerde einreichen · Salzamt" />
+    <meta
+      property="og:description"
+      content="Formular SA-47/B: Reichen Sie Ihre Beschwerde beim Salzamt ein. Sie wird ordnungsgemäß entgegengenommen, geprüft, für nicht zuständig befunden, abgelegt und eingesalzen."
+    />
+    <meta
+      property="og:image"
+      content="https://salzamt.vip/assets/img/oval-600.jpg"
+    />
+    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/complaint.css" />
+  </head>
+  <body class="page-complaint">
+    <a class="skip-link" href="#main">Zum Inhalt</a>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/img/badge-96.png"
+            width="48"
+            height="48"
+            alt="Amtssiegel des Salzamtes"
+          />
+          <span class="brand__text">
+            <span class="brand__wordmark">Salzamt</span>
+            <span class="brand__sub">Wünsche und Beschwerden aller Art</span>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          Menü
+        </button>
+        <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="beschwerde.html">Beschwerde einreichen</a></li>
+            <li><a href="shop.html">Amtsshop</a></li>
+            <li><a href="team.html">Bedienstete</a></li>
+            <li>
+              <a href="kassa.html" class="cart-link"
+                >Warenkorb <span class="cart-badge" data-cart-count>0</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section section--tight complaint">
+        <div class="container complaint__inner">
+          <div class="complaint-intro" id="complaint-intro">
+            <p class="eyebrow">
+              Formular SA-47/B · Ausgabe 1848/3 · Gültig bis auf Widerruf
+            </p>
+            <h1>Beschwerde einreichen</h1>
+            <div class="notice" id="complaint-preamble">
+              <p>
+                Bitte füllen Sie das Formular vollständig, wahrheitsgemäß und in
+                Blockschrift aus. Unvollständige Anträge werden nicht
+                bearbeitet. Vollständige Anträge werden ebenfalls nicht
+                bearbeitet, jedoch ordnungsgemäß.
+              </p>
+            </div>
+          </div>
+
+          <div class="complaint-progress" id="complaint-progress">
+            <span class="complaint-progress__label"
+              >Ausfüllgrad:
+              <strong class="complaint-progress__value" data-progress-value
+                >0 %</strong
+              ></span
+            >
+            <div
+              class="complaint-progress__track"
+              role="progressbar"
+              aria-label="Ausfüllgrad des Formulars"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              data-progress-track
+            >
+              <div class="complaint-progress__bar" data-progress-bar></div>
+            </div>
+            <span class="complaint-progress__note" data-progress-note
+              >Der Antrag ist unvollständig.</span
+            >
+          </div>
+
+          <form
+            id="complaint-form"
+            class="complaint-form"
+            novalidate
+            autocomplete="off"
+            aria-describedby="complaint-required-note"
+          >
+            <p class="complaint-required-note" id="complaint-required-note">
+              Mit <span class="complaint-required-mark">*</span> gekennzeichnete
+              Felder sind Pflichtfelder. Die übrigen Felder sind freiwillig,
+              werden jedoch gleichermaßen nicht bearbeitet.
+            </p>
+
+            <!-- Abschnitt A -->
+            <fieldset class="form-section" data-section="A">
+              <legend class="form-section__title">
+                Abschnitt A – Beschwerdeführende Person
+              </legend>
+              <div class="form-section__body">
+                <div class="complaint-grid">
+                  <div class="field field--required complaint-col-4">
+                    <label class="field__label" for="salutation">Anrede</label>
+                    <select id="salutation" name="salutation" required>
+                      <option value="">Bitte wählen</option>
+                      <option value="Herr">Herr</option>
+                      <option value="Frau">Frau</option>
+                      <option value="Hofrat">Hofrat</option>
+                      <option value="Hofrätin">Hofrätin</option>
+                      <option value="Kommerzialrat">Kommerzialrat</option>
+                      <option value="Kommerzialrätin">Kommerzialrätin</option>
+                      <option value="Magister">Magister</option>
+                      <option value="Magistra">Magistra</option>
+                      <option value="Durchlaucht">Durchlaucht</option>
+                      <option value="Sonstiges (bitte nicht angeben)">
+                        Sonstiges (bitte nicht angeben)
+                      </option>
+                    </select>
+                  </div>
+                  <div class="field complaint-col-4 complaint-col-sm-6">
+                    <label class="field__label" for="title-before"
+                      >Titel (vorangestellt)</label
+                    >
+                    <input
+                      id="title-before"
+                      name="title-before"
+                      type="text"
+                      aria-describedby="title-before-hint"
+                    />
+                    <span class="field__hint" id="title-before-hint"
+                      >z. B. Dipl.-Ing., Dr., Ing., Mag.</span
+                    >
+                  </div>
+                  <div class="field complaint-col-4 complaint-col-sm-6">
+                    <label class="field__label" for="title-after"
+                      >Titel (nachgestellt)</label
+                    >
+                    <input
+                      id="title-after"
+                      name="title-after"
+                      type="text"
+                      aria-describedby="title-after-hint"
+                    />
+                    <span class="field__hint" id="title-after-hint"
+                      >z. B. MBA, BA, i.R.</span
+                    >
+                  </div>
+                  <div class="field field--required complaint-col-6">
+                    <label class="field__label" for="given-name">Vorname</label>
+                    <input
+                      id="given-name"
+                      name="given-name"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="field field--required complaint-col-6">
+                    <label class="field__label" for="family-name"
+                      >Familienname</label
+                    >
+                    <input
+                      id="family-name"
+                      name="family-name"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="field complaint-col-6">
+                    <label class="field__label" for="birth-name"
+                      >Geburtsname (falls abweichend, sonst gleich)</label
+                    >
+                    <input id="birth-name" name="birth-name" type="text" />
+                  </div>
+                  <div
+                    class="field field--required complaint-col-3 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="birth-date"
+                      >Geburtsdatum</label
+                    >
+                    <input
+                      id="birth-date"
+                      name="birth-date"
+                      type="date"
+                      required
+                      aria-describedby="birth-date-hint"
+                    />
+                    <span class="field__hint" id="birth-date-hint"
+                      >Bitte das tatsächliche Datum, nicht das gefühlte.</span
+                    >
+                  </div>
+                  <div
+                    class="field field--required complaint-col-3 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="citizenship"
+                      >Staatsbürgerschaft</label
+                    >
+                    <input
+                      id="citizenship"
+                      name="citizenship"
+                      type="text"
+                      value="Österreich"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Abschnitt B -->
+            <fieldset class="form-section" data-section="B">
+              <legend class="form-section__title">
+                Abschnitt B – Zustelladresse
+              </legend>
+              <div class="form-section__body">
+                <div class="complaint-grid">
+                  <div class="field field--required complaint-col-8">
+                    <label class="field__label" for="street"
+                      >Straße / Gasse / Platz</label
+                    >
+                    <input id="street" name="street" type="text" required />
+                  </div>
+                  <div class="field field--required complaint-col-4">
+                    <label class="field__label" for="street-number"
+                      >Hausnummer</label
+                    >
+                    <input
+                      id="street-number"
+                      name="street-number"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="field complaint-col-4 complaint-col-sm-4">
+                    <label class="field__label" for="stair">Stiege</label>
+                    <input
+                      id="stair"
+                      name="stair"
+                      type="text"
+                      aria-describedby="stair-hint"
+                    />
+                    <span class="field__hint" id="stair-hint"
+                      >Auch in Einfamilienhäusern auszufüllen.</span
+                    >
+                  </div>
+                  <div class="field complaint-col-4 complaint-col-sm-4">
+                    <label class="field__label" for="floor">Stock</label>
+                    <input id="floor" name="floor" type="text" />
+                  </div>
+                  <div class="field complaint-col-4 complaint-col-sm-4">
+                    <label class="field__label" for="door">Tür</label>
+                    <input id="door" name="door" type="text" />
+                  </div>
+                  <div
+                    class="field field--required complaint-col-3 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="postal-code"
+                      >Postleitzahl</label
+                    >
+                    <input
+                      id="postal-code"
+                      name="postal-code"
+                      type="text"
+                      inputmode="numeric"
+                      pattern="[0-9]{4}"
+                      maxlength="4"
+                      required
+                      aria-describedby="postal-code-hint"
+                    />
+                    <span class="field__hint" id="postal-code-hint"
+                      >Vierstellig. Fünfstellige Postleitzahlen sind uns
+                      fremd.</span
+                    >
+                  </div>
+                  <div
+                    class="field field--required complaint-col-9 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="city">Ort</label>
+                    <input id="city" name="city" type="text" required />
+                  </div>
+                  <div class="field field--required complaint-col-6">
+                    <label class="field__label" for="crown-land"
+                      >Kronland</label
+                    >
+                    <select id="crown-land" name="crown-land" required>
+                      <option value="">Bitte wählen</option>
+                      <option value="Wien">Wien</option>
+                      <option value="Niederösterreich">Niederösterreich</option>
+                      <option value="Oberösterreich">Oberösterreich</option>
+                      <option value="Salzburg">Salzburg</option>
+                      <option value="Steiermark">Steiermark</option>
+                      <option value="Kärnten">Kärnten</option>
+                      <option value="Tirol">Tirol</option>
+                      <option value="Vorarlberg">Vorarlberg</option>
+                      <option value="Burgenland">Burgenland</option>
+                      <option value="Kronland Salzburg (historisch)">
+                        Kronland Salzburg (historisch)
+                      </option>
+                      <option value="Ausland (nicht zuständig)">
+                        Ausland (nicht zuständig)
+                      </option>
+                    </select>
+                  </div>
+                  <div class="field complaint-col-6">
+                    <label class="field__label" for="district">Bezirk</label>
+                    <input id="district" name="district" type="text" />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Abschnitt C -->
+            <fieldset class="form-section" data-section="C">
+              <legend class="form-section__title">
+                Abschnitt C – Gegenstand der Beschwerde
+              </legend>
+              <div class="form-section__body">
+                <div class="complaint-grid">
+                  <div class="field field--required complaint-col-6">
+                    <label class="field__label" for="complaint-category"
+                      >Gegenstand</label
+                    >
+                    <select
+                      id="complaint-category"
+                      name="complaint-category"
+                      required
+                    >
+                      <option value="">Bitte wählen</option>
+                      <option value="Lärm">Lärm</option>
+                      <option value="Nachbarn">Nachbarn</option>
+                      <option value="Wetter">Wetter</option>
+                      <option value="Amtswege">Amtswege</option>
+                      <option value="Gebühren">Gebühren</option>
+                      <option value="Das Salzamt selbst">
+                        Das Salzamt selbst
+                      </option>
+                      <option value="Sonstiges">Sonstiges</option>
+                    </select>
+                  </div>
+                  <div class="field field--required complaint-col-6">
+                    <label class="field__label" for="complaint-subcategory"
+                      >Unterkategorie</label
+                    >
+                    <select
+                      id="complaint-subcategory"
+                      name="complaint-subcategory"
+                      required
+                      aria-describedby="complaint-subcategory-hint"
+                    >
+                      <option value="">
+                        Bitte zuerst den Gegenstand wählen
+                      </option>
+                    </select>
+                    <span class="field__hint" id="complaint-subcategory-hint"
+                      >Die Auswahl richtet sich nach dem Gegenstand. Der
+                      Gegenstand richtet sich nach nichts.</span
+                    >
+                  </div>
+                </div>
+
+                <fieldset class="field field--required complaint-group">
+                  <legend class="field__label">Dringlichkeit</legend>
+                  <div
+                    class="radio-group radio-group--inline"
+                    aria-describedby="urgency-hint"
+                  >
+                    <label class="check" for="urgency-1"
+                      ><input
+                        id="urgency-1"
+                        type="radio"
+                        name="urgency"
+                        value="1"
+                      />
+                      Stufe 1</label
+                    >
+                    <label class="check" for="urgency-2"
+                      ><input
+                        id="urgency-2"
+                        type="radio"
+                        name="urgency"
+                        value="2"
+                      />
+                      Stufe 2</label
+                    >
+                    <label class="check" for="urgency-3"
+                      ><input
+                        id="urgency-3"
+                        type="radio"
+                        name="urgency"
+                        value="3"
+                      />
+                      Stufe 3</label
+                    >
+                    <label class="check" for="urgency-4"
+                      ><input
+                        id="urgency-4"
+                        type="radio"
+                        name="urgency"
+                        value="4"
+                      />
+                      Stufe 4</label
+                    >
+                    <label class="check" for="urgency-5"
+                      ><input
+                        id="urgency-5"
+                        type="radio"
+                        name="urgency"
+                        value="5"
+                      />
+                      Stufe 5</label
+                    >
+                  </div>
+                  <span class="field__hint" id="urgency-hint"
+                    >Stufe 1 bis 4 werden nicht bearbeitet. Stufe 5 ebenfalls
+                    nicht, jedoch schneller.</span
+                  >
+                </fieldset>
+
+                <div class="field field--required">
+                  <label class="field__label" for="complaint-text"
+                    >Sachverhalt</label
+                  >
+                  <textarea
+                    id="complaint-text"
+                    name="complaint-text"
+                    rows="8"
+                    maxlength="1848"
+                    required
+                    aria-describedby="complaint-text-hint complaint-text-counter"
+                  ></textarea>
+                  <div class="complaint-textarea-foot">
+                    <span class="field__hint" id="complaint-text-hint"
+                      >Höchstens 1848 Zeichen. Bitte sachlich, in ganzen Sätzen
+                      und ohne Hoffnung.</span
+                    >
+                    <span
+                      class="complaint-counter"
+                      id="complaint-text-counter"
+                      aria-live="polite"
+                      >0 / 1848 Zeichen</span
+                    >
+                  </div>
+                </div>
+
+                <fieldset class="field field--required complaint-group">
+                  <legend class="field__label">Gewünschte Erledigung</legend>
+                  <div class="radio-group">
+                    <label class="check" for="desired-outcome-none"
+                      ><input
+                        id="desired-outcome-none"
+                        type="radio"
+                        name="desired-outcome"
+                        value="none"
+                      />
+                      Keine</label
+                    >
+                    <label class="check" for="desired-outcome-none-either"
+                      ><input
+                        id="desired-outcome-none-either"
+                        type="radio"
+                        name="desired-outcome"
+                        value="none-either"
+                      />
+                      Ebenfalls keine</label
+                    >
+                    <label class="check" for="desired-outcome-other"
+                      ><input
+                        id="desired-outcome-other"
+                        type="radio"
+                        name="desired-outcome"
+                        value="other"
+                      />
+                      Sonstiges (wird nicht gelesen)</label
+                    >
+                  </div>
+                </fieldset>
+              </div>
+            </fieldset>
+
+            <!-- Abschnitt D -->
+            <fieldset class="form-section" data-section="D">
+              <legend class="form-section__title">
+                Abschnitt D – Vorakten
+              </legend>
+              <div class="form-section__body">
+                <fieldset class="field field--required complaint-group">
+                  <legend class="field__label">
+                    Haben Sie sich bereits beschwert?
+                  </legend>
+                  <div class="radio-group radio-group--inline">
+                    <label class="check" for="previous-complaint-yes"
+                      ><input
+                        id="previous-complaint-yes"
+                        type="radio"
+                        name="previous-complaint"
+                        value="Ja"
+                      />
+                      Ja</label
+                    >
+                    <label class="check" for="previous-complaint-no"
+                      ><input
+                        id="previous-complaint-no"
+                        type="radio"
+                        name="previous-complaint"
+                        value="Nein"
+                      />
+                      Nein</label
+                    >
+                  </div>
+                </fieldset>
+                <div class="complaint-grid">
+                  <div class="field complaint-col-8" data-required-if-previous>
+                    <label class="field__label" for="previous-case-number"
+                      >Aktenzeichen der Vorbeschwerde</label
+                    >
+                    <input
+                      id="previous-case-number"
+                      name="previous-case-number"
+                      type="text"
+                      placeholder="SA-1848/000.000-II/3-NB"
+                      aria-describedby="previous-case-number-hint"
+                    />
+                    <span class="field__hint" id="previous-case-number-hint"
+                      >Sie haben kein Aktenzeichen erhalten? Dann kreuzen Sie
+                      bitte „Nein“ an und beantworten Sie die Frage
+                      erneut.</span
+                    >
+                  </div>
+                  <div class="field complaint-col-4">
+                    <label class="field__label" for="previous-attempts"
+                      >Anzahl bisheriger erfolgloser Versuche</label
+                    >
+                    <input
+                      id="previous-attempts"
+                      name="previous-attempts"
+                      type="number"
+                      min="0"
+                      max="999"
+                      step="1"
+                      value="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Abschnitt E -->
+            <fieldset class="form-section" data-section="E">
+              <legend class="form-section__title">
+                Abschnitt E – Beilagen
+              </legend>
+              <div class="form-section__body">
+                <fieldset class="field complaint-group">
+                  <legend class="field__label">Beigelegte Urkunden</legend>
+                  <div class="check-group">
+                    <label class="check" for="attachment-registration"
+                      ><input
+                        id="attachment-registration"
+                        type="checkbox"
+                        name="attachment-registration"
+                      />
+                      Meldezettel (Original)</label
+                    >
+                    <label class="check" for="attachment-birth-certificate"
+                      ><input
+                        id="attachment-birth-certificate"
+                        type="checkbox"
+                        name="attachment-birth-certificate"
+                      />
+                      Geburtsurkunde (beglaubigt)</label
+                    >
+                    <label class="check" for="attachment-passport-copy"
+                      ><input
+                        id="attachment-passport-copy"
+                        type="checkbox"
+                        name="attachment-passport-copy"
+                      />
+                      Reisepasskopie (beglaubigt, beidseitig)</label
+                    >
+                    <label class="check" for="attachment-capacity-proof"
+                      ><input
+                        id="attachment-capacity-proof"
+                        type="checkbox"
+                        name="attachment-capacity-proof"
+                      />
+                      Nachweis der Beschwerdefähigkeit</label
+                    >
+                    <label class="check" for="attachment-stamp"
+                      ><input
+                        id="attachment-stamp"
+                        type="checkbox"
+                        name="attachment-stamp"
+                      />
+                      Stempelmarke zu 10 Heller</label
+                    >
+                  </div>
+                </fieldset>
+                <p class="complaint-note">
+                  Beilagen sind im Original in dreifacher Ausfertigung
+                  persönlich vorzulegen. Elektronische Übermittlung ist nicht
+                  vorgesehen. Persönliche Vorlage ebenfalls nicht.
+                </p>
+              </div>
+            </fieldset>
+
+            <!-- Abschnitt F -->
+            <fieldset class="form-section" data-section="F">
+              <legend class="form-section__title">
+                Abschnitt F – Erklärungen und Unterschrift
+              </legend>
+              <div class="form-section__body">
+                <fieldset class="complaint-group complaint-declarations">
+                  <legend class="field__label">Erklärungen</legend>
+                  <div class="field field--required complaint-declaration">
+                    <label class="check" for="declaration-1"
+                      ><input
+                        id="declaration-1"
+                        type="checkbox"
+                        name="declaration-1"
+                        data-declaration="1"
+                        required
+                      />
+                      <span
+                        >Ich bestätige, dass meine Angaben wahrheitsgemäß,
+                        vollständig und in Blockschrift erfolgt sind.</span
+                      ></label
+                    >
+                  </div>
+                  <div class="field field--required complaint-declaration">
+                    <label class="check" for="declaration-2"
+                      ><input
+                        id="declaration-2"
+                        type="checkbox"
+                        name="declaration-2"
+                        data-declaration="2"
+                        required
+                      />
+                      <span
+                        >Ich nehme zur Kenntnis, dass diese Beschwerde nicht
+                        bearbeitet wird.</span
+                      ></label
+                    >
+                  </div>
+                  <div class="field field--required complaint-declaration">
+                    <label class="check" for="declaration-3"
+                      ><input
+                        id="declaration-3"
+                        type="checkbox"
+                        name="declaration-3"
+                        data-declaration="3"
+                        required
+                      />
+                      <span
+                        >Ich verzichte auf sämtliche Rechtsmittel, auch auf
+                        jene, die ich nicht kenne.</span
+                      ></label
+                    >
+                  </div>
+                  <div class="field field--required complaint-declaration">
+                    <label class="check" for="declaration-4"
+                      ><input
+                        id="declaration-4"
+                        type="checkbox"
+                        name="declaration-4"
+                        data-declaration="4"
+                        required
+                      />
+                      <span
+                        >Ich habe die Datenschutzerklärung (§ 0) nicht gelesen
+                        und stimme ihr zu.</span
+                      ></label
+                    >
+                  </div>
+                  <div class="field field--required complaint-declaration">
+                    <label class="check" for="declaration-5"
+                      ><input
+                        id="declaration-5"
+                        type="checkbox"
+                        name="declaration-5"
+                        data-declaration="5"
+                        required
+                      />
+                      <span
+                        >Ich bin damit einverstanden, dass diese Beschwerde
+                        eingesalzen wird.</span
+                      ></label
+                    >
+                  </div>
+                </fieldset>
+
+                <div
+                  class="field field--required"
+                  data-error-label="Sicherheitsfrage"
+                >
+                  <label class="field__label" for="security-question"
+                    >Sicherheitsfrage: Wo beschwert man sich in Wien?</label
+                  >
+                  <select
+                    id="security-question"
+                    name="security-question"
+                    required
+                  >
+                    <option value="">Bitte wählen</option>
+                    <option value="Beim Magistrat">Beim Magistrat</option>
+                    <option value="Beim Bürgermeister">
+                      Beim Bürgermeister
+                    </option>
+                    <option value="Beim Salzamt">Beim Salzamt</option>
+                    <option value="Beim Nachbarn">Beim Nachbarn</option>
+                    <option value="Gar nicht">Gar nicht</option>
+                  </select>
+                </div>
+
+                <div class="complaint-grid">
+                  <div
+                    class="field field--required complaint-col-4 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="place">Ort</label>
+                    <input id="place" name="place" type="text" required />
+                  </div>
+                  <div
+                    class="field field--required complaint-col-4 complaint-col-sm-6"
+                  >
+                    <label class="field__label" for="date">Datum</label>
+                    <input
+                      id="date"
+                      name="date"
+                      type="date"
+                      required
+                      aria-describedby="date-hint"
+                    />
+                    <span class="field__hint" id="date-hint"
+                      >Das Datum darf weder in der Vergangenheit noch in der
+                      Zukunft liegen.</span
+                    >
+                  </div>
+                  <div class="field field--required complaint-col-4">
+                    <label class="field__label" for="signature"
+                      >Unterschrift (in Blockschrift)</label
+                    >
+                    <input
+                      id="signature"
+                      name="signature"
+                      type="text"
+                      class="complaint-signature"
+                      autocapitalize="characters"
+                      spellcheck="false"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button class="btn btn--lg" type="submit">
+                Beschwerde einbringen
+              </button>
+              <button class="btn btn--ghost" type="reset">
+                Formular verwerfen
+              </button>
+            </div>
+          </form>
+
+          <div
+            id="complaint-errors"
+            class="notice notice--error complaint-errors"
+            role="alert"
+            tabindex="-1"
+            hidden
+          >
+            <p class="notice__title">Fehlerprotokoll</p>
+            <p>
+              Der Antrag konnte nicht entgegengenommen werden. Folgende Mängel
+              wurden festgestellt:
+            </p>
+            <ol class="complaint-errors__list" data-error-list></ol>
+            <p class="complaint-errors__foot">
+              <span data-error-count>Mängel gesamt: 0.</span> Der Antrag gilt
+              bis zur Behebung als nicht eingebracht.
+            </p>
+          </div>
+
+          <section
+            id="confirmation"
+            class="frame complaint-confirmation"
+            aria-labelledby="confirmation-title"
+            hidden
+          >
+            <div class="complaint-confirmation__stamp" aria-hidden="true">
+              <span class="stamp stamp--big">Eingesalzen</span>
+            </div>
+            <p class="eyebrow">K.k. Salzamt · Einlaufstelle</p>
+            <h2 id="confirmation-title" tabindex="-1">Eingangsbestätigung</h2>
+            <div class="akte">
+              <dl>
+                <dt>Aktenzeichen:</dt>
+                <dd data-case-number>–</dd>
+                <dt>Eingelangt am:</dt>
+                <dd>
+                  <span data-received-date>–</span> um
+                  <span data-received-time>–</span>
+                </dd>
+                <dt>Zuständige Stelle:</dt>
+                <dd>
+                  Abteilung für laufende Nichtbearbeitung, Referat
+                  Beschwerdevermeidung II/3
+                </dd>
+                <dt>Status:</dt>
+                <dd>eingesalzen</dd>
+              </dl>
+            </div>
+            <ol class="amtsweg complaint-confirmation__steps">
+              <li>
+                <strong>Eingelangt</strong>
+                <span>Ihre Beschwerde ist da. Das ist schon einmal etwas.</span>
+              </li>
+              <li>
+                <strong>Geprüft</strong>
+                <span>Ein Blick, ein Seufzer, ein Stempel.</span>
+              </li>
+              <li>
+                <strong>Nicht zuständig</strong>
+                <span>Waren wir nie. Werden wir nie.</span>
+              </li>
+              <li>
+                <strong>Abgelegt</strong>
+                <span>Ordnung muss sein. Hilfe nicht.</span>
+              </li>
+              <li>
+                <strong>Eingesalzen</strong>
+                <span>Haltbar gemacht für die Ewigkeit.</span>
+              </li>
+            </ol>
+            <p class="complaint-confirmation__duration typewriter">
+              Bearbeitungsdauer: 0,8 Sekunden – Amtsrekord.
+            </p>
+            <p>
+              Ihre Beschwerde wurde ordnungsgemäß dem Papierkorb zugeführt. Eine
+              Rückmeldung erfolgt nicht. Wir danken für Ihr Vertrauen und
+              bitten, von Rückfragen abzusehen. Rückfragen werden eingesalzen.
+            </p>
+            <p class="complaint-confirmation__fill typewriter">
+              Papierkorb-Füllstand:
+              <strong data-complaints-total>–</strong> Beschwerden
+            </p>
+            <div class="form-actions complaint-confirmation__actions no-print">
+              <button class="btn" type="button" data-action="reload">
+                Weitere Beschwerde einreichen
+              </button>
+              <a class="btn btn--ghost" href="shop.html">Zum Amtsshop</a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog
+      id="confirm-dialog"
+      class="dialog complaint-dialog"
+      aria-labelledby="confirm-dialog-title"
+    >
+      <form method="dialog">
+        <p class="eyebrow">Formular SA-47/B · Rückfrage</p>
+        <h2 class="dialog__title" id="confirm-dialog-title">
+          Rückfrage gemäß § 12 Abs. 3
+        </h2>
+        <p>
+          Möchten Sie diese Beschwerde wirklich einbringen? Eine Bearbeitung ist
+          ausgeschlossen. Eine Rückmeldung erfolgt nicht. Ein Rechtsanspruch
+          besteht nicht.
+        </p>
+        <div class="dialog__actions">
+          <button class="btn btn--ghost" type="submit" value="yes">Ja</button>
+          <button class="btn" type="submit" value="really">Ja, wirklich</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="trash-stage" class="complaint-trash" aria-hidden="true" hidden>
+      <div class="complaint-trash__inner">
+        <div class="complaint-trash__scene">
+          <div class="trash-paper">
+            <div class="trash-paper__sheet">
+              <span class="trash-paper__head">SA-47/B</span>
+              <span class="trash-paper__title">Beschwerde</span>
+              <span class="trash-paper__lines"></span>
+              <span class="trash-paper__lines trash-paper__lines--short"></span>
+              <span class="trash-paper__sign"></span>
+            </div>
+          </div>
+
+          <div class="trash-can">
+            <svg
+              class="trash-can-back"
+              viewBox="0 0 200 240"
+              xmlns="http://www.w3.org/2000/svg"
+              focusable="false"
+            >
+              <ellipse class="trash-hole" cx="100" cy="62" rx="66" ry="13" />
+              <g class="trash-rim">
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="69"
+                  ry="14"
+                  class="trash-rim__band"
+                />
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="72.5"
+                  ry="17.5"
+                  class="trash-rim__edge"
+                />
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="65.5"
+                  ry="10.5"
+                  class="trash-rim__edge"
+                />
+              </g>
+            </svg>
+            <svg
+              class="trash-can-front"
+              viewBox="0 0 200 240"
+              xmlns="http://www.w3.org/2000/svg"
+              focusable="false"
+            >
+              <defs>
+                <clipPath id="trash-clip-lower">
+                  <rect x="0" y="62" width="200" height="200" />
+                </clipPath>
+              </defs>
+              <path
+                class="trash-body"
+                d="M31 62 A69 14 0 0 0 169 62 L155 218 A55 12 0 0 1 45 218 Z"
+              />
+              <path
+                class="trash-ribs"
+                d="M45 70.5 L56.2 225.2 M70 74.6 L76.1 228.8 M100 76 L100 230 M130 74.6 L123.9 228.8 M155 70.5 L143.8 225.2"
+              />
+              <path
+                class="trash-hoops"
+                d="M36.2 120 A63.8 13.3 0 0 0 163.8 120 M41.6 180 A58.4 12.5 0 0 0 158.4 180"
+              />
+              <g class="trash-label">
+                <rect x="66" y="134" width="68" height="32" />
+                <text x="100" y="156" text-anchor="middle">AKTEN</text>
+              </g>
+              <g class="trash-rim" clip-path="url(#trash-clip-lower)">
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="69"
+                  ry="14"
+                  class="trash-rim__band"
+                />
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="72.5"
+                  ry="17.5"
+                  class="trash-rim__edge"
+                />
+                <ellipse
+                  cx="100"
+                  cy="62"
+                  rx="65.5"
+                  ry="10.5"
+                  class="trash-rim__edge"
+                />
+              </g>
+              <g class="trash-lid">
+                <ellipse
+                  class="trash-lid__disc"
+                  cx="100"
+                  cy="56"
+                  rx="74"
+                  ry="15"
+                />
+                <ellipse
+                  class="trash-lid__ring"
+                  cx="100"
+                  cy="54"
+                  rx="58"
+                  ry="9"
+                />
+                <path class="trash-lid__handle" d="M88 47 Q100 26 112 47" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="trash-stamp">
+            <span class="stamp stamp--big">Eingesalzen</span>
+          </div>
+        </div>
+        <p class="complaint-trash__caption">
+          <span class="complaint-trash__step" data-trash-step
+            >Schritt 1 von 5</span
+          >
+          <span class="complaint-trash__text" data-trash-caption
+            >Eingelangt.</span
+          >
+        </p>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="site-footer__motto">
+          Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.
+        </p>
+        <p class="site-footer__line">
+          K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848
+          folgenlos.
+        </p>
+        <p class="site-footer__small">
+          Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite
+          speichert nichts, sendet nichts und hilft niemandem. Ihre Eingaben
+          verbleiben ausschließlich in Ihrem Browser.
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+    <script src="assets/complaint.js"></script>
+  </body>
+</html>

@@ -1,0 +1,911 @@
+/* ==========================================================================
+   Salzamt – complaint page (beschwerde.html)
+   Form layout, Ausfüllgrad bar, Fehlerprotokoll, the trash-can sequence and
+   the Eingangsbestätigung. Relies on the shared design system in style.css.
+   ========================================================================== */
+
+.page-complaint [hidden] {
+  display: none !important;
+}
+
+.complaint__inner {
+  max-width: 900px;
+}
+
+.complaint-intro h1 {
+  margin-bottom: 0.3em;
+}
+
+.complaint-intro .notice {
+  margin-top: 1rem;
+}
+
+.page-complaint .field,
+.page-complaint .complaint-errors {
+  scroll-margin-top: 150px;
+}
+
+.page-complaint .complaint-confirmation {
+  scroll-margin-top: 100px;
+}
+
+/* --------------------------------------------------------------------------
+   Ausfüllgrad (sticky progress bar)
+   -------------------------------------------------------------------------- */
+
+.complaint-progress {
+  position: sticky;
+  top: calc(var(--header-height) + 3px);
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1.5rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--parchment) var(--noise);
+  border: 1px solid var(--gold);
+  box-shadow: 0 6px 16px rgba(60, 40, 10, 0.12);
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.complaint-progress__label {
+  white-space: nowrap;
+}
+
+.complaint-progress__value {
+  color: var(--burgundy);
+  font-weight: 400;
+  display: inline-block;
+  min-width: 3.2em;
+}
+
+.complaint-progress__track {
+  flex: 1 1 160px;
+  height: 12px;
+  background: var(--salt);
+  border: 1px solid var(--ink-2);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.complaint-progress__bar {
+  height: 100%;
+  width: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--burgundy) 0 6px,
+    var(--burgundy-2) 6px 8px
+  );
+  transition: width 0.35s ease-out;
+}
+
+.complaint-progress__note {
+  flex-basis: auto;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.complaint-progress.is-complete .complaint-progress__note {
+  color: var(--burgundy);
+}
+
+/* --------------------------------------------------------------------------
+   Form layout
+   -------------------------------------------------------------------------- */
+
+.complaint-required-note {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-2);
+  margin: 0 0 1.5rem;
+}
+
+.complaint-required-mark {
+  color: var(--burgundy);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.complaint-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 1rem;
+}
+
+.complaint-grid > * {
+  grid-column: span 12;
+}
+
+.complaint-grid > .complaint-col-sm-6 {
+  grid-column: span 6;
+}
+
+.complaint-grid > .complaint-col-sm-4 {
+  grid-column: span 4;
+}
+
+@media (min-width: 641px) {
+  .complaint-grid > .complaint-col-3 {
+    grid-column: span 3;
+  }
+
+  .complaint-grid > .complaint-col-4 {
+    grid-column: span 4;
+  }
+
+  .complaint-grid > .complaint-col-6 {
+    grid-column: span 6;
+  }
+
+  .complaint-grid > .complaint-col-8 {
+    grid-column: span 8;
+  }
+
+  .complaint-grid > .complaint-col-9 {
+    grid-column: span 9;
+  }
+}
+
+/* fieldsets used as radio / checkbox groups inside a section */
+.complaint-group {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.1rem;
+  min-width: 0;
+}
+
+.complaint-group > legend {
+  padding: 0;
+  float: left;
+  width: 100%;
+}
+
+.complaint-group > legend + * {
+  clear: both;
+}
+
+.complaint-group .radio-group,
+.complaint-group .check-group {
+  padding-top: 0.15rem;
+}
+
+.complaint-group.field--error {
+  border-left: 3px solid var(--burgundy);
+  padding-left: 0.75rem;
+}
+
+.complaint-group.field--error input {
+  box-shadow: none;
+  outline: 2px solid var(--burgundy);
+  outline-offset: 1px;
+}
+
+.complaint-declarations {
+  margin-bottom: 1.4rem;
+}
+
+.complaint-declarations > legend {
+  margin-bottom: 0.4rem;
+}
+
+.complaint-declaration {
+  margin: 0 0 0.35rem;
+}
+
+.complaint-declaration .check {
+  margin: 0;
+  padding: 0.3rem 0.5rem;
+  border-left: 3px solid transparent;
+}
+
+.complaint-declaration .check > span::after {
+  content: " *";
+  color: var(--burgundy);
+}
+
+.complaint-declaration.field--error .check {
+  border-left-color: var(--burgundy);
+  background: rgba(110, 26, 26, 0.06);
+  color: var(--burgundy);
+}
+
+.complaint-declaration.field--error input {
+  box-shadow: none;
+  outline: 2px solid var(--burgundy);
+  outline-offset: 1px;
+}
+
+.complaint-textarea-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+}
+
+.complaint-textarea-foot .field__hint {
+  flex: 1 1 260px;
+}
+
+.complaint-counter {
+  font-family: var(--font-type);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  margin-top: 0.3rem;
+  white-space: nowrap;
+}
+
+.complaint-counter.is-full {
+  color: var(--burgundy);
+}
+
+.complaint-signature {
+  font-family: var(--font-type) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.complaint-signature::placeholder {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.complaint-note {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-2);
+  border-top: 1px dashed var(--gold);
+  padding-top: 0.75rem;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.complaint-form .form-actions {
+  justify-content: flex-start;
+  padding: 0.5rem 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Fehlerprotokoll
+   -------------------------------------------------------------------------- */
+
+.complaint-errors {
+  margin-top: 2rem;
+}
+
+.complaint-errors .notice__title {
+  color: var(--burgundy);
+}
+
+.complaint-errors__list {
+  font-family: var(--font-type);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  padding-left: 1.6rem;
+  margin: 0 0 1rem;
+}
+
+.complaint-errors__list li {
+  margin: 0 0 0.3rem;
+}
+
+.complaint-errors__list a {
+  color: var(--ink);
+  text-decoration-color: var(--burgundy);
+}
+
+.complaint-errors__list a:hover,
+.complaint-errors__list a:focus {
+  color: var(--burgundy);
+}
+
+.complaint-errors__foot {
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--burgundy);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Dialog
+   -------------------------------------------------------------------------- */
+
+.complaint-dialog .eyebrow {
+  margin-bottom: 0.5rem;
+}
+
+.complaint-dialog p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Trash-can sequence (fixed overlay)
+   -------------------------------------------------------------------------- */
+
+.complaint-trash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(244, 233, 211, 0.965);
+  background-image: var(--noise);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.complaint-trash.is-active {
+  opacity: 1;
+}
+
+.complaint-trash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.complaint-trash__scene {
+  position: relative;
+  width: 320px;
+  height: 560px;
+  flex: 0 0 auto;
+}
+
+.complaint-trash__caption {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  min-height: 2.6em;
+}
+
+.complaint-trash__step {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--ink-2);
+  margin-bottom: 0.2rem;
+}
+
+.complaint-trash__text {
+  display: block;
+  font-size: 1rem;
+}
+
+@media (max-height: 660px) {
+  .complaint-trash__scene {
+    transform: scale(0.72);
+    transform-origin: 50% 100%;
+    margin-top: -150px;
+  }
+}
+
+/* Paper sheet: the outer element travels (drop), the inner one crumples */
+
+.trash-paper {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 75px);
+  width: 150px;
+  height: 200px;
+  z-index: 2;
+  animation: complaint-paper-enter 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.trash-paper__sheet {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 16px 14px;
+  background: var(--salt);
+  border: 1px solid var(--parchment-3);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.05),
+    0 10px 24px rgba(60, 40, 10, 0.25);
+  transform-origin: 50% 50%;
+  overflow: hidden;
+}
+
+.trash-paper__sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    linear-gradient(
+      35deg,
+      transparent 38%,
+      rgba(60, 40, 10, 0.16) 40%,
+      transparent 43%
+    ),
+    linear-gradient(
+      -55deg,
+      transparent 55%,
+      rgba(60, 40, 10, 0.14) 57%,
+      transparent 60%
+    ),
+    linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(60, 40, 10, 0.12) 22%,
+      transparent 25%
+    ),
+    linear-gradient(
+      160deg,
+      transparent 70%,
+      rgba(60, 40, 10, 0.14) 72%,
+      transparent 75%
+    ),
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.55),
+      rgba(60, 40, 10, 0.25) 90%
+    );
+}
+
+.trash-paper__head {
+  display: block;
+  font-family: var(--font-type);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--burgundy);
+  margin-bottom: 4px;
+}
+
+.trash-paper__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.trash-paper__lines {
+  display: block;
+  height: 58px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--parchment-3) 0 2px,
+    transparent 2px 10px
+  );
+  margin-bottom: 10px;
+}
+
+.trash-paper__lines--short {
+  width: 70%;
+  height: 38px;
+}
+
+.trash-paper__sign {
+  display: block;
+  width: 60px;
+  height: 20px;
+  margin-left: auto;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='20' viewBox='0 0 60 20'><path d='M2 14c6-10 10-10 12 0s6 10 10 0 8-12 12-2 8 8 12 0 6-8 10-4' fill='none' stroke='%236e1a1a' stroke-width='1.5' stroke-linecap='round'/></svg>")
+    no-repeat center / contain;
+}
+
+@keyframes complaint-paper-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.phase-crumple .trash-paper__sheet {
+  animation: complaint-crumple 1s ease-in-out forwards;
+}
+
+.phase-crumple .trash-paper__sheet::after {
+  animation: complaint-crease 1s ease-in forwards;
+}
+
+@keyframes complaint-crumple {
+  0% {
+    transform: scale(1) rotate(0deg) skew(0deg, 0deg);
+    border-radius: 2px;
+    background: var(--salt);
+  }
+
+  18% {
+    transform: scale(0.93) rotate(-5deg) skew(7deg, -3deg);
+    border-radius: 6px;
+  }
+
+  38% {
+    transform: scale(0.76) rotate(11deg) skew(-11deg, 9deg);
+    border-radius: 18%;
+  }
+
+  58% {
+    transform: scale(0.58) rotate(-9deg) skew(13deg, -13deg);
+    border-radius: 34%;
+    background: var(--parchment);
+  }
+
+  78% {
+    transform: scale(0.45) rotate(27deg) skew(-7deg, 6deg);
+    border-radius: 46%;
+  }
+
+  100% {
+    transform: rotate(40deg) scale(0.42, 0.32);
+    border-radius: 50%;
+    background: var(--parchment-2);
+  }
+}
+
+@keyframes complaint-crease {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.phase-drop .trash-paper {
+  animation: complaint-drop 0.9s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes complaint-drop {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  30% {
+    transform: translate(-14px, 60px) rotate(-30deg);
+  }
+
+  60% {
+    transform: translate(12px, 170px) rotate(40deg);
+  }
+
+  100% {
+    transform: translate(0, 310px) rotate(140deg);
+  }
+}
+
+.phase-close .trash-paper {
+  visibility: hidden;
+}
+
+/* Trash can: two SVG layers, the paper ball travels between them */
+
+.trash-can {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 120px);
+  width: 240px;
+  height: 288px;
+  transform-origin: 50% 100%;
+}
+
+.trash-can-back,
+.trash-can-front {
+  position: absolute;
+  inset: 0;
+  width: 240px;
+  height: 288px;
+  overflow: visible;
+}
+
+.trash-can-back {
+  z-index: 1;
+}
+
+.trash-can-front {
+  z-index: 3;
+  filter: drop-shadow(0 14px 10px rgba(60, 40, 10, 0.25));
+}
+
+.trash-hole {
+  fill: #2b221a;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.trash-rim__band {
+  fill: none;
+  stroke: var(--parchment-3);
+  stroke-width: 7;
+}
+
+.trash-rim__edge {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.trash-body {
+  fill: var(--parchment-2);
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.trash-ribs {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  opacity: 0.4;
+}
+
+.trash-hoops {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  opacity: 0.55;
+}
+
+.trash-label rect {
+  fill: var(--salt);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.trash-label text {
+  font-family: var(--font-type);
+  font-size: 15px;
+  letter-spacing: 2px;
+  fill: var(--burgundy);
+}
+
+.trash-lid {
+  transform-box: fill-box;
+  transform-origin: 10% 100%;
+  transition: transform 0.4s cubic-bezier(0.3, 1.25, 0.5, 1);
+}
+
+.trash-lid__disc {
+  fill: var(--parchment-3);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.trash-lid__ring {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  opacity: 0.4;
+}
+
+.trash-lid__handle {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.phase-lid .trash-lid {
+  transform: rotate(-70deg);
+}
+
+.phase-close .trash-lid {
+  transform: rotate(0deg);
+  transition: transform 0.3s cubic-bezier(0.7, 0, 0.9, 0.5);
+}
+
+.phase-close .trash-can {
+  animation: complaint-wobble 0.6s ease-in-out 0.1s both;
+}
+
+@keyframes complaint-wobble {
+  0% {
+    transform: rotate(0deg) translateY(0);
+  }
+
+  12% {
+    transform: rotate(-4deg) translateY(4px);
+  }
+
+  32% {
+    transform: rotate(4deg) translateY(1px);
+  }
+
+  55% {
+    transform: rotate(-2.5deg);
+  }
+
+  78% {
+    transform: rotate(1.2deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* The stamp slams in over the scene */
+
+.trash-stamp {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  z-index: 5;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(4);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.trash-stamp .stamp {
+  opacity: 1;
+  filter: drop-shadow(0 0 1px rgba(110, 26, 26, 0.6));
+}
+
+.phase-stamp .trash-stamp {
+  animation: complaint-stamp-slam 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+.phase-stamp .complaint-trash__inner {
+  animation: complaint-shake 0.35s ease-out 0.12s;
+}
+
+@keyframes complaint-stamp-slam {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(4);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes complaint-shake {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-4px, 3px);
+  }
+
+  45% {
+    transform: translate(4px, -2px);
+  }
+
+  70% {
+    transform: translate(-2px, 1px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Eingangsbestätigung
+   -------------------------------------------------------------------------- */
+
+.complaint-confirmation {
+  margin-top: 1.5rem;
+  padding-top: 2.5rem;
+}
+
+.complaint-confirmation h2 {
+  margin-bottom: 1rem;
+}
+
+.complaint-confirmation h2:focus {
+  outline: none;
+}
+
+.complaint-confirmation__stamp {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.6rem;
+  z-index: 1;
+  pointer-events: none;
+  animation: complaint-stamp-slam-plain 0.35s cubic-bezier(0.2, 1.4, 0.4, 1)
+    1.3s both;
+}
+
+@keyframes complaint-stamp-slam-plain {
+  0% {
+    opacity: 0;
+    transform: scale(3);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.complaint-confirmation .akte {
+  margin: 0 0 1.5rem;
+}
+
+.complaint-confirmation .akte dl {
+  column-gap: 1.5rem;
+}
+
+.complaint-confirmation__steps {
+  margin: 2rem 0 1.5rem;
+}
+
+.complaint-confirmation__duration {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--burgundy);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.complaint-confirmation__fill {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  border-top: 1px dashed var(--gold);
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+}
+
+.complaint-confirmation__fill strong {
+  color: var(--burgundy);
+  font-weight: 400;
+}
+
+.complaint-confirmation__actions {
+  margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+  .complaint-confirmation {
+    padding-top: 1.5rem;
+  }
+
+  .complaint-confirmation__stamp {
+    position: static;
+    text-align: center;
+    margin: 0.5rem 0 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .complaint-progress {
+    font-size: 0.72rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .complaint-progress__note {
+    display: none;
+  }
+
+  .complaint-form .form-actions .btn {
+    width: calc(100% - 10px);
+  }
+}
