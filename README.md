@@ -4,7 +4,7 @@ Die Website des Salzamtes: Wünsche und Beschwerden aller Art. Seit 1848 folgenl
 
 Eine rein statische Seite (HTML, CSS, JavaScript ohne Build-Schritt), gehostet über GitHub Pages
 unter [salzamt.vip](https://salzamt.vip). Es gibt kein Backend: Beschwerden landen im Papierkorb,
-Bestellungen werden nur im Browser „bearbeitet", nichts wird gespeichert oder versendet.
+Bestellungen werden nur im Browser „bearbeitet“, nichts wird gespeichert oder versendet.
 
 ## Seiten
 
@@ -56,5 +56,5 @@ assets/img/team-katharina-gattermeier.jpg
 ```
 
 Solange eine Datei fehlt, zeigt die Seite an ihrer Stelle einen Kreis mit dem Hinweis
-„Lichtbild in Bearbeitung". Sobald die Datei vorhanden ist, erscheint das Foto ohne weitere
+„Lichtbild in Bearbeitung“. Sobald die Datei vorhanden ist, erscheint das Foto ohne weitere
 Änderung am Code.
