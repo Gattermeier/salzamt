@@ -704,7 +704,8 @@ Preamble (`.notice`): `Bitte füllen Sie das Formular vollständig, wahrheitsgem
 - `given-name` text _(required)_: `Vorname`
 - `family-name` text _(required)_: `Familienname`
 - `birth-name` text: `Geburtsname (falls abweichend, sonst gleich)`
-- `birth-date` date _(required)_: `Geburtsdatum`, hint `Bitte das tatsächliche Datum, nicht das gefühlte.`
+- `birth-date` text _(required)_, typed as `TT.MM.JJJJ` (never a native date picker, whose display
+  order follows the browser locale): `Geburtsdatum`, hint `Tag, Monat, Jahr (TT.MM.JJJJ). Bitte das tatsächliche Datum, nicht das gefühlte.`
 - `citizenship` text _(required)_: `Staatsbürgerschaft`, default value `Österreich`
 
 **Abschnitt B – Zustelladresse**
@@ -755,7 +756,7 @@ Preamble (`.notice`): `Bitte füllen Sie das Formular vollständig, wahrheitsgem
   5. `Ich bin damit einverstanden, dass diese Beschwerde eingesalzen wird.`
 - `security-question` select _(required)_: `Sicherheitsfrage: Wo beschwert man sich in Wien?` options `Bitte wählen`, `Beim Magistrat`, `Beim Bürgermeister`, `Beim Salzamt`, `Beim Nachbarn`, `Gar nicht` — only `Beim Salzamt` passes; error text `Die Sicherheitsfrage wurde unrichtig beantwortet. Denken Sie an den Namen dieses Amtes.`
 - `place` text _(required)_: `Ort`
-- `date` date _(required)_: prefilled today; hint `Das Datum darf weder in der Vergangenheit noch in der Zukunft liegen.`
+- `date` text _(required)_, `TT.MM.JJJJ`, prefilled with today; hint `Tag, Monat, Jahr (TT.MM.JJJJ). Das Datum darf weder in der Vergangenheit noch in der Zukunft liegen.`
 - `signature` text _(required)_: `Unterschrift (in Blockschrift)`, auto-uppercased on input.
 
 Buttons: `Beschwerde einbringen` · `Formular verwerfen`

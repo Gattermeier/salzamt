@@ -135,7 +135,14 @@ async function complaintFlow(browser) {
     form
       .querySelectorAll("input[type='text'], input[type='number']")
       .forEach((el) => {
-        if (!el.value) el.value = el.id === "postal-code" ? "1010" : "MUSTER";
+        if (!el.value) {
+          el.value =
+            el.id === "postal-code"
+              ? "1010"
+              : el.id === "birth-date"
+                ? "18.08.1984"
+                : "MUSTER";
+        }
       });
     form.querySelectorAll("input[type='date']").forEach((el) => {
       if (!el.value) el.value = "1984-08-18";
