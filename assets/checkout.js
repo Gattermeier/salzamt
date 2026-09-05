@@ -7,41 +7,46 @@
   var root = typeof window !== "undefined" ? window : {};
   var S = root.Salzamt || (root.Salzamt = {});
 
-  var HANDLING_FEE_CENTS = 11848;
-  var SHIPPING_CENTS = 0;
+  /* All amounts are integer Groschen (1 Schilling = 100 Groschen). */
+  var HANDLING_FEE_GROSCHEN = 11848; // S 118,48
+  var SHIPPING_GROSCHEN = 0;
   var DELIVERY_YEARS = 3;
   var DELIVERY_MONTHS = 4;
 
-  var NOTE_STEP_CENTS = 500; // notes only in 5-€ steps
-  var NOTE_PAIR_CENTS = 1500; // one 10-€ plus one 5-€ note
-  var COIN_VALUES = [200, 100, 50, 20, 10, 5, 2, 1];
+  /* Schilling cash: notes only 20 S and 50 S in equal numbers (one pair is
+     70 S, leftover in 20 S notes), at least one third of the total in coins,
+     the largest accepted coin being 10 S. Coin weights are the real ones. */
+  var NOTE_SMALL = 2000; // 20 S
+  var NOTE_LARGE = 5000; // 50 S
+  var NOTE_PAIR = NOTE_SMALL + NOTE_LARGE;
+  var COIN_VALUES = [1000, 500, 100, 50, 10, 5, 2, 1];
   var COIN_WEIGHT_GRAMS = {
-    200: 8.5,
-    100: 7.5,
-    50: 7.8,
-    20: 5.74,
-    10: 4.1,
-    5: 3.92,
-    2: 3.06,
-    1: 2.3,
+    1000: 6.2,
+    500: 4.8,
+    100: 4.2,
+    50: 3.0,
+    10: 1.1,
+    5: 2.5,
+    2: 0.9,
+    1: 1.8,
   };
   var COINS_PER_ROLL = 25;
 
   /* ---------- denomination rule (pure) ---------- */
 
-  function splitCash(totalCents) {
-    var total = Math.max(0, Math.round(Number(totalCents) || 0));
+  function splitCash(totalGroschen) {
+    var total = Math.max(0, Math.round(Number(totalGroschen) || 0));
     var coinsTarget = Math.ceil(total / 3); // at least one third in coins
-    var notesCents =
-      Math.floor((total - coinsTarget) / NOTE_STEP_CENTS) * NOTE_STEP_CENTS;
-    var coinsCents = total - notesCents;
-    var pairs = Math.floor(notesCents / NOTE_PAIR_CENTS);
-    var tens = pairs;
-    var fives =
-      pairs + (notesCents - pairs * NOTE_PAIR_CENTS) / NOTE_STEP_CENTS;
+    var notesBudget = total - coinsTarget;
+    var pairs = Math.floor(notesBudget / NOTE_PAIR);
+    var extraSmall = Math.floor((notesBudget - pairs * NOTE_PAIR) / NOTE_SMALL);
+    var fifties = pairs;
+    var twenties = pairs + extraSmall;
+    var notesGroschen = fifties * NOTE_LARGE + twenties * NOTE_SMALL;
+    var coinsGroschen = total - notesGroschen;
 
     var coins = {};
-    var remaining = coinsCents;
+    var remaining = coinsGroschen;
     var weight = 0;
     var rolls = 0;
     COIN_VALUES.forEach(function (value) {
@@ -53,10 +58,10 @@
     });
 
     return {
-      notes: { 10: tens, 5: fives },
+      notes: { 50: fifties, 20: twenties },
       coins: coins,
-      notesCents: notesCents,
-      coinsCents: coinsCents,
+      notesGroschen: notesGroschen,
+      coinsGroschen: coinsGroschen,
       coinWeightGrams: Math.round(weight * 100) / 100,
       rolls: rolls,
     };
@@ -65,18 +70,18 @@
   /* Rows for the Stückelungsvorschrift table, zero counts omitted. */
   function denominationRows(split) {
     var rows = [];
-    if (split.notes[10]) {
+    if (split.notes[50]) {
       rows.push({
-        label: "Banknoten zu 10 Euro",
-        count: split.notes[10],
-        cents: split.notes[10] * 1000,
+        label: "Banknoten zu 50 Schilling",
+        count: split.notes[50],
+        amount: split.notes[50] * NOTE_LARGE,
       });
     }
-    if (split.notes[5]) {
+    if (split.notes[20]) {
       rows.push({
-        label: "Banknoten zu 5 Euro",
-        count: split.notes[5],
-        cents: split.notes[5] * 500,
+        label: "Banknoten zu 20 Schilling",
+        count: split.notes[20],
+        amount: split.notes[20] * NOTE_SMALL,
       });
     }
     COIN_VALUES.forEach(function (value) {
@@ -84,22 +89,22 @@
       if (!count) return;
       var label =
         value >= 100
-          ? "Münzen zu " + value / 100 + " Euro"
-          : "Münzen zu " + value + " Cent";
-      rows.push({ label: label, count: count, cents: count * value });
+          ? "Münzen zu " + value / 100 + " Schilling"
+          : "Münzen zu " + value + " Groschen";
+      rows.push({ label: label, count: count, amount: count * value });
     });
     return rows;
   }
 
   S.splitCash = splitCash;
   S.denominationRows = denominationRows;
-  S.HANDLING_FEE_CENTS = HANDLING_FEE_CENTS;
+  S.HANDLING_FEE_GROSCHEN = HANDLING_FEE_GROSCHEN;
 
   if (typeof module === "object" && module.exports) {
     module.exports = {
       splitCash: splitCash,
       denominationRows: denominationRows,
-      HANDLING_FEE_CENTS: HANDLING_FEE_CENTS,
+      HANDLING_FEE_GROSCHEN: HANDLING_FEE_GROSCHEN,
     };
   }
 
@@ -145,9 +150,9 @@
     }, 0);
     return {
       subtotal: subtotal,
-      shipping: SHIPPING_CENTS,
-      fee: HANDLING_FEE_CENTS,
-      total: subtotal + SHIPPING_CENTS + HANDLING_FEE_CENTS,
+      shipping: SHIPPING_GROSCHEN,
+      fee: HANDLING_FEE_GROSCHEN,
+      total: subtotal + SHIPPING_GROSCHEN + HANDLING_FEE_GROSCHEN,
     };
   }
 
@@ -168,11 +173,11 @@
       esc(p.subtitle) +
       "</span>" +
       '<span class="checkout-line__unit">Einzelpreis ' +
-      esc(S.formatEuro(p.price)) +
+      esc(S.formatMoney(p.price)) +
       "</span>" +
       "</td>" +
       '<td class="num checkout-line__price">' +
-      esc(S.formatEuro(p.price)) +
+      esc(S.formatMoney(p.price)) +
       "</td>" +
       '<td class="checkout-line__qty">' +
       '<div class="checkout-qty">' +
@@ -201,7 +206,7 @@
       "</div>" +
       "</td>" +
       '<td class="num checkout-line__sum">' +
-      esc(S.formatEuro(p.price * line.qty)) +
+      esc(S.formatMoney(p.price * line.qty)) +
       "</td>" +
       '<td class="checkout-line__remove">' +
       '<button type="button" class="checkout-remove" data-remove data-id="' +
@@ -256,10 +261,10 @@
 
     var totals = totalsFor(lines);
     byId("checkout-lines").innerHTML = lines.map(lineRowHtml).join("");
-    setText('[data-total-part="subtotal"]', S.formatEuro(totals.subtotal));
-    setText('[data-total-part="shipping"]', S.formatEuro(totals.shipping));
-    setText('[data-total-part="fee"]', S.formatEuro(totals.fee));
-    setText("[data-total]", S.formatEuro(totals.total));
+    setText('[data-total-part="subtotal"]', S.formatMoney(totals.subtotal));
+    setText('[data-total-part="shipping"]', S.formatMoney(totals.shipping));
+    setText('[data-total-part="fee"]', S.formatMoney(totals.fee));
+    setText("[data-total]", S.formatMoney(totals.total));
     empty.hidden = true;
     cart.hidden = false;
     restoreFocus(descriptor);
@@ -300,20 +305,20 @@
         line.qty +
         "</td>" +
         '<td class="num">' +
-        esc(S.formatEuro(line.product.price * line.qty)) +
+        esc(S.formatMoney(line.product.price * line.qty)) +
         "</td>" +
         "</tr>"
       );
     });
     rows.push(
       '<tr class="checkout-order__sub"><td colspan="2">Zwischensumme</td><td class="num">' +
-        esc(S.formatEuro(totals.subtotal)) +
+        esc(S.formatMoney(totals.subtotal)) +
         "</td></tr>",
       '<tr class="checkout-order__sub"><td colspan="2">Versandkosten</td><td class="num">' +
-        esc(S.formatEuro(totals.shipping)) +
+        esc(S.formatMoney(totals.shipping)) +
         "</td></tr>",
       '<tr class="checkout-order__sub"><td colspan="2">Bearbeitungsgebühr für den kostenlosen Versand</td><td class="num">' +
-        esc(S.formatEuro(totals.fee)) +
+        esc(S.formatMoney(totals.fee)) +
         "</td></tr>",
     );
     return rows.join("");
@@ -328,9 +333,9 @@
           '</td><td class="num">' +
           esc(S.formatNumber(row.count)) +
           '</td><td class="num" data-denomination-amount="' +
-          row.cents +
+          row.amount +
           '">' +
-          esc(S.formatEuro(row.cents)) +
+          esc(S.formatMoney(row.amount)) +
           "</td></tr>"
         );
       })
@@ -360,7 +365,7 @@
     var totalNodes = document.querySelectorAll("[data-order-total]");
     for (var i = 0; i < totalNodes.length; i++) {
       totalNodes[i].setAttribute("data-order-total", String(totals.total));
-      totalNodes[i].textContent = S.formatEuro(totals.total);
+      totalNodes[i].textContent = S.formatMoney(totals.total);
     }
     byId("order-items").innerHTML = orderItemsHtml(lines, totals);
     byId("order-denominations").innerHTML = denominationHtml(rows);

@@ -297,7 +297,7 @@ async function shopFlow(browser) {
   const sum = sums.reduce((a, b) => a + b, 0);
   if (!sums.length || sum !== grand)
     fail(`kassa: denominations sum to ${sum}, total is ${grand}`);
-  else ok(`kassa: Stückelung sums to ${grand} cents`);
+  else ok(`kassa: Stückelung sums to ${grand} Groschen`);
   const delivery = await page
     .$eval("[data-delivery-date]", (el) => el.textContent.trim())
     .catch(() => "");

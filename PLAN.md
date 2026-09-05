@@ -72,7 +72,8 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
 
 - **All visible text is German with Austrian vocabulary and formatting**: Jänner (not Januar),
   Kassa, Häferl, Parteienverkehr, Erlagschein, Stiege, Kronland. Dates `05.09.2026` or
-  `5. Jänner 2030`; money `€ 1.848,00` (thin: "€ " then number, dot thousands, comma decimals).
+  `5. Jänner 2030`; money in Schilling `S 1.848,00` ("S " then number, dot thousands, comma
+  decimals; amounts are stored as integer Groschen, 1 S = 100 Groschen).
   Use „…" style quotes in copy where quotes appear. `<html lang="de-AT">`.
 - **Code is English**: file comments, JS identifiers, CSS class names, IDs, data attributes, commit
   messages. Page file names stay German because they are URLs (`beschwerde.html`, `kassa.html`).
@@ -325,7 +326,7 @@ Salzamt.STORAGE_KEYS; // { cart: "salzamt_warenkorb", complaints: "salzamt_besch
 Salzamt.MONTHS; // ["Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]
 
 Salzamt.formatNumber(n, decimals); // 1848.5, 2 -> "1.848,50"; 3412876, 0 -> "3.412.876"  (manual formatting, no Intl)
-Salzamt.formatEuro(cents); // 184880 -> "€ 1.848,80"
+Salzamt.formatMoney(groschen); // 184880 -> "S 1.848,80"  (formatEuro remains as an alias)
 Salzamt.formatDateLong(date); // -> "5. Jänner 2030"
 Salzamt.formatDateShort(date); // -> "05.09.2026"
 Salzamt.formatTime(date); // -> "14:07 Uhr"
@@ -442,7 +443,7 @@ Steps:
    (not committed) at 390px and 1280px widths.
 3. Write `assets/site.js` implementing section 4.5 exactly (names, signatures, behaviour).
    Unit-check the formatters and `addYearsMonths` in Node (`node -e`), including:
-   `formatEuro(184880) === "€ 1.848,80"`, `formatNumber(3412876,0) === "3.412.876"`,
+   `formatMoney(184880) === "S 1.848,80"`, `formatNumber(3412876,0) === "3.412.876"`,
    `formatDateLong(new Date(2030,0,5)) === "5. Jänner 2030"`,
    `addYearsMonths(new Date(2026,8,5),3,4)` → 5 Jan 2030, `addYearsMonths(new Date(2026,9,31),3,4)` → 28 Feb 2030.
 4. Write `README.md` (German is fine, short): what the site is, how to preview locally
@@ -549,7 +550,7 @@ case number in the specified format, five completed steps, and the counter incre
 
 **Owns:** `shop.html`, `kassa.html`, `assets/shop.css`, `assets/shop.js`, `assets/checkout.js`.
 
-**`shop.js`** exports `Salzamt.PRODUCTS` (array, data in 6.3, prices as integer cents) and
+**`shop.js`** exports `Salzamt.PRODUCTS` (array, data in 6.3, prices as integer Groschen) and
 `Salzamt.ICONS` (object of inline SVG strings, `viewBox="0 0 100 100"`, `stroke="currentColor"`,
 `stroke-width="3"`, `fill="none"` except small accents; drawn by hand: `salt-shaker`, `salt-grain`,
 `stamp`, `ticket`, `folder`, `mug`, `postcard-set`), then renders the catalogue into
@@ -565,8 +566,8 @@ Above the grid: `h1` "Amtsshop", `.eyebrow` "Amtliche Devotionalien", the intro 
 
 - Empty cart: `.notice` "Ihr Warenkorb ist leer. Das ist der Idealzustand." + link "Zum Amtsshop".
 - Cart table (`.table`): Artikel, Einzelpreis, Menge (`−`/`+` buttons and a number input,
-  `Salzamt.setCartQty`), Summe, Entfernen. Below: Zwischensumme; "Versandkosten: € 0,00";
-  "Bearbeitungsgebühr für den kostenlosen Versand: € 118,48" (constant `HANDLING_FEE_CENTS = 11848`,
+  `Salzamt.setCartQty`), Summe, Entfernen. Below: Zwischensumme; "Versandkosten: S 0,00";
+  "Bearbeitungsgebühr für den kostenlosen Versand: S 118,48" (constant `HANDLING_FEE_GROSCHEN = 11848`,
   applied once per order); Gesamtbetrag (bold). A `.notice` explains that no address is needed
   (6.4). Button `.btn.btn--lg` "Bestellung verbindlich aufgeben".
 - On order: read the cart, compute totals, generate `Salzamt.newOrderNumber()`, compute the
@@ -582,24 +583,27 @@ Above the grid: `h1` "Amtsshop", `.eyebrow` "Amtliche Devotionalien", the intro 
   6. Buttons: "Bestellung ausdrucken" (`window.print()`, print CSS hides everything but the
      confirmation) and "Weiter einkaufen" → `shop.html`.
 
-**Denomination algorithm** (`checkout.js`, pure function `splitCash(totalCents)` returning
-`{ notes: {10: n, 5: n}, coins: {200: n, 100: n, 50: n, 20: n, 10: n, 5: n, 2: n, 1: n}, coinWeightGrams, rolls }`):
+**Denomination algorithm** (`checkout.js`, pure function `splitCash(totalGroschen)` returning
+`{ notes: {50: n, 20: n}, coins: {1000: n, 500: n, 100: n, 50: n, 10: n, 5: n, 2: n, 1: n}, coinWeightGrams, rolls }`;
+the office deals in Schilling, 1 S = 100 Groschen, all amounts are integer Groschen):
 
 ```
-coinsTarget = ceil(T / 3)                          // at least one third in coins
-notesCents  = floor((T - coinsTarget) / 500) * 500 // notes only in 5-€ steps
-coinsCents  = T - notesCents
-pairs       = floor(notesCents / 1500)             // one 10-€ + one 5-€ per pair
-tens        = pairs
-fives       = pairs + (notesCents - pairs * 1500) / 500
-coins       = greedy from 200,100,50,20,10,5,2,1 cents over coinsCents
-weight      = Σ count × {200: 8.5, 100: 7.5, 50: 7.8, 20: 5.74, 10: 4.1, 5: 3.92, 2: 3.06, 1: 2.3} grams
-rolls       = Σ ceil(count / 25) per coin denomination
+coinsTarget   = ceil(T / 3)                                 // at least one third in coins
+notesBudget   = T - coinsTarget
+pairs         = floor(notesBudget / 7000)                   // one 50-S + one 20-S note per pair
+extraTwenties = floor((notesBudget - pairs * 7000) / 2000)  // leftover in 20-S notes
+fifties       = pairs
+twenties      = pairs + extraTwenties
+notes         = fifties * 5000 + twenties * 2000
+coins         = greedy from 1000,500,100,50,10,5,2,1 Groschen over T - notes
+weight        = Σ count × {1000: 6.2, 500: 4.8, 100: 4.2, 50: 3.0, 10: 1.1, 5: 2.5, 2: 0.9, 1: 1.8} grams
+rolls         = Σ ceil(count / 25) per coin denomination
 ```
 
 Test vector (must be asserted in a `node -e` check before pushing): for T = 482 948
-(Salzstreuer 4 711,00 + fee 118,48) → tens 214, fives 215, coins 2 € × 807, 20 c × 2, 5 c × 1,
-2 c × 1, 1 c × 1; notes + coins = 482 948; weight 6 880,26 g (display "ca. 6,88 kg"); rolls 37.
+(Salzstreuer 4 711,00 + fee 118,48) → 50 S × 45, 20 S × 48, coins 10 S × 161, 5 S × 1, 1 S × 4,
+10 g × 4, 5 g × 1, 2 g × 1, 1 g × 1; notes + coins = 482 948; weight 1 029,4 g (display
+"ca. 1,03 kg"); rolls 13.
 
 Acceptance: add three different products, change a quantity on the Kassa, remove one; totals
 update; place the order → order number `B-YYYY-NB-######`, fee shown once, denomination table
@@ -774,22 +778,22 @@ buttons `Weitere Beschwerde einreichen` · `Zum Amtsshop`.
 
 ### 6.3 Shop catalogue
 
-Intro: `Amtliche Devotionalien für Parteien mit Geschmack und ohne Erwartung. Alle Preise in Euro, inklusive Nichtbearbeitung, exklusive Bearbeitungsgebühr für den kostenlosen Versand.`
+Intro: `Amtliche Devotionalien für Parteien mit Geschmack und ohne Erwartung. Alle Preise in Schilling, inklusive Nichtbearbeitung, exklusive Bearbeitungsgebühr für den kostenlosen Versand.`
 Terms (`.notice`): `Zahlung ausschließlich in bar auf dem Postweg. Lieferzeit rund 3 Jahre und 4 Monate. Umtausch ausgeschlossen. Rückgabe ausgeschlossen. Erhalt nicht garantiert.`
 
 | id               | name                                       | subtitle                                                | description                                                                                                                                                                               | price       | media                        | tag            |
 | ---------------- | ------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------- | -------------- |
-| `postkarte-1`    | `Postkarte Nr. 1 „Salzamt an der Salzach"` | `Ansichtskarte, A6, ungelaufen`                         | `Das Salzamt am Ufer der Salzach im Abendlicht, mit Festung, Kuppeln und dem Amtsgebäude, in dem nie ein Licht brennt. Rückseite unbeschrieben, damit Sie sich selbst beschweren können.` | € 184,80    | `assets/img/postkarte-1.jpg` | `Neu`          |
-| `postkarte-2`    | `Postkarte Nr. 2 „Doppeladler"`            | `Ansichtskarte, A6, ungelaufen`                         | `Der Doppeladler mit Salzfass, Hammer und Schlägel, dazu unser Leitspruch: Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.`                                                | € 184,80    | `assets/img/postkarte-2.jpg` | —              |
-| `postkarten-set` | `Postkarten-Set (beide Motive)`            | `2 Stück, einzeln kuvertiert, ohne Kuvert`              | `Beide Motive in einer Mappe. Sparen Sie nicht: Das Set kostet fünfmal so viel wie die Einzelkarten, enthält dafür aber eine Mappe.`                                                      | € 1.848,00  | icon `postcard-set`          | `Amtlich`      |
-| `salzstreuer`    | `Amtlicher Salzstreuer`                    | `Geeicht, Streuöffnungen amtlich versiegelt`            | `Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.`                          | € 4.711,00  | icon `salt-shaker`           | `Bestseller`   |
-| `salzkorn`       | `Salzamt-Salz, 1 Korn`                     | `Mit Echtheitszertifikat, Mindestabnahme 1 Korn`        | `Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.`                                        | € 999,99    | icon `salt-grain`            | —              |
-| `stempel`        | `Stempel „NICHT ZUSTÄNDIG"`                | `Holzgriff, Gummiplatte, ohne Stempelkissen`            | `Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.`                                                           | € 1.848,00  | icon `stamp`                 | —              |
-| `stempelmarke`   | `Stempelmarke zu 10 Heller`                | `Ungültig seit 1925, unverkäuflich, dennoch erhältlich` | `Die amtliche Stempelmarke des Salzamtes. Wird für Beilagen zu Formular SA-47/B benötigt und dort nicht anerkannt.`                                                                       | € 10.000,00 | `assets/img/stamp-600.jpg`   | `Sammlerstück` |
-| `wartenummer`    | `Wartenummer`                              | `Gebraucht, bereits aufgerufen`                         | `Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.`                                                                 | € 47,11     | icon `ticket`                | —              |
-| `aktenordner`    | `Aktenordner „Erledigt"`                   | `Leer, vorgelocht, Rückenschild beschriftet`            | `Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.`                                                            | € 380,00    | icon `folder`                | —              |
-| `poster`         | `Poster „Seit 1848 folgenlos"`             | `DIN A2, gerollt, ohne Rahmen`                          | `Unser Wappen für Amtsstube, Vorzimmer und Wartezimmer. Gedruckt auf Papier, das sich nach drei Jahren von selbst einrollt.`                                                              | € 2.300,00  | `assets/img/poster-480.jpg`  | —              |
-| `haeferl`        | `Häferl „Kein Parteienverkehr"`            | `Steingut, 0,3 l, spülmaschinenungeeignet`              | `Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.`                                                                    | € 612,00    | icon `mug`                   | —              |
+| `postkarte-1`    | `Postkarte Nr. 1 „Salzamt an der Salzach"` | `Ansichtskarte, A6, ungelaufen`                         | `Das Salzamt am Ufer der Salzach im Abendlicht, mit Festung, Kuppeln und dem Amtsgebäude, in dem nie ein Licht brennt. Rückseite unbeschrieben, damit Sie sich selbst beschweren können.` | S 184,80    | `assets/img/postkarte-1.jpg` | `Neu`          |
+| `postkarte-2`    | `Postkarte Nr. 2 „Doppeladler"`            | `Ansichtskarte, A6, ungelaufen`                         | `Der Doppeladler mit Salzfass, Hammer und Schlägel, dazu unser Leitspruch: Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.`                                                | S 184,80    | `assets/img/postkarte-2.jpg` | —              |
+| `postkarten-set` | `Postkarten-Set (beide Motive)`            | `2 Stück, einzeln kuvertiert, ohne Kuvert`              | `Beide Motive in einer Mappe. Sparen Sie nicht: Das Set kostet fünfmal so viel wie die Einzelkarten, enthält dafür aber eine Mappe.`                                                      | S 1.848,00  | icon `postcard-set`          | `Amtlich`      |
+| `salzstreuer`    | `Amtlicher Salzstreuer`                    | `Geeicht, Streuöffnungen amtlich versiegelt`            | `Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.`                          | S 4.711,00  | icon `salt-shaker`           | `Bestseller`   |
+| `salzkorn`       | `Salzamt-Salz, 1 Korn`                     | `Mit Echtheitszertifikat, Mindestabnahme 1 Korn`        | `Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.`                                        | S 999,99    | icon `salt-grain`            | —              |
+| `stempel`        | `Stempel „NICHT ZUSTÄNDIG"`                | `Holzgriff, Gummiplatte, ohne Stempelkissen`            | `Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.`                                                           | S 1.848,00  | icon `stamp`                 | —              |
+| `stempelmarke`   | `Stempelmarke zu 10 Heller`                | `Ungültig seit 1925, unverkäuflich, dennoch erhältlich` | `Die amtliche Stempelmarke des Salzamtes. Wird für Beilagen zu Formular SA-47/B benötigt und dort nicht anerkannt.`                                                                       | S 10.000,00 | `assets/img/stamp-600.jpg`   | `Sammlerstück` |
+| `wartenummer`    | `Wartenummer`                              | `Gebraucht, bereits aufgerufen`                         | `Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.`                                                                 | S 47,11     | icon `ticket`                | —              |
+| `aktenordner`    | `Aktenordner „Erledigt"`                   | `Leer, vorgelocht, Rückenschild beschriftet`            | `Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.`                                                            | S 380,00    | icon `folder`                | —              |
+| `poster`         | `Poster „Seit 1848 folgenlos"`             | `DIN A2, gerollt, ohne Rahmen`                          | `Unser Wappen für Amtsstube, Vorzimmer und Wartezimmer. Gedruckt auf Papier, das sich nach drei Jahren von selbst einrollt.`                                                              | S 2.300,00  | `assets/img/poster-480.jpg`  | —              |
+| `haeferl`        | `Häferl „Kein Parteienverkehr"`            | `Steingut, 0,3 l, spülmaschinenungeeignet`              | `Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.`                                                                    | S 612,00    | icon `mug`                   | —              |
 
 Button per product: `In den Warenkorb`. Toast: `Zum Warenkorb gelegt. Bearbeitung nicht vorgesehen.`
 
@@ -797,7 +801,7 @@ Button per product: `In den Warenkorb`. Toast: `Zum Warenkorb gelegt. Bearbeitun
 
 Page title: `Kassa`. Eyebrow: `Abteilung für Bareingang und Ratlosigkeit`.
 Empty cart: `Ihr Warenkorb ist leer. Das ist der Idealzustand.` + link `Zum Amtsshop`.
-Fee rows: `Versandkosten` `€ 0,00`; `Bearbeitungsgebühr für den kostenlosen Versand` `€ 118,48`; `Gesamtbetrag`.
+Fee rows: `Versandkosten` `S 0,00`; `Bearbeitungsgebühr für den kostenlosen Versand` `S 118,48`; `Gesamtbetrag`.
 Address notice: `Wir benötigen keine Anschrift. Legen Sie Ihre Adresse handschriftlich dem Kuvert bei; wir entnehmen sie bei Bareingang. Eine Bestätigung per E-Mail ist nicht vorgesehen, da das Amt über keine E-Mail verfügt.`
 Order button: `Bestellung verbindlich aufgeben`.
 
@@ -807,14 +811,14 @@ Bestellbestätigung title: `Bestellbestätigung`. Akte lines: `Bestellnummer: �
 Zahlungsanweisung (`h2`), ordered list:
 
 1. `Die Zahlung erfolgt ausschließlich in bar. Überweisungen, Erlagscheine, Schecks, Karten und Wertgegenstände werden ungeöffnet eingesalzen.`
-2. `Zulässig sind Banknoten zu 5 und 10 Euro, zu gleichen Teilen nach Stückzahl. Größere Scheine gelten als Beilage und werden nicht angerechnet.`
-3. `Mindestens ein Drittel des Betrags ist in Münzen zu entrichten, nach Prägejahr aufsteigend sortiert, in Papierrollen zu je 25 Stück, mit Bleistift beschriftet.`
-4. `Der Betrag ist auf den Cent genau beizulegen. Überzahlungen werden nicht rückerstattet, Unterzahlungen nicht bemerkt.`
+2. `Das Amt rechnet in Schilling. Die Einführung des Euro wurde zur Kenntnis genommen, ohne weitere Veranlassung. Zulässig sind Banknoten zu 20 und 50 Schilling, zu gleichen Teilen nach Stückzahl. Größere Scheine gelten als Beilage und werden nicht angerechnet.`
+3. `Mindestens ein Drittel des Betrags ist in Münzen zu entrichten, höchstens zu 10 Schilling je Stück, Gedenkmünzen ausgeschlossen, nach Prägejahr aufsteigend sortiert, in Papierrollen zu je 25 Stück, mit Bleistift beschriftet.`
+4. `Der Betrag ist auf den Groschen genau beizulegen. Überzahlungen werden nicht rückerstattet, Unterzahlungen nicht bemerkt.`
 5. `Das Kuvert: gefüttert, Format C4, doppelt verklebt, mit Wachs versiegelt. Die Bestellnummer ist in Blockschrift auf allen vier Seiten anzubringen, die Rückseite zusätzlich mit dem Wort „Salz".`
 6. `Die Sendung ist ausreichend zu frankieren. Als ausreichend gilt, was das Amt im Einzelfall als ausreichend befindet.`
 
 Stückelungsvorschrift (`h2`): table columns `Stückelung`, `Anzahl`, `Betrag`; rows for
-`Banknoten zu 10 Euro`, `Banknoten zu 5 Euro`, then coins `Münzen zu 2 Euro` … `Münzen zu 1 Cent`
+`Banknoten zu 50 Schilling`, `Banknoten zu 20 Schilling`, then coins `Münzen zu 10 Schilling` … `Münzen zu 1 Groschen`
 (omit rows with count 0), sum row `Gesamt`. Below: `Gesamtgewicht der Münzen: ca. X kg in N Rollen. Bitte ausreichend frankieren.`
 
 Versandanschrift (`h2`), `address` block:
