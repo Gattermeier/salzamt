@@ -368,16 +368,15 @@
   margin: 0;
 }
 
-/* Three 160px circles fit comfortably above 640px; keep them in one row
-   where the shared .grid--3 would already drop to two columns. */
-@media (min-width: 641px) {
-  .home-team-teaser__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
+/* Four 160px circles: one row on desktop, two by two on tablets and phones
+   (the shared .grid--4 breakpoints), never a single tall column. */
 @media (max-width: 640px) {
   .home-team-teaser__list {
-    gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+  }
+
+  .home-member__name {
+    font-size: 1.3rem;
   }
 }

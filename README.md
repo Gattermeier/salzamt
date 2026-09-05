@@ -15,6 +15,7 @@ Bestellungen werden nur im Browser „bearbeitet“, nichts wird gespeichert ode
 | `shop.html`       | Amtsshop                                                  |
 | `kassa.html`      | Warenkorb, Kassa und Zahlungsanweisung (Bargeld per Post) |
 | `team.html`       | Die Bediensteten                                          |
+| `mail/`, `email/` | Weiterleitung nach https://mail.salzamt.vip/              |
 
 `PLAN.md` beschreibt Aufbau, Design-System und Arbeitspakete im Detail.
 
@@ -64,4 +65,6 @@ Welche Variante aus `originals/` dafür gerendert wird, legt die Konstante `TEAM
 Änderung das Skript erneut ausführen. Die Bildausschnitte je Person stehen ebenfalls dort.
 
 Fehlt eine Porträtdatei, zeigt die Seite an ihrer Stelle einen Kreis mit dem Hinweis
-„Lichtbild in Bearbeitung“.
+„Lichtbild in Bearbeitung“. Das gilt derzeit für Irmgard Gattermeier: Sobald
+`originals/team-irmgard-gattermeier-sketch.jpg` (oder `-photo.jpg`) vorliegt und das Skript
+erneut läuft, erscheint ihr Porträt.

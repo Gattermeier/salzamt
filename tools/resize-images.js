@@ -36,6 +36,14 @@ const STAFF = [
       photo: { cx: 0.5, cy: 0.55, size: 0.9 },
     },
   },
+  {
+    // source not supplied yet; adjust the crop once it exists
+    slug: "irmgard-gattermeier",
+    crop: {
+      sketch: { cx: 0.5, cy: 0.5, size: 0.9 },
+      photo: { cx: 0.5, cy: 0.5, size: 0.9 },
+    },
+  },
 ];
 
 const jobs = [
@@ -111,6 +119,13 @@ const jobs = [
   await page.setContent("<html><body></body></html>");
   for (const job of jobs) {
     const file = path.join(src, job.src);
+    if (!fs.existsSync(file)) {
+      console.log(
+        job.name.padEnd(30),
+        `skipped, source missing: originals/${job.src}`,
+      );
+      continue;
+    }
     const mime = job.src.toLowerCase().endsWith(".png")
       ? "image/png"
       : "image/jpeg";
