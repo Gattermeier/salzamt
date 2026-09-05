@@ -1,28 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Das Salzamt</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-    }
-    img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-    }
-  </style>
-</head>
-<body>
-  <img src="salzamt_poster.png" alt="">
-</body>
+<!doctype html>
+<html lang="de-AT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Salzamt · Wünsche und Beschwerden aller Art</title>
+    <meta
+      name="description"
+      content="Das Salzamt nimmt Wünsche und Beschwerden aller Art entgegen. Seit 1848 folgenlos."
+    />
+    <meta
+      property="og:title"
+      content="Salzamt · Wünsche und Beschwerden aller Art"
+    />
+    <meta
+      property="og:description"
+      content="Das Salzamt nimmt Wünsche und Beschwerden aller Art entgegen. Seit 1848 folgenlos."
+    />
+    <meta
+      property="og:image"
+      content="https://salzamt.vip/assets/img/oval-600.jpg"
+    />
+    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body class="page-home">
+    <a class="skip-link" href="#main">Zum Inhalt</a>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/img/badge-96.png"
+            width="48"
+            height="48"
+            alt="Amtssiegel des Salzamtes"
+          />
+          <span class="brand__text">
+            <span class="brand__wordmark">Salzamt</span>
+            <span class="brand__sub">Wünsche und Beschwerden aller Art</span>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          Menü
+        </button>
+        <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="beschwerde.html">Beschwerde einreichen</a></li>
+            <li><a href="shop.html">Amtsshop</a></li>
+            <li><a href="team.html">Bedienstete</a></li>
+            <li>
+              <a href="kassa.html" class="cart-link"
+                >Warenkorb <span class="cart-badge" data-cart-count>0</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section">
+        <div class="container text-center stack">
+          <p class="eyebrow">
+            K.k. Salzamt · Wünsche und Beschwerden aller Art
+          </p>
+          <h1>Salzamt</h1>
+          <p class="lead">Seit 1848 folgenlos.</p>
+          <div class="frame" style="max-width: 460px; margin-inline: auto">
+            <img
+              src="assets/img/poster-900.jpg"
+              width="900"
+              height="1269"
+              alt="Plakat des Salzamtes mit Doppeladler: Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen."
+            />
+          </div>
+          <p>
+            <a class="btn btn--lg" href="beschwerde.html"
+              >Beschwerde einreichen</a
+            >
+            <a class="btn btn--ghost btn--lg" href="shop.html">Zum Amtsshop</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="site-footer__motto">
+          Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.
+        </p>
+        <p class="site-footer__line">
+          K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848
+          folgenlos.
+        </p>
+        <p class="site-footer__small">
+          Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite
+          speichert nichts, sendet nichts und hilft niemandem. Ihre Eingaben
+          verbleiben ausschließlich in Ihrem Browser.
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+  </body>
 </html>

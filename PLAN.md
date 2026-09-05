@@ -20,14 +20,14 @@ gold, black Fraktur, stamps, forms, Aktenzeichen, and unfailingly polite Amtsdeu
 **Existing state.** GitHub Pages site, custom domain `salzamt.vip` (file `CNAME`). One page
 (`index.html`) shows `salzamt_poster.png` full screen. Six artworks exist at the repo root:
 
-| File | Size | Content |
-|---|---|---|
-| `salzamt_poster.png` | 1240×1748 | Poster: "Salzamt", double eagle with salt-barrel shield, banner "Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.", "Seit 1848 folgenlos.", footer strip "Eingelangt · Geprüft · Nicht zuständig · Abgelegt · Eingesalzen" |
-| `salzamt_circle.png` | 1254×1254 | Round badge on white: crowned double eagle, "Salzamt", "Wünsche und Beschwerden aller Art", salt mine cart "Glück auf" |
-| `salzamt.png` | 1254×1254 | Same badge as an oval with burgundy border |
-| `salzamt_stamp.png` | 1120×1320 | Postage stamp "ÖSTERREICH … 10 HELLER" with the round badge |
+| File                       | Size      | Content                                                                                                                                                                                                                                                                                                                          |
+| -------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `salzamt_poster.png`       | 1240×1748 | Poster: "Salzamt", double eagle with salt-barrel shield, banner "Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.", "Seit 1848 folgenlos.", footer strip "Eingelangt · Geprüft · Nicht zuständig · Abgelegt · Eingesalzen"                                                                                         |
+| `salzamt_circle.png`       | 1254×1254 | Round badge on white: crowned double eagle, "Salzamt", "Wünsche und Beschwerden aller Art", salt mine cart "Glück auf"                                                                                                                                                                                                           |
+| `salzamt.png`              | 1254×1254 | Same badge as an oval with burgundy border                                                                                                                                                                                                                                                                                       |
+| `salzamt_stamp.png`        | 1120×1320 | Postage stamp "ÖSTERREICH … 10 HELLER" with the round badge                                                                                                                                                                                                                                                                      |
 | `Salzbug_Postkarte_A6.png` | 1536×1090 | Postkarte Nr. 1 „Salzamt an der Salzach": sunset view of Salzburg with the Festung Hohensalzburg, the Salzach and the Salzamt building on the riverbank, a 10-Kreuzer stamp top right, footer strip "Eingelangt · Geprüft · Nicht zuständig · Abgelegt · Eingesalzen" (the file name's typo "Salzbug" is the real name; keep it) |
-| `Wappen-Postkarte-A6.png` | 1240×1748 | Postkarte Nr. 2 „Doppeladler"; byte-identical to `salzamt_poster.png` |
+| `Wappen-Postkarte-A6.png`  | 1240×1748 | Postkarte Nr. 2 „Doppeladler"; byte-identical to `salzamt_poster.png`                                                                                                                                                                                                                                                            |
 
 **Target state.** Five pages sharing one design system:
 
@@ -57,9 +57,11 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
   Shared code lives on the `window.Salzamt` namespace (section 4.5). No inline `onclick=` handlers.
 - CSS: custom properties, Grid, Flexbox, `clamp()`. Mobile-first. One committed look (parchment),
   **no dark mode**. Respect `prefers-reduced-motion`.
-- No backend, no analytics, no cookies, no third-party scripts. Only external resource: Google
-  Fonts (section 4.1). All user input stays in the browser (`localStorage`, section 4.6). Complaint
-  texts are never stored anywhere, not even in `localStorage`.
+- No backend, no analytics, no cookies, no third-party requests of any kind. The three web fonts
+  (UnifrakturCook, EB Garamond, Special Elite; OFL / Apache licensed) are self-hosted as woff2 files
+  in `assets/fonts/` and declared with `@font-face` in `assets/style.css`, so pages need no font
+  `<link>`. All user input stays in the browser (`localStorage`, section 4.6). Complaint texts are
+  never stored anywhere, not even in `localStorage`.
 - Node is used only as a development tool (image generation and QA with Playwright); it must never
   be needed to serve the site.
 - Browser support: current evergreen browsers (last two versions of Chrome, Firefox, Safari, Edge),
@@ -135,6 +137,7 @@ assets/
   checkout.js                   WP3  (kassa.html only)
   team.css                      WP4
   img/                          WP0 generates; user adds photos (see 4.7)
+  fonts/                        WP0  self-hosted woff2 files and their licenses
 tools/
   resize-images.js              WP0  Playwright script that generates assets/img/* (appendix A)
   qa.js                         WP5  Playwright smoke test (appendix B)
@@ -161,14 +164,11 @@ written. If WP0 has to deviate, it must update this section in the same commit.
     <meta name="description" content="PAGE DESCRIPTION" />
     <meta property="og:title" content="PAGE TITLE · Salzamt" />
     <meta property="og:description" content="PAGE DESCRIPTION" />
-    <meta property="og:image" content="https://salzamt.vip/assets/img/oval-600.jpg" />
-    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Special+Elite&family=UnifrakturCook:wght@700&display=swap"
-      rel="stylesheet"
+    <meta
+      property="og:image"
+      content="https://salzamt.vip/assets/img/oval-600.jpg"
     />
+    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
     <link rel="stylesheet" href="assets/style.css" />
     <link rel="stylesheet" href="assets/PAGE.css" />
   </head>
@@ -191,13 +191,25 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="brand" href="index.html">
-      <img src="assets/img/badge-96.png" width="48" height="48" alt="Amtssiegel des Salzamtes" />
+      <img
+        src="assets/img/badge-96.png"
+        width="48"
+        height="48"
+        alt="Amtssiegel des Salzamtes"
+      />
       <span class="brand__text">
         <span class="brand__wordmark">Salzamt</span>
         <span class="brand__sub">Wünsche und Beschwerden aller Art</span>
       </span>
     </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menü</button>
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="main-nav"
+    >
+      Menü
+    </button>
     <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
       <ul>
         <li><a href="index.html">Startseite</a></li>
@@ -205,7 +217,9 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
         <li><a href="shop.html">Amtsshop</a></li>
         <li><a href="team.html">Bedienstete</a></li>
         <li>
-          <a href="kassa.html" class="cart-link">Warenkorb <span class="cart-badge" data-cart-count>0</span></a>
+          <a href="kassa.html" class="cart-link"
+            >Warenkorb <span class="cart-badge" data-cart-count>0</span></a
+          >
         </li>
       </ul>
     </nav>
@@ -220,11 +234,16 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
 ```html
 <footer class="site-footer">
   <div class="container">
-    <p class="site-footer__motto">Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.</p>
-    <p class="site-footer__line">K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848 folgenlos.</p>
+    <p class="site-footer__motto">
+      Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.
+    </p>
+    <p class="site-footer__line">
+      K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848 folgenlos.
+    </p>
     <p class="site-footer__small">
-      Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite speichert nichts, sendet nichts
-      und hilft niemandem. Ihre Eingaben verbleiben ausschließlich in Ihrem Browser.
+      Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite speichert
+      nichts, sendet nichts und hilft niemandem. Ihre Eingaben verbleiben
+      ausschließlich in Ihrem Browser.
     </p>
   </div>
 </footer>
@@ -250,37 +269,37 @@ Headings (`h1`–`h3`) in `--font-display`, `--ink`; `h1` = `clamp(2.6rem, 7vw, 
 
 **Class catalogue** WP0 must provide (WP1–WP4 may rely on all of them):
 
-| Class | Purpose |
-|---|---|
-| `.container` | max-width `--container`, horizontal padding 1rem, centred |
-| `.section`, `.section--tight` | vertical padding 3.5rem / 1.5rem |
-| `.grid`, `.grid--2`, `.grid--3`, `.grid--4` | responsive grids (collapse to 1 column ≤ 640px, `--4` to 2 columns ≤ 900px) |
-| `.stack` | vertical flex with 1rem gap |
-| `.text-center`, `.visually-hidden`, `.no-print`, `.skip-link` | utilities |
-| `.eyebrow` | typewriter font, 0.75rem, letter-spacing .2em, uppercase, burgundy |
-| `.lead` | 1.25rem body text, `--ink-2` |
-| `.typewriter` | `--font-type` |
-| `.ornament-rule` | centred divider: thin gold lines with ❦ in the middle |
-| `.btn` | burgundy button: uppercase body font 600, 0.8rem 1.6rem padding, 2px `--gold-2` border plus outer rings via `box-shadow: 0 0 0 3px var(--burgundy), 0 0 0 4px var(--gold)`; hover `--burgundy-2` |
-| `.btn--gold`, `.btn--ghost`, `.btn--lg`, `.btn--block` | gold variant, outline variant, large, full width |
-| `.frame` | parchment box with 1px gold border and `outline: 3px double var(--gold); outline-offset: 5px`; gold ✠ ornaments in top-left and bottom-right corners via pseudo-elements |
-| `.card`, `.card__media`, `.card__body`, `.card__title` | salt-white card, 1px gold border, soft shadow |
-| `.stamp`, `.stamp--big`, `.stamp--gold` | rotated (-6deg) uppercase typewriter text with 3px double burgundy border, `mix-blend-mode: multiply`; `--big` is 2.4rem with 5px border |
-| `.badge-tag` | small burgundy label (e.g. "Amtlich", "Neu") |
-| `.akte` | typewriter "document" block: salt background, dashed gold border, `white-space: pre-line` friendly |
-| `.circle-photo`, `.circle-photo--lg` | 160px / 220px circle, `object-fit: cover`, 4px `--gold-2` border, outer 3px burgundy ring via box-shadow |
-| `.photo-missing` | circle in `--parchment-2` with centred typewriter text (used by the image fallback, 4.5) |
-| `.amtsweg` | 5-step process list (`ol`): numbered burgundy circles connected by a gold line; `li.is-done` shows ✓ on burgundy; each `li` contains `<strong>` title and `<span>` one-liner |
-| `.table`, `.table td.num` | bordered table with gold hairlines; `.num` right-aligned typewriter |
-| `.notice`, `.notice--error`, `.notice--success` | bordered info boxes |
-| `.toast` | fixed bottom-centre message, shown by adding `.is-visible` |
-| Form: `.form-section`, `.form-section__title`, `.field`, `.field__label`, `.field__hint`, `.field--required`, `.field--error`, `.check`, `.check-group`, `.radio-group`, `.form-actions` | see below |
-| `dialog.dialog`, `.dialog__title`, `.dialog__actions` | native dialog styled as a frame; `::backdrop` dark parchment |
-| `.site-header…`, `.brand…`, `.nav-toggle`, `.main-nav`, `.cart-link`, `.cart-badge`, `.site-footer…` | header/footer from 4.2/4.3 |
+| Class                                                                                                                                                                                    | Purpose                                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.container`                                                                                                                                                                             | max-width `--container`, horizontal padding 1rem, centred                                                                                                                                        |
+| `.section`, `.section--tight`                                                                                                                                                            | vertical padding 3.5rem / 1.5rem                                                                                                                                                                 |
+| `.grid`, `.grid--2`, `.grid--3`, `.grid--4`                                                                                                                                              | responsive grids (collapse to 1 column ≤ 640px, `--4` to 2 columns ≤ 900px)                                                                                                                      |
+| `.stack`                                                                                                                                                                                 | vertical flex with 1rem gap                                                                                                                                                                      |
+| `.text-center`, `.visually-hidden`, `.no-print`, `.skip-link`                                                                                                                            | utilities                                                                                                                                                                                        |
+| `.eyebrow`                                                                                                                                                                               | typewriter font, 0.75rem, letter-spacing .2em, uppercase, burgundy                                                                                                                               |
+| `.lead`                                                                                                                                                                                  | 1.25rem body text, `--ink-2`                                                                                                                                                                     |
+| `.typewriter`                                                                                                                                                                            | `--font-type`                                                                                                                                                                                    |
+| `.ornament-rule`                                                                                                                                                                         | centred divider: thin gold lines with ❦ in the middle                                                                                                                                            |
+| `.btn`                                                                                                                                                                                   | burgundy button: uppercase body font 600, 0.8rem 1.6rem padding, 2px `--gold-2` border plus outer rings via `box-shadow: 0 0 0 3px var(--burgundy), 0 0 0 4px var(--gold)`; hover `--burgundy-2` |
+| `.btn--gold`, `.btn--ghost`, `.btn--lg`, `.btn--block`                                                                                                                                   | gold variant, outline variant, large, full width                                                                                                                                                 |
+| `.frame`                                                                                                                                                                                 | parchment box with 1px gold border and `outline: 3px double var(--gold); outline-offset: 5px`; gold ✠ ornaments in top-left and bottom-right corners via pseudo-elements                         |
+| `.card`, `.card__media`, `.card__body`, `.card__title`                                                                                                                                   | salt-white card, 1px gold border, soft shadow                                                                                                                                                    |
+| `.stamp`, `.stamp--big`, `.stamp--gold`                                                                                                                                                  | rotated (-6deg) uppercase typewriter text with 3px double burgundy border, `mix-blend-mode: multiply`; `--big` is 2.4rem with 5px border                                                         |
+| `.badge-tag`                                                                                                                                                                             | small burgundy label (e.g. "Amtlich", "Neu")                                                                                                                                                     |
+| `.akte`                                                                                                                                                                                  | typewriter "document" block: salt background, dashed gold border, `white-space: pre-line` friendly                                                                                               |
+| `.circle-photo`, `.circle-photo--lg`                                                                                                                                                     | 160px / 220px circle, `object-fit: cover`, 4px `--gold-2` border, outer 3px burgundy ring via box-shadow                                                                                         |
+| `.photo-missing`                                                                                                                                                                         | circle in `--parchment-2` with centred typewriter text (used by the image fallback, 4.5)                                                                                                         |
+| `.amtsweg`                                                                                                                                                                               | 5-step process list (`ol`): numbered burgundy circles connected by a gold line; `li.is-done` shows ✓ on burgundy; each `li` contains `<strong>` title and `<span>` one-liner                     |
+| `.table`, `.table td.num`                                                                                                                                                                | bordered table with gold hairlines; `.num` right-aligned typewriter                                                                                                                              |
+| `.notice`, `.notice--error`, `.notice--success`                                                                                                                                          | bordered info boxes                                                                                                                                                                              |
+| `.toast`                                                                                                                                                                                 | fixed bottom-centre message, shown by adding `.is-visible`                                                                                                                                       |
+| Form: `.form-section`, `.form-section__title`, `.field`, `.field__label`, `.field__hint`, `.field--required`, `.field--error`, `.check`, `.check-group`, `.radio-group`, `.form-actions` | see below                                                                                                                                                                                        |
+| `dialog.dialog`, `.dialog__title`, `.dialog__actions`                                                                                                                                    | native dialog styled as a frame; `::backdrop` dark parchment                                                                                                                                     |
+| `.site-header…`, `.brand…`, `.nav-toggle`, `.main-nav`, `.cart-link`, `.cart-badge`, `.site-footer…`                                                                                     | header/footer from 4.2/4.3                                                                                                                                                                       |
 
 Form styling: labels in typewriter font, uppercase, 0.78rem, `--ink-2`; inputs/selects/textareas
 full width, body font 1.05rem, `#fffdf7` background, 1px `--ink-2` border, no border radius; focus
-= 2px gold outline; `.field--required .field__label::after` adds " *" in burgundy;
+= 2px gold outline; `.field--required .field__label::after` adds " \*" in burgundy;
 `.field--error` gives the control a burgundy border and shows `.field__hint` in burgundy.
 `.form-section__title` is a burgundy bar with salt text in typewriter font ("Abschnitt A – …").
 
@@ -297,38 +316,39 @@ to 1ms.
 ### 4.5 Shared runtime (`assets/site.js`, namespace `window.Salzamt`)
 
 ```js
-Salzamt.BASE_COMPLAINTS            // 3412876
-Salzamt.STORAGE_KEYS               // { cart: "salzamt_warenkorb", complaints: "salzamt_beschwerden_lokal" }
-Salzamt.MONTHS                     // ["Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]
+Salzamt.BASE_COMPLAINTS; // 3412876
+Salzamt.STORAGE_KEYS; // { cart: "salzamt_warenkorb", complaints: "salzamt_beschwerden_lokal" }
+Salzamt.MONTHS; // ["Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]
 
-Salzamt.formatNumber(n, decimals)  // 1848.5, 2 -> "1.848,50"; 3412876, 0 -> "3.412.876"  (manual formatting, no Intl)
-Salzamt.formatEuro(cents)          // 184880 -> "€ 1.848,80"
-Salzamt.formatDateLong(date)       // -> "5. Jänner 2030"
-Salzamt.formatDateShort(date)      // -> "05.09.2026"
-Salzamt.formatTime(date)           // -> "14:07 Uhr"
-Salzamt.addYearsMonths(date, y, m) // new Date; day clamped to the target month's last day (31.10.2026 + 3y4m -> 28.02.2030)
-Salzamt.newCaseNumber()            // "SA-2026/094.117-II/3-NB"  (year, 3 digits, ".", 3 digits)
-Salzamt.newOrderNumber()           // "B-2026-NB-048115"          (year, 6 digits)
+Salzamt.formatNumber(n, decimals); // 1848.5, 2 -> "1.848,50"; 3412876, 0 -> "3.412.876"  (manual formatting, no Intl)
+Salzamt.formatEuro(cents); // 184880 -> "€ 1.848,80"
+Salzamt.formatDateLong(date); // -> "5. Jänner 2030"
+Salzamt.formatDateShort(date); // -> "05.09.2026"
+Salzamt.formatTime(date); // -> "14:07 Uhr"
+Salzamt.addYearsMonths(date, y, m); // new Date; day clamped to the target month's last day (31.10.2026 + 3y4m -> 28.02.2030)
+Salzamt.newCaseNumber(); // "SA-2026/094.117-II/3-NB"  (year, 3 digits, ".", 3 digits)
+Salzamt.newOrderNumber(); // "B-2026-NB-048115"          (year, 6 digits)
 
-Salzamt.getCart()                  // { [productId]: qty }   (safe: returns {} on any storage error)
-Salzamt.setCartQty(id, qty)        // qty <= 0 removes the line; persists; updates badge
-Salzamt.addToCart(id, qty = 1)
-Salzamt.clearCart()
-Salzamt.cartCount()                // sum of quantities
-Salzamt.updateCartBadge()          // writes cartCount() into every [data-cart-count]
+Salzamt.getCart(); // { [productId]: qty }   (safe: returns {} on any storage error)
+Salzamt.setCartQty(id, qty); // qty <= 0 removes the line; persists; updates badge
+Salzamt.addToCart(id, (qty = 1));
+Salzamt.clearCart();
+Salzamt.cartCount(); // sum of quantities
+Salzamt.updateCartBadge(); // writes cartCount() into every [data-cart-count]
 
-Salzamt.complaintsLocal()          // complaints submitted in this browser
-Salzamt.registerComplaint()        // increments and returns the new local count
-Salzamt.complaintsTotal()          // BASE_COMPLAINTS + complaintsLocal()
+Salzamt.complaintsLocal(); // complaints submitted in this browser
+Salzamt.registerComplaint(); // increments and returns the new local count
+Salzamt.complaintsTotal(); // BASE_COMPLAINTS + complaintsLocal()
 
-Salzamt.countUp(el, target, ms)    // animates el.textContent from 0 to target (formatNumber); instant under reduced motion
-Salzamt.showToast(text, ms = 2600) // uses/creates a .toast element
+Salzamt.countUp(el, target, ms); // animates el.textContent from 0 to target (formatNumber); instant under reduced motion
+Salzamt.showToast(text, (ms = 2600)); // uses/creates a .toast element
 ```
 
 On `DOMContentLoaded`, `site.js` runs: `initNav()` (sets `aria-current`, wires `.nav-toggle`),
 `initImageFallbacks()`, `updateCartBadge()`.
 
 **Image fallback contract.** Any `<img data-fallback="…">`:
+
 - if the value is a path, on `error` the `src` is replaced by that path (once);
 - if the value is `lichtbild`, the `<img>` is replaced by
   `<div class="circle-photo photo-missing" role="img" aria-label="ALT"><span>Lichtbild<br>in Bearbeitung</span></div>`
@@ -341,10 +361,10 @@ All `localStorage` access is wrapped in try/catch; the site must work with stora
 
 ### 4.6 Storage keys
 
-| Key | Value | Written by |
-|---|---|---|
-| `salzamt_warenkorb` | JSON `{ "salzstreuer": 1, "postkarte-1": 2 }` | WP3 via `Salzamt` cart API |
-| `salzamt_beschwerden_lokal` | integer | WP2 via `Salzamt.registerComplaint()` |
+| Key                         | Value                                         | Written by                            |
+| --------------------------- | --------------------------------------------- | ------------------------------------- |
+| `salzamt_warenkorb`         | JSON `{ "salzstreuer": 1, "postkarte-1": 2 }` | WP3 via `Salzamt` cart API            |
+| `salzamt_beschwerden_lokal` | integer                                       | WP2 via `Salzamt.registerComplaint()` |
 
 Nothing else is stored. Complaint form contents are never persisted.
 
@@ -352,24 +372,24 @@ Nothing else is stored. Complaint form contents are never persisted.
 
 Generated by WP0 with `tools/resize-images.js` (appendix A) from the originals:
 
-| File | From | Size | Notes |
-|---|---|---|---|
-| `poster-900.jpg` | `salzamt_poster.png` | 900×1269 | landing hero |
-| `poster-480.jpg` | `salzamt_poster.png` | 480×677 | teasers, shop |
-| `postkarte-1.jpg` | `Salzbug_Postkarte_A6.png` | 900 wide, landscape | Postkarte Nr. 1 „Salzamt an der Salzach" |
-| `postkarte-2.jpg` | `Wappen-Postkarte-A6.png` | 700×987 | Postkarte Nr. 2 „Doppeladler" (byte-identical to the poster) |
-| `badge-320.png` | `salzamt_circle.png` | 320×320 | circular crop, transparent corners |
-| `badge-96.png` | `salzamt_circle.png` | 96×96 | header, favicon |
-| `stamp-600.jpg` | `salzamt_stamp.png` | 600×707 | shop item |
-| `oval-600.jpg` | `salzamt.png` | 600×600 | og:image, postcard-1 fallback |
+| File              | From                       | Size                | Notes                                                        |
+| ----------------- | -------------------------- | ------------------- | ------------------------------------------------------------ |
+| `poster-900.jpg`  | `salzamt_poster.png`       | 900×1269            | landing hero                                                 |
+| `poster-480.jpg`  | `salzamt_poster.png`       | 480×677             | teasers, shop                                                |
+| `postkarte-1.jpg` | `Salzbug_Postkarte_A6.png` | 900 wide, landscape | Postkarte Nr. 1 „Salzamt an der Salzach"                     |
+| `postkarte-2.jpg` | `Wappen-Postkarte-A6.png`  | 700×987             | Postkarte Nr. 2 „Doppeladler" (byte-identical to the poster) |
+| `badge-320.png`   | `salzamt_circle.png`       | 320×320             | circular crop, transparent corners                           |
+| `badge-96.png`    | `salzamt_circle.png`       | 96×96               | header, favicon                                              |
+| `stamp-600.jpg`   | `salzamt_stamp.png`        | 600×707             | shop item                                                    |
+| `oval-600.jpg`    | `salzamt.png`              | 600×600             | og:image, postcard-1 fallback                                |
 
 Supplied by the site owner (**not** in the repo yet; markup must reference these exact paths and
 use the fallback contract until they appear):
 
-| File | Content | Fallback |
-|---|---|---|
-| `assets/img/team-martin-gattermeier.jpg` | portrait, square crop ≥ 600×600 | `data-fallback="lichtbild"` |
-| `assets/img/team-alexander-fellner.jpg` | portrait, square crop ≥ 600×600 | `data-fallback="lichtbild"` |
+| File                                        | Content                         | Fallback                    |
+| ------------------------------------------- | ------------------------------- | --------------------------- |
+| `assets/img/team-martin-gattermeier.jpg`    | portrait, square crop ≥ 600×600 | `data-fallback="lichtbild"` |
+| `assets/img/team-alexander-fellner.jpg`     | portrait, square crop ≥ 600×600 | `data-fallback="lichtbild"` |
 | `assets/img/team-katharina-gattermeier.jpg` | portrait, square crop ≥ 600×600 | `data-fallback="lichtbild"` |
 
 Do not commit placeholder files under those names; the owner drops the real files in later and
@@ -377,17 +397,17 @@ they must work without any code change.
 
 ### 4.8 Cross-page links
 
-| From | To |
-|---|---|
-| Landing CTA "Beschwerde einreichen" | `beschwerde.html` |
-| Landing CTA "Zum Amtsshop" / shop teaser | `shop.html` |
-| Landing team teaser | `team.html` |
+| From                                                   | To                         |
+| ------------------------------------------------------ | -------------------------- |
+| Landing CTA "Beschwerde einreichen"                    | `beschwerde.html`          |
+| Landing CTA "Zum Amtsshop" / shop teaser               | `shop.html`                |
+| Landing team teaser                                    | `team.html`                |
 | Complaint confirmation "Weitere Beschwerde einreichen" | `beschwerde.html` (reload) |
-| Complaint confirmation "Zum Amtsshop" | `shop.html` |
-| Shop "Zur Kassa" / header cart | `kassa.html` |
-| Kassa empty state "Zum Amtsshop" | `shop.html` |
-| Order confirmation "Weiter einkaufen" | `shop.html` |
-| Team "Beschwerde einreichen" | `beschwerde.html` |
+| Complaint confirmation "Zum Amtsshop"                  | `shop.html`                |
+| Shop "Zur Kassa" / header cart                         | `kassa.html`               |
+| Kassa empty state "Zum Amtsshop"                       | `shop.html`                |
+| Order confirmation "Weiter einkaufen"                  | `shop.html`                |
+| Team "Beschwerde einreichen"                           | `beschwerde.html`          |
 
 ---
 
@@ -474,6 +494,7 @@ hidden until needed: `#complaint-errors` (`.notice--error` "Fehlerprotokoll"), t
 `<dialog id="confirm-dialog">`, the `#trash-stage`, and `#confirmation` (the Eingangsbestätigung).
 
 **Validation** (on submit, `novalidate` + custom checks in `complaint.js`):
+
 - All fields marked required in 6.2 must be non-empty; the five declarations must be checked;
   the security question must be "Beim Salzamt"; if "Bereits beschwert = Ja" the previous case
   number is required; signature must be all uppercase (auto-uppercase on input, so this only
@@ -488,15 +509,15 @@ hidden until needed: `#complaint-errors` (`.notice--error` "Fehlerprotokoll"), t
 CSS classes added by JS with `setTimeout`; timings are for normal motion. Under
 `prefers-reduced-motion` skip straight to the confirmation.
 
-| t (ms) | class on `#trash-stage` | What happens |
-|---|---|---|
-| 0 | `is-active` | overlay fades in; a paper sheet `.trash-paper` (150×200, salt white, typewriter header "SA-47/B", grey text lines) sits top-centre; the SVG trash can `.trash-can` sits bottom-centre |
-| 100 | `phase-crumple` | paper crumples over 1000 ms: scale 1→0.35, rotate 0→40deg with skew keyframes, border-radius →50 %, background darkens to parchment-2 |
-| 1100 | `phase-lid` | can lid (SVG group, hinge at the back) rotates open −70deg over 400 ms |
-| 1300 | `phase-drop` | paper ball drops into the can over 900 ms (translateY to the can opening with ease-in and a small sideways wobble). The ball is layered **between** `.trash-can-back` (rim) and `.trash-can-front` (body, lid) so it disappears inside |
-| 2200 | `phase-close` | lid closes (300 ms); can wobbles ±4deg (600 ms) |
-| 2900 | `phase-stamp` | `.stamp.stamp--big` "EINGESALZEN" slams in: scale 4→1, opacity 0→1, 350 ms, cubic-bezier(.2,1.4,.4,1) |
-| 4000 | — | overlay fades out (300 ms) and is hidden; form is hidden; `#confirmation` is shown and scrolled to |
+| t (ms) | class on `#trash-stage` | What happens                                                                                                                                                                                                                           |
+| ------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | `is-active`             | overlay fades in; a paper sheet `.trash-paper` (150×200, salt white, typewriter header "SA-47/B", grey text lines) sits top-centre; the SVG trash can `.trash-can` sits bottom-centre                                                  |
+| 100    | `phase-crumple`         | paper crumples over 1000 ms: scale 1→0.35, rotate 0→40deg with skew keyframes, border-radius →50 %, background darkens to parchment-2                                                                                                  |
+| 1100   | `phase-lid`             | can lid (SVG group, hinge at the back) rotates open −70deg over 400 ms                                                                                                                                                                 |
+| 1300   | `phase-drop`            | paper ball drops into the can over 900 ms (translateY to the can opening with ease-in and a small sideways wobble). The ball is layered **between** `.trash-can-back` (rim) and `.trash-can-front` (body, lid) so it disappears inside |
+| 2200   | `phase-close`           | lid closes (300 ms); can wobbles ±4deg (600 ms)                                                                                                                                                                                        |
+| 2900   | `phase-stamp`           | `.stamp.stamp--big` "EINGESALZEN" slams in: scale 4→1, opacity 0→1, 350 ms, cubic-bezier(.2,1.4,.4,1)                                                                                                                                  |
+| 4000   | —                       | overlay fades out (300 ms) and is hidden; form is hidden; `#confirmation` is shown and scrolled to                                                                                                                                     |
 
 Trash can SVG: hand-written inline SVG, ~200×240 viewBox, stroke `--ink` 3px, fill `--parchment-2`
 body with vertical ribs, a rim, a lid with knob as a separate `<g class="trash-lid">` with
@@ -619,6 +640,7 @@ deleting it again before committing). No console errors.
 ### 6.1 Landing page
 
 Hero:
+
 - Eyebrow: `K.k. Salzamt · Wünsche und Beschwerden aller Art`
 - H1: `Salzamt`
 - Subtitle: `Wünsche und Beschwerden aller Art`
@@ -627,11 +649,13 @@ Hero:
 - Buttons: `Beschwerde einreichen` · `Zum Amtsshop`
 
 Über das Amt (`h2`: `Über das Amt`):
+
 - `„Geh, beschwer di beim Salzamt!" – wer diesen Satz in Wien hört, weiß: Hier hilft niemand mehr. Das Salzamt ist die letzte Anlaufstelle für alle Anliegen, die sonst niemand haben will. Wir nehmen sie. Wir tun nichts damit. Aber wir nehmen sie.`
 - `Unser Haus vereint die Gründlichkeit einer k.k. Hofkanzlei mit der Erledigungsquote eines Fensterbretts. Jede Eingabe durchläuft den vollständigen Amtsweg in fünf Schritten und erreicht am Ende zuverlässig den Papierkorb – amtlich versiegelt, ordnungsgemäß abgelegt und mit vorzüglicher Hochachtung.`
 - Stamp: `Amtlich bestätigt`
 
 Der Amtsweg (`h2`: `Der Amtsweg`), steps with one-liners:
+
 1. `Eingelangt` — `Ihre Beschwerde ist da. Das ist schon einmal etwas.`
 2. `Geprüft` — `Ein Blick, ein Seufzer, ein Stempel.`
 3. `Nicht zuständig` — `Waren wir nie. Werden wir nie.`
@@ -639,12 +663,14 @@ Der Amtsweg (`h2`: `Der Amtsweg`), steps with one-liners:
 5. `Eingesalzen` — `Haltbar gemacht für die Ewigkeit.`
 
 Amtsstatistik (`h2`: `Amtsstatistik`):
+
 - `Eingelangte Beschwerden` — animated `Salzamt.complaintsTotal()`
 - `Davon erledigt` — `0`
 - `Durchschnittliche Bearbeitungsdauer` — `∞`
 - `Zufriedenheit der Parteien` — `k. A.`
 
 Parteienverkehr (`h2`: `Parteienverkehr`), table rows:
+
 - `Montag bis Freitag` — `09:00 – 09:15 Uhr`
 - `Samstag, Sonntag` — `geschlossen`
 - `Nachtdienst` — `geschlossen`
@@ -664,29 +690,32 @@ H1: `Beschwerde einreichen`
 Preamble (`.notice`): `Bitte füllen Sie das Formular vollständig, wahrheitsgemäß und in Blockschrift aus. Unvollständige Anträge werden nicht bearbeitet. Vollständige Anträge werden ebenfalls nicht bearbeitet, jedoch ordnungsgemäß.`
 
 **Abschnitt A – Beschwerdeführende Person**
-- `salutation` select *(required)*: `Bitte wählen`, `Herr`, `Frau`, `Hofrat`, `Hofrätin`, `Kommerzialrat`, `Kommerzialrätin`, `Magister`, `Magistra`, `Durchlaucht`, `Sonstiges (bitte nicht angeben)`
+
+- `salutation` select _(required)_: `Bitte wählen`, `Herr`, `Frau`, `Hofrat`, `Hofrätin`, `Kommerzialrat`, `Kommerzialrätin`, `Magister`, `Magistra`, `Durchlaucht`, `Sonstiges (bitte nicht angeben)`
 - `title-before` text: label `Titel (vorangestellt)`, hint `z. B. Dipl.-Ing., Dr., Ing., Mag.`
 - `title-after` text: label `Titel (nachgestellt)`, hint `z. B. MBA, BA, i.R.`
-- `given-name` text *(required)*: `Vorname`
-- `family-name` text *(required)*: `Familienname`
+- `given-name` text _(required)_: `Vorname`
+- `family-name` text _(required)_: `Familienname`
 - `birth-name` text: `Geburtsname (falls abweichend, sonst gleich)`
-- `birth-date` date *(required)*: `Geburtsdatum`, hint `Bitte das tatsächliche Datum, nicht das gefühlte.`
-- `citizenship` text *(required)*: `Staatsbürgerschaft`, default value `Österreich`
+- `birth-date` date _(required)_: `Geburtsdatum`, hint `Bitte das tatsächliche Datum, nicht das gefühlte.`
+- `citizenship` text _(required)_: `Staatsbürgerschaft`, default value `Österreich`
 
 **Abschnitt B – Zustelladresse**
-- `street` text *(required)*: `Straße / Gasse / Platz`
-- `street-number` text *(required)*: `Hausnummer`
+
+- `street` text _(required)_: `Straße / Gasse / Platz`
+- `street-number` text _(required)_: `Hausnummer`
 - `stair` text: `Stiege`, hint `Auch in Einfamilienhäusern auszufüllen.`
 - `floor` text: `Stock`
 - `door` text: `Tür`
-- `postal-code` text *(required)*: `Postleitzahl`, pattern 4 digits, hint `Vierstellig. Fünfstellige Postleitzahlen sind uns fremd.`
-- `city` text *(required)*: `Ort`
-- `crown-land` select *(required)*: `Bitte wählen`, `Wien`, `Niederösterreich`, `Oberösterreich`, `Salzburg`, `Steiermark`, `Kärnten`, `Tirol`, `Vorarlberg`, `Burgenland`, `Kronland Salzburg (historisch)`, `Ausland (nicht zuständig)`
+- `postal-code` text _(required)_: `Postleitzahl`, pattern 4 digits, hint `Vierstellig. Fünfstellige Postleitzahlen sind uns fremd.`
+- `city` text _(required)_: `Ort`
+- `crown-land` select _(required)_: `Bitte wählen`, `Wien`, `Niederösterreich`, `Oberösterreich`, `Salzburg`, `Steiermark`, `Kärnten`, `Tirol`, `Vorarlberg`, `Burgenland`, `Kronland Salzburg (historisch)`, `Ausland (nicht zuständig)`
 - `district` text: `Bezirk`
 
 **Abschnitt C – Gegenstand der Beschwerde**
-- `complaint-category` select *(required)*: `Bitte wählen`, `Lärm`, `Nachbarn`, `Wetter`, `Amtswege`, `Gebühren`, `Das Salzamt selbst`, `Sonstiges`
-- `complaint-subcategory` select *(required, options depend on category)*:
+
+- `complaint-category` select _(required)_: `Bitte wählen`, `Lärm`, `Nachbarn`, `Wetter`, `Amtswege`, `Gebühren`, `Das Salzamt selbst`, `Sonstiges`
+- `complaint-subcategory` select _(required, options depend on category)_:
   - Lärm: `Kirchenglocken`, `Nachbarn (siehe auch Nachbarn)`, `Innere Stimme`, `Stille`
   - Nachbarn: `Zu laut`, `Zu leise`, `Zu freundlich`, `Grüßen nicht`
   - Wetter: `Zu heiß`, `Zu kalt`, `Regen`, `Föhn`, `Wetter allgemein`
@@ -694,30 +723,33 @@ Preamble (`.notice`): `Bitte füllen Sie das Formular vollständig, wahrheitsgem
   - Gebühren: `Zu hoch`, `Unverständlich`, `Bereits bezahlt`, `Noch nicht bezahlt`
   - Das Salzamt selbst: `Unzuständigkeit`, `Untätigkeit`, `Zuvorkommende Ablehnung`, `Öffnungszeiten`
   - Sonstiges: `Sonstiges`, `Anderes`, `Weiteres`
-- `urgency` radio 1–5 *(required)*: label `Dringlichkeit`, hint `Stufe 1 bis 4 werden nicht bearbeitet. Stufe 5 ebenfalls nicht, jedoch schneller.`
-- `complaint-text` textarea *(required, maxlength 1848)*: `Sachverhalt`, hint `Höchstens 1848 Zeichen. Bitte sachlich, in ganzen Sätzen und ohne Hoffnung.` Counter `0 / 1848 Zeichen`.
-- `desired-outcome` radio *(required)*: `Gewünschte Erledigung`: `Keine`, `Ebenfalls keine`, `Sonstiges (wird nicht gelesen)`
+- `urgency` radio 1–5 _(required)_: label `Dringlichkeit`, hint `Stufe 1 bis 4 werden nicht bearbeitet. Stufe 5 ebenfalls nicht, jedoch schneller.`
+- `complaint-text` textarea _(required, maxlength 1848)_: `Sachverhalt`, hint `Höchstens 1848 Zeichen. Bitte sachlich, in ganzen Sätzen und ohne Hoffnung.` Counter `0 / 1848 Zeichen`.
+- `desired-outcome` radio _(required)_: `Gewünschte Erledigung`: `Keine`, `Ebenfalls keine`, `Sonstiges (wird nicht gelesen)`
 
 **Abschnitt D – Vorakten**
-- `previous-complaint` radio *(required)*: `Haben Sie sich bereits beschwert?` `Ja` / `Nein`
-- `previous-case-number` text *(required if Ja)*: `Aktenzeichen der Vorbeschwerde`, hint `Sie haben kein Aktenzeichen erhalten? Dann kreuzen Sie bitte „Nein" an und beantworten Sie die Frage erneut.`
+
+- `previous-complaint` radio _(required)_: `Haben Sie sich bereits beschwert?` `Ja` / `Nein`
+- `previous-case-number` text _(required if Ja)_: `Aktenzeichen der Vorbeschwerde`, hint `Sie haben kein Aktenzeichen erhalten? Dann kreuzen Sie bitte „Nein" an und beantworten Sie die Frage erneut.`
 - `previous-attempts` number 0–999: `Anzahl bisheriger erfolgloser Versuche`, default `0`
 
 **Abschnitt E – Beilagen** (checkboxes, none required)
+
 - `Meldezettel (Original)`, `Geburtsurkunde (beglaubigt)`, `Reisepasskopie (beglaubigt, beidseitig)`, `Nachweis der Beschwerdefähigkeit`, `Stempelmarke zu 10 Heller`
 - Note: `Beilagen sind im Original in dreifacher Ausfertigung persönlich vorzulegen. Elektronische Übermittlung ist nicht vorgesehen. Persönliche Vorlage ebenfalls nicht.`
 
 **Abschnitt F – Erklärungen und Unterschrift**
-- five checkboxes *(all required)*:
+
+- five checkboxes _(all required)_:
   1. `Ich bestätige, dass meine Angaben wahrheitsgemäß, vollständig und in Blockschrift erfolgt sind.`
   2. `Ich nehme zur Kenntnis, dass diese Beschwerde nicht bearbeitet wird.`
   3. `Ich verzichte auf sämtliche Rechtsmittel, auch auf jene, die ich nicht kenne.`
   4. `Ich habe die Datenschutzerklärung (§ 0) nicht gelesen und stimme ihr zu.`
   5. `Ich bin damit einverstanden, dass diese Beschwerde eingesalzen wird.`
-- `security-question` select *(required)*: `Sicherheitsfrage: Wo beschwert man sich in Wien?` options `Bitte wählen`, `Beim Magistrat`, `Beim Bürgermeister`, `Beim Salzamt`, `Beim Nachbarn`, `Gar nicht` — only `Beim Salzamt` passes; error text `Die Sicherheitsfrage wurde unrichtig beantwortet. Denken Sie an den Namen dieses Amtes.`
-- `place` text *(required)*: `Ort`
-- `date` date *(required)*: prefilled today; hint `Das Datum darf weder in der Vergangenheit noch in der Zukunft liegen.`
-- `signature` text *(required)*: `Unterschrift (in Blockschrift)`, auto-uppercased on input.
+- `security-question` select _(required)_: `Sicherheitsfrage: Wo beschwert man sich in Wien?` options `Bitte wählen`, `Beim Magistrat`, `Beim Bürgermeister`, `Beim Salzamt`, `Beim Nachbarn`, `Gar nicht` — only `Beim Salzamt` passes; error text `Die Sicherheitsfrage wurde unrichtig beantwortet. Denken Sie an den Namen dieses Amtes.`
+- `place` text _(required)_: `Ort`
+- `date` date _(required)_: prefilled today; hint `Das Datum darf weder in der Vergangenheit noch in der Zukunft liegen.`
+- `signature` text _(required)_: `Unterschrift (in Blockschrift)`, auto-uppercased on input.
 
 Buttons: `Beschwerde einbringen` · `Formular verwerfen`
 
@@ -737,19 +769,19 @@ buttons `Weitere Beschwerde einreichen` · `Zum Amtsshop`.
 Intro: `Amtliche Devotionalien für Parteien mit Geschmack und ohne Erwartung. Alle Preise in Euro, inklusive Nichtbearbeitung, exklusive Bearbeitungsgebühr für den kostenlosen Versand.`
 Terms (`.notice`): `Zahlung ausschließlich in bar auf dem Postweg. Lieferzeit rund 3 Jahre und 4 Monate. Umtausch ausgeschlossen. Rückgabe ausgeschlossen. Erhalt nicht garantiert.`
 
-| id | name | subtitle | description | price | media | tag |
-|---|---|---|---|---|---|---|
-| `postkarte-1` | `Postkarte Nr. 1 „Salzamt an der Salzach"` | `Ansichtskarte, A6, ungelaufen` | `Das Salzamt am Ufer der Salzach im Abendlicht, mit Festung, Kuppeln und dem Amtsgebäude, in dem nie ein Licht brennt. Rückseite unbeschrieben, damit Sie sich selbst beschweren können.` | € 184,80 | `assets/img/postkarte-1.jpg` | `Neu` |
-| `postkarte-2` | `Postkarte Nr. 2 „Doppeladler"` | `Ansichtskarte, A6, ungelaufen` | `Der Doppeladler mit Salzfass, Hammer und Schlägel, dazu unser Leitspruch: Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.` | € 184,80 | `assets/img/postkarte-2.jpg` | — |
-| `postkarten-set` | `Postkarten-Set (beide Motive)` | `2 Stück, einzeln kuvertiert, ohne Kuvert` | `Beide Motive in einer Mappe. Sparen Sie nicht: Das Set kostet fünfmal so viel wie die Einzelkarten, enthält dafür aber eine Mappe.` | € 1.848,00 | icon `postcard-set` | `Amtlich` |
-| `salzstreuer` | `Amtlicher Salzstreuer` | `Geeicht, Streuöffnungen amtlich versiegelt` | `Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.` | € 4.711,00 | icon `salt-shaker` | `Bestseller` |
-| `salzkorn` | `Salzamt-Salz, 1 Korn` | `Mit Echtheitszertifikat, Mindestabnahme 1 Korn` | `Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.` | € 999,99 | icon `salt-grain` | — |
-| `stempel` | `Stempel „NICHT ZUSTÄNDIG"` | `Holzgriff, Gummiplatte, ohne Stempelkissen` | `Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.` | € 1.848,00 | icon `stamp` | — |
-| `stempelmarke` | `Stempelmarke zu 10 Heller` | `Ungültig seit 1925, unverkäuflich, dennoch erhältlich` | `Die amtliche Stempelmarke des Salzamtes. Wird für Beilagen zu Formular SA-47/B benötigt und dort nicht anerkannt.` | € 10.000,00 | `assets/img/stamp-600.jpg` | `Sammlerstück` |
-| `wartenummer` | `Wartenummer` | `Gebraucht, bereits aufgerufen` | `Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.` | € 47,11 | icon `ticket` | — |
-| `aktenordner` | `Aktenordner „Erledigt"` | `Leer, vorgelocht, Rückenschild beschriftet` | `Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.` | € 380,00 | icon `folder` | — |
-| `poster` | `Poster „Seit 1848 folgenlos"` | `DIN A2, gerollt, ohne Rahmen` | `Unser Wappen für Amtsstube, Vorzimmer und Wartezimmer. Gedruckt auf Papier, das sich nach drei Jahren von selbst einrollt.` | € 2.300,00 | `assets/img/poster-480.jpg` | — |
-| `haeferl` | `Häferl „Kein Parteienverkehr"` | `Steingut, 0,3 l, spülmaschinenungeeignet` | `Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.` | € 612,00 | icon `mug` | — |
+| id               | name                                       | subtitle                                                | description                                                                                                                                                                               | price       | media                        | tag            |
+| ---------------- | ------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------- | -------------- |
+| `postkarte-1`    | `Postkarte Nr. 1 „Salzamt an der Salzach"` | `Ansichtskarte, A6, ungelaufen`                         | `Das Salzamt am Ufer der Salzach im Abendlicht, mit Festung, Kuppeln und dem Amtsgebäude, in dem nie ein Licht brennt. Rückseite unbeschrieben, damit Sie sich selbst beschweren können.` | € 184,80    | `assets/img/postkarte-1.jpg` | `Neu`          |
+| `postkarte-2`    | `Postkarte Nr. 2 „Doppeladler"`            | `Ansichtskarte, A6, ungelaufen`                         | `Der Doppeladler mit Salzfass, Hammer und Schlägel, dazu unser Leitspruch: Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.`                                                | € 184,80    | `assets/img/postkarte-2.jpg` | —              |
+| `postkarten-set` | `Postkarten-Set (beide Motive)`            | `2 Stück, einzeln kuvertiert, ohne Kuvert`              | `Beide Motive in einer Mappe. Sparen Sie nicht: Das Set kostet fünfmal so viel wie die Einzelkarten, enthält dafür aber eine Mappe.`                                                      | € 1.848,00  | icon `postcard-set`          | `Amtlich`      |
+| `salzstreuer`    | `Amtlicher Salzstreuer`                    | `Geeicht, Streuöffnungen amtlich versiegelt`            | `Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.`                          | € 4.711,00  | icon `salt-shaker`           | `Bestseller`   |
+| `salzkorn`       | `Salzamt-Salz, 1 Korn`                     | `Mit Echtheitszertifikat, Mindestabnahme 1 Korn`        | `Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.`                                        | € 999,99    | icon `salt-grain`            | —              |
+| `stempel`        | `Stempel „NICHT ZUSTÄNDIG"`                | `Holzgriff, Gummiplatte, ohne Stempelkissen`            | `Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.`                                                           | € 1.848,00  | icon `stamp`                 | —              |
+| `stempelmarke`   | `Stempelmarke zu 10 Heller`                | `Ungültig seit 1925, unverkäuflich, dennoch erhältlich` | `Die amtliche Stempelmarke des Salzamtes. Wird für Beilagen zu Formular SA-47/B benötigt und dort nicht anerkannt.`                                                                       | € 10.000,00 | `assets/img/stamp-600.jpg`   | `Sammlerstück` |
+| `wartenummer`    | `Wartenummer`                              | `Gebraucht, bereits aufgerufen`                         | `Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.`                                                                 | € 47,11     | icon `ticket`                | —              |
+| `aktenordner`    | `Aktenordner „Erledigt"`                   | `Leer, vorgelocht, Rückenschild beschriftet`            | `Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.`                                                            | € 380,00    | icon `folder`                | —              |
+| `poster`         | `Poster „Seit 1848 folgenlos"`             | `DIN A2, gerollt, ohne Rahmen`                          | `Unser Wappen für Amtsstube, Vorzimmer und Wartezimmer. Gedruckt auf Papier, das sich nach drei Jahren von selbst einrollt.`                                                              | € 2.300,00  | `assets/img/poster-480.jpg`  | —              |
+| `haeferl`        | `Häferl „Kein Parteienverkehr"`            | `Steingut, 0,3 l, spülmaschinenungeeignet`              | `Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.`                                                                    | € 612,00    | icon `mug`                   | —              |
 
 Button per product: `In den Warenkorb`. Toast: `Zum Warenkorb gelegt. Bearbeitung nicht vorgesehen.`
 
@@ -765,6 +797,7 @@ Bestellbestätigung title: `Bestellbestätigung`. Akte lines: `Bestellnummer: �
 `Gesamtbetrag: …`, `Voraussichtliche Zustellung: … (durch Amtsboten zu Fuß)`.
 
 Zahlungsanweisung (`h2`), ordered list:
+
 1. `Die Zahlung erfolgt ausschließlich in bar. Überweisungen, Erlagscheine, Schecks, Karten und Wertgegenstände werden ungeöffnet eingesalzen.`
 2. `Zulässig sind Banknoten zu 5 und 10 Euro, zu gleichen Teilen nach Stückzahl. Größere Scheine gelten als Beilage und werden nicht angerechnet.`
 3. `Mindestens ein Drittel des Betrags ist in Münzen zu entrichten, nach Prägejahr aufsteigend sortiert, in Papierrollen zu je 25 Stück, mit Bleistift beschriftet.`
@@ -777,6 +810,7 @@ Stückelungsvorschrift (`h2`): table columns `Stückelung`, `Anzahl`, `Betrag`; 
 (omit rows with count 0), sum row `Gesamt`. Below: `Gesamtgewicht der Münzen: ca. X kg in N Rollen. Bitte ausreichend frankieren.`
 
 Versandanschrift (`h2`), `address` block:
+
 ```
 K.k. Salzamt
 Abteilung für Bareingang und Ratlosigkeit
@@ -786,6 +820,7 @@ Salzstiege 1848
 1000 Wien
 Österreich
 ```
+
 (Postal code 1000 does not exist in Austria; keep it that way.)
 
 Hinweise zur Lieferzeit (`h2`): `Die Zustellung erfolgt voraussichtlich am {date} durch Amtsboten zu Fuß. Bei unsachgemäßer Kuvertfaltung verlängert sich die Lieferzeit um weitere drei Jahre. Lieferzeiten sind unverbindlich, Lieferungen ebenfalls.`
@@ -814,6 +849,7 @@ Intro: `Das Salzamt beschäftigt ausschließlich Bedienstete mit langjähriger E
    Photo `assets/img/team-katharina-gattermeier.jpg`, alt `Lichtbild Katharina Gattermeier`.
 
 Organigramm (nested list):
+
 ```
 Präsidium (Präsident i.R. Martin Gattermeier · Vizepräsident Alexander Fellner)
 ├─ Abteilung für laufende Nichtbearbeitung
@@ -825,6 +861,7 @@ Präsidium (Präsident i.R. Martin Gattermeier · Vizepräsident Alexander Felln
 └─ Abteilung für Bareingang und Ratlosigkeit
    └─ Referat Stückelung
 ```
+
 Closing note: `Stellenausschreibungen: keine. Bewerbungen werden eingesalzen.`
 Button: `Beschwerde einreichen`.
 
@@ -847,14 +884,62 @@ const out = path.join(root, "assets/img");
 fs.mkdirSync(out, { recursive: true });
 
 const jobs = [
-  { src: "salzamt_poster.png", name: "poster-900.jpg", w: 900, type: "jpeg", quality: 0.82 },
-  { src: "salzamt_poster.png", name: "poster-480.jpg", w: 480, type: "jpeg", quality: 0.82 },
-  { src: "Salzbug_Postkarte_A6.png", name: "postkarte-1.jpg", w: 900, type: "jpeg", quality: 0.84 },
-  { src: "Wappen-Postkarte-A6.png", name: "postkarte-2.jpg", w: 700, type: "jpeg", quality: 0.84 },
-  { src: "salzamt_circle.png", name: "badge-320.png", w: 320, type: "png", circle: true },
-  { src: "salzamt_circle.png", name: "badge-96.png", w: 96, type: "png", circle: true },
-  { src: "salzamt_stamp.png", name: "stamp-600.jpg", w: 600, type: "jpeg", quality: 0.85 },
-  { src: "salzamt.png", name: "oval-600.jpg", w: 600, type: "jpeg", quality: 0.82 },
+  {
+    src: "salzamt_poster.png",
+    name: "poster-900.jpg",
+    w: 900,
+    type: "jpeg",
+    quality: 0.82,
+  },
+  {
+    src: "salzamt_poster.png",
+    name: "poster-480.jpg",
+    w: 480,
+    type: "jpeg",
+    quality: 0.82,
+  },
+  {
+    src: "Salzbug_Postkarte_A6.png",
+    name: "postkarte-1.jpg",
+    w: 900,
+    type: "jpeg",
+    quality: 0.84,
+  },
+  {
+    src: "Wappen-Postkarte-A6.png",
+    name: "postkarte-2.jpg",
+    w: 700,
+    type: "jpeg",
+    quality: 0.84,
+  },
+  {
+    src: "salzamt_circle.png",
+    name: "badge-320.png",
+    w: 320,
+    type: "png",
+    circle: true,
+  },
+  {
+    src: "salzamt_circle.png",
+    name: "badge-96.png",
+    w: 96,
+    type: "png",
+    circle: true,
+  },
+  {
+    src: "salzamt_stamp.png",
+    name: "stamp-600.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.85,
+  },
+  {
+    src: "salzamt.png",
+    name: "oval-600.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.82,
+  },
 ];
 
 (async () => {
@@ -866,52 +951,107 @@ const jobs = [
     const res = await page.evaluate(
       async ({ src, w, type, quality, circle }) => {
         const img = new Image();
-        await new Promise((r) => { img.onload = r; img.src = src; });
-        let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+        await new Promise((r) => {
+          img.onload = r;
+          img.src = src;
+        });
+        let sx = 0,
+          sy = 0,
+          sw = img.naturalWidth,
+          sh = img.naturalHeight;
         if (circle) {
           // crop to the bounding box of non-white pixels, squared and centred
-          const c = document.createElement("canvas"); c.width = sw; c.height = sh;
-          const ctx = c.getContext("2d"); ctx.drawImage(img, 0, 0);
+          const c = document.createElement("canvas");
+          c.width = sw;
+          c.height = sh;
+          const ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0);
           const d = ctx.getImageData(0, 0, sw, sh).data;
-          let minX = sw, minY = sh, maxX = 0, maxY = 0;
-          for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
-            const i = (y * sw + x) * 4;
-            if (d[i] < 225 || d[i + 1] < 225 || d[i + 2] < 225) {
-              if (x < minX) minX = x; if (x > maxX) maxX = x;
-              if (y < minY) minY = y; if (y > maxY) maxY = y;
+          let minX = sw,
+            minY = sh,
+            maxX = 0,
+            maxY = 0;
+          for (let y = 0; y < sh; y++)
+            for (let x = 0; x < sw; x++) {
+              const i = (y * sw + x) * 4;
+              if (d[i] < 225 || d[i + 1] < 225 || d[i + 2] < 225) {
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+              }
             }
-          }
           const s = Math.max(maxX - minX + 1, maxY - minY + 1);
-          sx = Math.round((minX + maxX) / 2 - s / 2); sy = Math.round((minY + maxY) / 2 - s / 2);
-          sw = s; sh = s;
+          sx = Math.round((minX + maxX) / 2 - s / 2);
+          sy = Math.round((minY + maxY) / 2 - s / 2);
+          sw = s;
+          sh = s;
         }
         const h = circle ? w : Math.round((w * sh) / sw);
         // stepwise halving for smooth downscaling
-        let cur = document.createElement("canvas"); cur.width = sw; cur.height = sh;
+        let cur = document.createElement("canvas");
+        cur.width = sw;
+        cur.height = sh;
         cur.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-        let cw = sw, ch = sh;
+        let cw = sw,
+          ch = sh;
         while (cw / 2 > w) {
-          const nw = Math.round(cw / 2), nh = Math.round(ch / 2);
-          const n = document.createElement("canvas"); n.width = nw; n.height = nh;
-          const nctx = n.getContext("2d"); nctx.imageSmoothingQuality = "high";
+          const nw = Math.round(cw / 2),
+            nh = Math.round(ch / 2);
+          const n = document.createElement("canvas");
+          n.width = nw;
+          n.height = nh;
+          const nctx = n.getContext("2d");
+          nctx.imageSmoothingQuality = "high";
           nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, nw, nh);
-          cur = n; cw = nw; ch = nh;
+          cur = n;
+          cw = nw;
+          ch = nh;
         }
-        const o = document.createElement("canvas"); o.width = w; o.height = h;
-        const octx = o.getContext("2d"); octx.imageSmoothingQuality = "high";
-        if (circle) { octx.beginPath(); octx.arc(w / 2, h / 2, w / 2 - 0.5, 0, Math.PI * 2); octx.clip(); }
-        else { octx.fillStyle = "#fff"; octx.fillRect(0, 0, w, h); }
+        const o = document.createElement("canvas");
+        o.width = w;
+        o.height = h;
+        const octx = o.getContext("2d");
+        octx.imageSmoothingQuality = "high";
+        if (circle) {
+          octx.beginPath();
+          octx.arc(w / 2, h / 2, w / 2 - 0.5, 0, Math.PI * 2);
+          octx.clip();
+        } else {
+          octx.fillStyle = "#fff";
+          octx.fillRect(0, 0, w, h);
+        }
         octx.drawImage(cur, 0, 0, cw, ch, 0, 0, w, h);
-        return { data: o.toDataURL(type === "jpeg" ? "image/jpeg" : "image/png", quality), w, h };
+        return {
+          data: o.toDataURL(
+            type === "jpeg" ? "image/jpeg" : "image/png",
+            quality,
+          ),
+          w,
+          h,
+        };
       },
-      { src: "data:image/png;base64," + b64, w: job.w, type: job.type, quality: job.quality, circle: !!job.circle }
+      {
+        src: "data:image/png;base64," + b64,
+        w: job.w,
+        type: job.type,
+        quality: job.quality,
+        circle: !!job.circle,
+      },
     );
     const buf = Buffer.from(res.data.split(",")[1], "base64");
     fs.writeFileSync(path.join(out, job.name), buf);
-    console.log(job.name.padEnd(18), `${res.w}x${res.h}`.padEnd(10), `${Math.round(buf.length / 1024)} KB`);
+    console.log(
+      job.name.padEnd(18),
+      `${res.w}x${res.h}`.padEnd(10),
+      `${Math.round(buf.length / 1024)} KB`,
+    );
   }
   await browser.close();
-})().catch((e) => { console.error(e); process.exit(1); });
+})().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
 ```
 
 ## Appendix B — `tools/qa.js` skeleton (WP5)
@@ -921,7 +1061,13 @@ const jobs = [
 // Usage: npx http-server -p 8080 . &  then  NODE_PATH=/opt/node22/lib/node_modules node tools/qa.js
 const { chromium } = require("playwright");
 const BASE = process.env.BASE || "http://localhost:8080/";
-const PAGES = ["index.html", "beschwerde.html", "shop.html", "kassa.html", "team.html"];
+const PAGES = [
+  "index.html",
+  "beschwerde.html",
+  "shop.html",
+  "kassa.html",
+  "team.html",
+];
 const OWNER_IMAGES = /team-.*\.jpg$/; // allowed to 404 until the owner adds the staff photos
 
 (async () => {
@@ -933,10 +1079,22 @@ const OWNER_IMAGES = /team-.*\.jpg$/; // allowed to 404 until the owner adds the
       const page = await ctx.newPage();
       const errors = [];
       page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-      page.on("response", (r) => r.status() >= 400 && !OWNER_IMAGES.test(r.url()) && errors.push(`${r.status()} ${r.url()}`));
+      page.on(
+        "response",
+        (r) =>
+          r.status() >= 400 &&
+          !OWNER_IMAGES.test(r.url()) &&
+          errors.push(`${r.status()} ${r.url()}`),
+      );
       await page.goto(BASE + p, { waitUntil: "networkidle" });
-      await page.screenshot({ path: `qa-screenshots/${p.replace(".html", "")}-${width}.png`, fullPage: true });
-      if (errors.length) { failures++; console.log(p, width, errors); }
+      await page.screenshot({
+        path: `qa-screenshots/${p.replace(".html", "")}-${width}.png`,
+        fullPage: true,
+      });
+      if (errors.length) {
+        failures++;
+        console.log(p, width, errors);
+      }
       await page.close();
     }
     await ctx.close();
