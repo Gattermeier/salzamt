@@ -34,7 +34,10 @@ function ok(msg) {
 function watch(page, label) {
   const errors = [];
   page.on("console", (m) => {
-    if (m.type() === "error") errors.push(`${label}: console: ${m.text()}`);
+    if (m.type() !== "error") return;
+    const loc = m.location && m.location();
+    if (loc && loc.url && OWNER_IMAGES.test(loc.url)) return;
+    errors.push(`${label}: console: ${m.text()}`);
   });
   page.on("pageerror", (e) => errors.push(`${label}: pageerror: ${e}`));
   page.on("response", (r) => {

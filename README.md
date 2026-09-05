@@ -44,6 +44,17 @@ npm i -g playwright && npx playwright install chromium   # einmalig, falls nicht
 node tools/resize-images.js
 ```
 
+## Qualitätsprüfung
+
+`tools/qa.js` prüft alle Seiten mit Playwright (Screenshots bei 390 und 1280 Pixel Breite in
+`qa-screenshots/`, Konsolenfehler, fehlende Ressourcen, interne Verweise) und spielt die drei
+Abläufe durch: Beschwerde einbringen, Bestellung aufgeben, Bedienstete anzeigen.
+
+```bash
+npx http-server -p 8080 -s -c-1 .     # in einem zweiten Terminal
+node tools/qa.js
+```
+
 ### Fotos der Bediensteten nachreichen
 
 Die Fotos sind noch nicht im Repository. Sie werden unter genau diesen Dateinamen erwartet
