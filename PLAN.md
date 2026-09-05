@@ -392,12 +392,12 @@ Staff portraits: the owner supplied a photo and an ink sketch per person, kept a
 the variant selected by its `TEAM_VARIANT` constant (currently `sketch`, which matches the site's
 illustrated artwork) with a per-person face crop:
 
-| File                                        | Size    | Fallback                                                                   |
-| ------------------------------------------- | ------- | -------------------------------------------------------------------------- |
-| `assets/img/team-martin-gattermeier.jpg`    | 440×440 | `data-fallback="lichtbild"`                                                |
-| `assets/img/team-alexander-fellner.jpg`     | 440×440 | `data-fallback="lichtbild"`                                                |
-| `assets/img/team-katharina-gattermeier.jpg` | 440×440 | `data-fallback="lichtbild"`                                                |
-| `assets/img/team-irmgard-gattermeier.jpg`   | 440×440 | `data-fallback="lichtbild"` (source not supplied yet; the script skips it) |
+| File                                        | Size    | Fallback                                                    |
+| ------------------------------------------- | ------- | ----------------------------------------------------------- |
+| `assets/img/team-martin-gattermeier.jpg`    | 440×440 | `data-fallback="lichtbild"`                                 |
+| `assets/img/team-alexander-fellner.jpg`     | 440×440 | `data-fallback="lichtbild"`                                 |
+| `assets/img/team-katharina-gattermeier.jpg` | 440×440 | `data-fallback="lichtbild"`                                 |
+| `assets/img/team-irmgard-gattermeier.jpg`   | 440×440 | `data-fallback="lichtbild"` (sketch only, no photo variant) |
 
 The fallback contract stays in the markup so a missing file degrades to the "Lichtbild in
 Bearbeitung" circle without code changes.

@@ -65,6 +65,4 @@ Welche Variante aus `originals/` dafür gerendert wird, legt die Konstante `TEAM
 Änderung das Skript erneut ausführen. Die Bildausschnitte je Person stehen ebenfalls dort.
 
 Fehlt eine Porträtdatei, zeigt die Seite an ihrer Stelle einen Kreis mit dem Hinweis
-„Lichtbild in Bearbeitung“. Das gilt derzeit für Irmgard Gattermeier: Sobald
-`originals/team-irmgard-gattermeier-sketch.jpg` (oder `-photo.jpg`) vorliegt und das Skript
-erneut läuft, erscheint ihr Porträt.
+„Lichtbild in Bearbeitung“.

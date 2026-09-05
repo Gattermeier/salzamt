@@ -37,10 +37,9 @@ const STAFF = [
     },
   },
   {
-    // source not supplied yet; adjust the crop once it exists
     slug: "irmgard-gattermeier",
     crop: {
-      sketch: { cx: 0.5, cy: 0.5, size: 0.9 },
+      sketch: { cx: 0.5, cy: 0.47, size: 0.9 },
       photo: { cx: 0.5, cy: 0.5, size: 0.9 },
     },
   },
