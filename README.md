@@ -35,7 +35,7 @@ Danach `http://localhost:8080/` im Browser öffnen. Ein direktes Öffnen der HTM
 ## Bilder
 
 Die Originale liegen in `originals/`: die Grafiken (`salzamt_poster.png`, `salzamt_circle.png`,
-`salzamt.png`, `salzamt_stamp.png`, `Salzbug_Postkarte_A6.png`, `Wappen-Postkarte-A6.png`) und
+`salzamt.png`, `salzamt_stamp.png`, `Salzbug_Postkarte_A6.png`, `Wappen-Postkarte-A6.png`, `amtssiegel.jpg`) und
 je Bediensteten ein Foto und eine Tuschezeichnung (`team-<name>-photo.jpg`, `team-<name>-sketch.jpg`).
 Die Seiten verwenden ausschließlich die verkleinerten Ableitungen in `assets/img/`.
 

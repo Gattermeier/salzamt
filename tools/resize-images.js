@@ -12,6 +12,24 @@ fs.mkdirSync(out, { recursive: true });
 // Which portrait variant the pages show: "sketch" (ink drawing) or "photo".
 const TEAM_VARIANT = "sketch";
 
+// The Amtssiegel source (originals/amtssiegel.jpg, 976x976) is a crop of the
+// poster with text remnants above the crown. These source-pixel coordinates
+// paint them over with parchment sampled from a clean row of the same column
+// (the cross between the words belongs to the crown and is kept), then centre
+// the coat of arms inside a circle large enough for every wing tip.
+const SEAL = {
+  centre: [487, 500],
+  diameter: 1040,
+  background: "rgb(230, 214, 181)",
+  clearTop: 68,
+  sampleRowTop: 68,
+  words: [
+    [0, 60, 458, 104],
+    [522, 60, 976, 104],
+  ],
+  sampleRowWords: 106,
+};
+
 // Per-person square crops as fractions of the source image: centre (cx, cy)
 // and edge length (size, relative to the shorter side).
 const STAFF = [
@@ -75,18 +93,18 @@ const jobs = [
     quality: 0.84,
   },
   {
-    src: "salzamt_circle.png",
+    src: "amtssiegel.jpg",
     name: "badge-320.png",
     w: 320,
     type: "png",
-    circle: true,
+    seal: SEAL,
   },
   {
-    src: "salzamt_circle.png",
+    src: "amtssiegel.jpg",
     name: "badge-96.png",
     w: 96,
     type: "png",
-    circle: true,
+    seal: SEAL,
   },
   {
     src: "salzamt_stamp.png",
@@ -130,7 +148,7 @@ const jobs = [
       : "image/jpeg";
     const b64 = fs.readFileSync(file).toString("base64");
     const res = await page.evaluate(
-      async ({ dataUrl, w, type, quality, circle, crop }) => {
+      async ({ dataUrl, w, type, quality, seal, crop }) => {
         const img = new Image();
         await new Promise((resolve) => {
           img.onload = resolve;
@@ -138,38 +156,53 @@ const jobs = [
         });
         const nw = img.naturalWidth;
         const nh = img.naturalHeight;
+        let source = img;
         let sx = 0;
         let sy = 0;
         let sw = nw;
         let sh = nh;
-        if (circle) {
-          // crop to the bounding box of non-white pixels, squared and centred
-          const c = document.createElement("canvas");
-          c.width = nw;
-          c.height = nh;
-          const ctx = c.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-          const d = ctx.getImageData(0, 0, nw, nh).data;
-          let minX = nw;
-          let minY = nh;
-          let maxX = 0;
-          let maxY = 0;
-          for (let y = 0; y < nh; y++) {
-            for (let x = 0; x < nw; x++) {
-              const i = (y * nw + x) * 4;
-              if (d[i] < 225 || d[i + 1] < 225 || d[i + 2] < 225) {
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
+        if (seal) {
+          // paint over the text remnants column by column with parchment from
+          // a clean row, then centre the eagle on a larger square
+          const fixed = document.createElement("canvas");
+          fixed.width = nw;
+          fixed.height = nh;
+          const fctx = fixed.getContext("2d");
+          fctx.drawImage(img, 0, 0);
+          const image = fctx.getImageData(0, 0, nw, nh);
+          const d = image.data;
+          const paint = (x0, y0, x1, y1, fromRow) => {
+            for (let x = x0; x < x1; x++) {
+              const j = (fromRow * nw + x) * 4;
+              for (let y = y0; y < y1; y++) {
+                const i = (y * nw + x) * 4;
+                d[i] = d[j];
+                d[i + 1] = d[j + 1];
+                d[i + 2] = d[j + 2];
+                d[i + 3] = 255;
               }
             }
-          }
-          const s = Math.max(maxX - minX + 1, maxY - minY + 1);
-          sx = Math.round((minX + maxX) / 2 - s / 2);
-          sy = Math.round((minY + maxY) / 2 - s / 2);
-          sw = s;
-          sh = s;
+          };
+          paint(0, 0, nw, seal.clearTop, seal.sampleRowTop);
+          seal.words.forEach(([x0, y0, x1, y1]) =>
+            paint(x0, y0, x1, y1, seal.sampleRowWords),
+          );
+          fctx.putImageData(image, 0, 0);
+          const D = seal.diameter;
+          const composed = document.createElement("canvas");
+          composed.width = D;
+          composed.height = D;
+          const cctx = composed.getContext("2d");
+          cctx.fillStyle = seal.background;
+          cctx.fillRect(0, 0, D, D);
+          cctx.drawImage(
+            fixed,
+            Math.round(D / 2 - seal.centre[0]),
+            Math.round(D / 2 - seal.centre[1]),
+          );
+          source = composed;
+          sw = D;
+          sh = D;
         } else if (crop) {
           // square crop around a focus point
           const s = Math.round(Math.min(nw, nh) * crop.size);
@@ -178,12 +211,12 @@ const jobs = [
           sw = s;
           sh = s;
         }
-        const h = circle || crop ? w : Math.round((w * sh) / sw);
+        const h = seal || crop ? w : Math.round((w * sh) / sw);
         // stepwise halving for smooth downscaling
         let cur = document.createElement("canvas");
         cur.width = sw;
         cur.height = sh;
-        cur.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+        cur.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
         let cw = sw;
         let ch = sh;
         while (cw / 2 > w) {
@@ -204,7 +237,7 @@ const jobs = [
         o.height = h;
         const octx = o.getContext("2d");
         octx.imageSmoothingQuality = "high";
-        if (circle) {
+        if (seal) {
           octx.beginPath();
           octx.arc(w / 2, h / 2, w / 2 - 0.5, 0, Math.PI * 2);
           octx.clip();
@@ -227,7 +260,7 @@ const jobs = [
         w: job.w,
         type: job.type,
         quality: job.quality,
-        circle: !!job.circle,
+        seal: job.seal || null,
         crop: job.crop || null,
       },
     );
