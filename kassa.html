@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="de-AT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kassa · Salzamt</title>
+    <meta
+      name="description"
+      content="Kassa des Salzamtes: Warenkorb und Bestellung. Zahlung ausschließlich in bar auf dem Postweg, Zustellung in 3 Jahren und 4 Monaten durch Amtsboten zu Fuß."
+    />
+    <meta property="og:title" content="Kassa · Salzamt" />
+    <meta
+      property="og:description"
+      content="Kassa des Salzamtes: Warenkorb und Bestellung. Zahlung ausschließlich in bar auf dem Postweg, Zustellung in 3 Jahren und 4 Monaten durch Amtsboten zu Fuß."
+    />
+    <meta
+      property="og:image"
+      content="https://salzamt.vip/assets/img/oval-600.jpg"
+    />
+    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/shop.css" />
+  </head>
+  <body class="page-checkout">
+    <a class="skip-link" href="#main">Zum Inhalt</a>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/img/badge-96.png"
+            width="48"
+            height="48"
+            alt="Amtssiegel des Salzamtes"
+          />
+          <span class="brand__text">
+            <span class="brand__wordmark">Salzamt</span>
+            <span class="brand__sub">Wünsche und Beschwerden aller Art</span>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          Menü
+        </button>
+        <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="beschwerde.html">Beschwerde einreichen</a></li>
+            <li><a href="shop.html">Amtsshop</a></li>
+            <li><a href="team.html">Bedienstete</a></li>
+            <li>
+              <a href="kassa.html" class="cart-link"
+                >Warenkorb <span class="cart-badge" data-cart-count>0</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section checkout-head">
+        <div class="container">
+          <p class="eyebrow">Abteilung für Bareingang und Ratlosigkeit</p>
+          <h1>Kassa</h1>
+          <p class="lead">
+            Bitte überprüfen Sie Ihre Bestellung sorgfältig. Wir tun es nicht.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--tight checkout-body">
+        <div class="container">
+          <noscript>
+            <div class="notice">
+              <p>
+                Ohne JavaScript bleibt die Kassa geschlossen. Mit JavaScript
+                ebenfalls, jedoch sichtbar.
+              </p>
+            </div>
+          </noscript>
+
+          <!-- Empty cart -->
+          <div id="checkout-empty" class="checkout-empty" hidden>
+            <div class="notice">
+              <p>Ihr Warenkorb ist leer. Das ist der Idealzustand.</p>
+            </div>
+            <p><a class="btn" href="shop.html">Zum Amtsshop</a></p>
+          </div>
+
+          <!-- Cart -->
+          <div id="checkout-cart" hidden>
+            <h2 id="checkout-title" class="checkout-title" tabindex="-1">
+              Warenkorb
+            </h2>
+            <table class="table checkout-table">
+              <thead>
+                <tr>
+                  <th scope="col">Artikel</th>
+                  <th scope="col" class="num">Einzelpreis</th>
+                  <th scope="col" class="checkout-table__qty-head">Menge</th>
+                  <th scope="col" class="num">Summe</th>
+                  <th scope="col">
+                    <span class="visually-hidden">Entfernen</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="checkout-lines"></tbody>
+            </table>
+
+            <div class="checkout-summary">
+              <div class="checkout-summary__notice">
+                <div class="notice">
+                  <p class="notice__title">Anschrift</p>
+                  <p>
+                    Wir benötigen keine Anschrift. Legen Sie Ihre Adresse
+                    handschriftlich dem Kuvert bei; wir entnehmen sie bei
+                    Bareingang. Eine Bestätigung per E-Mail ist nicht
+                    vorgesehen, da das Amt über keine E-Mail verfügt.
+                  </p>
+                </div>
+              </div>
+              <div class="checkout-summary__totals" aria-live="polite">
+                <table class="table checkout-totals">
+                  <caption class="visually-hidden">
+                    Gesamtbetrag
+                  </caption>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Zwischensumme</th>
+                      <td class="num" data-total-part="subtotal"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Versandkosten</th>
+                      <td class="num" data-total-part="shipping"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">
+                        Bearbeitungsgebühr für den kostenlosen Versand
+                      </th>
+                      <td class="num" data-total-part="fee"></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th scope="row">Gesamtbetrag</th>
+                      <td class="num" data-total></td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <button
+                  class="btn btn--lg btn--block checkout-order-btn"
+                  type="button"
+                  data-place-order
+                >
+                  Bestellung verbindlich aufgeben
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order confirmation (filled by checkout.js) -->
+          <section
+            id="order-confirmation"
+            class="checkout-confirmation"
+            aria-labelledby="order-title"
+            hidden
+          >
+            <div class="frame checkout-confirmation__frame">
+              <span
+                class="stamp checkout-confirmation__stamp"
+                aria-hidden="true"
+                >Zahlung ausständig</span
+              >
+              <p class="eyebrow">
+                K.k. Salzamt · Abteilung für Bareingang und Ratlosigkeit
+              </p>
+              <h2
+                id="order-title"
+                class="checkout-confirmation__title"
+                tabindex="-1"
+              >
+                Bestellbestätigung
+              </h2>
+              <div class="akte">
+                <dl>
+                  <dt>Bestellnummer:</dt>
+                  <dd data-order-number></dd>
+                  <dt>Bestelldatum:</dt>
+                  <dd data-order-date></dd>
+                  <dt>Gesamtbetrag:</dt>
+                  <dd data-order-total></dd>
+                  <dt>Voraussichtliche Zustellung:</dt>
+                  <dd>
+                    <span data-delivery-date></span> (durch Amtsboten zu Fuß)
+                  </dd>
+                </dl>
+              </div>
+              <table class="table checkout-order">
+                <caption class="checkout-order__caption">
+                  Bestellte Artikel
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Artikel</th>
+                    <th scope="col" class="num">Menge</th>
+                    <th scope="col" class="num">Summe</th>
+                  </tr>
+                </thead>
+                <tbody id="order-items"></tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2">Gesamtbetrag</td>
+                    <td class="num" data-order-total></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <section class="checkout-confirmation__section">
+              <h2>Zahlungsanweisung</h2>
+              <ol class="checkout-instructions">
+                <li>
+                  Die Zahlung erfolgt ausschließlich in bar. Überweisungen,
+                  Erlagscheine, Schecks, Karten und Wertgegenstände werden
+                  ungeöffnet eingesalzen.
+                </li>
+                <li>
+                  Zulässig sind Banknoten zu 5 und 10 Euro, zu gleichen Teilen
+                  nach Stückzahl. Größere Scheine gelten als Beilage und werden
+                  nicht angerechnet.
+                </li>
+                <li>
+                  Mindestens ein Drittel des Betrags ist in Münzen zu
+                  entrichten, nach Prägejahr aufsteigend sortiert, in
+                  Papierrollen zu je 25 Stück, mit Bleistift beschriftet.
+                </li>
+                <li>
+                  Der Betrag ist auf den Cent genau beizulegen. Überzahlungen
+                  werden nicht rückerstattet, Unterzahlungen nicht bemerkt.
+                </li>
+                <li>
+                  Das Kuvert: gefüttert, Format C4, doppelt verklebt, mit Wachs
+                  versiegelt. Die Bestellnummer ist in Blockschrift auf allen
+                  vier Seiten anzubringen, die Rückseite zusätzlich mit dem Wort
+                  „Salz“.
+                </li>
+                <li>
+                  Die Sendung ist ausreichend zu frankieren. Als ausreichend
+                  gilt, was das Amt im Einzelfall als ausreichend befindet.
+                </li>
+              </ol>
+            </section>
+
+            <section class="checkout-confirmation__section">
+              <h2>Stückelungsvorschrift</h2>
+              <table class="table checkout-denominations">
+                <thead>
+                  <tr>
+                    <th scope="col">Stückelung</th>
+                    <th scope="col" class="num">Anzahl</th>
+                    <th scope="col" class="num">Betrag</th>
+                  </tr>
+                </thead>
+                <tbody id="order-denominations"></tbody>
+                <tfoot>
+                  <tr>
+                    <td>Gesamt</td>
+                    <td class="num" data-denomination-pieces></td>
+                    <td class="num" data-order-total></td>
+                  </tr>
+                </tfoot>
+              </table>
+              <p class="checkout-weight">
+                Gesamtgewicht der Münzen: ca.
+                <span data-order-weight></span> kg in
+                <span data-order-rolls></span>
+                <span data-order-rolls-word>Rollen</span>. Bitte ausreichend
+                frankieren.
+              </p>
+            </section>
+
+            <section class="checkout-confirmation__section">
+              <h2>Versandanschrift</h2>
+              <address class="akte checkout-address">
+                K.k. Salzamt<br />
+                Abteilung für Bareingang und Ratlosigkeit<br />
+                Referat Stückelung<br />
+                Hintere Amtsstube, Gang 3, Tür 3 (nicht 3a)<br />
+                Salzstiege 1848<br />
+                1000 Wien<br />
+                Österreich
+              </address>
+            </section>
+
+            <section class="checkout-confirmation__section">
+              <h2>Hinweise zur Lieferzeit</h2>
+              <p>
+                Die Zustellung erfolgt voraussichtlich am
+                <span data-delivery-date></span> durch Amtsboten zu Fuß. Bei
+                unsachgemäßer Kuvertfaltung verlängert sich die Lieferzeit um
+                weitere drei Jahre. Lieferzeiten sind unverbindlich, Lieferungen
+                ebenfalls.
+              </p>
+            </section>
+
+            <p class="checkout-confirmation__actions no-print">
+              <button class="btn" type="button" id="print-order">
+                Bestellung ausdrucken
+              </button>
+              <a class="btn btn--ghost" href="shop.html">Weiter einkaufen</a>
+            </p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="site-footer__motto">
+          Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.
+        </p>
+        <p class="site-footer__line">
+          K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848
+          folgenlos.
+        </p>
+        <p class="site-footer__small">
+          Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite
+          speichert nichts, sendet nichts und hilft niemandem. Ihre Eingaben
+          verbleiben ausschließlich in Ihrem Browser.
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+    <script src="assets/shop.js"></script>
+    <script src="assets/checkout.js"></script>
+  </body>
+</html>

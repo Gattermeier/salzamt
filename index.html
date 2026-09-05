@@ -1,28 +1,472 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Das Salzamt</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-    }
-    img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-    }
-  </style>
-</head>
-<body>
-  <img src="salzamt_poster.png" alt="">
-</body>
+<!doctype html>
+<html lang="de-AT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Salzamt · Wünsche und Beschwerden aller Art</title>
+    <meta
+      name="description"
+      content="Das Salzamt nimmt Wünsche und Beschwerden aller Art entgegen, prüft sie, befindet sich für nicht zuständig, legt sie ab und salzt sie ein. Seit 1848 folgenlos."
+    />
+    <meta
+      property="og:title"
+      content="Salzamt · Wünsche und Beschwerden aller Art"
+    />
+    <meta
+      property="og:description"
+      content="Das Salzamt nimmt Wünsche und Beschwerden aller Art entgegen, prüft sie, befindet sich für nicht zuständig, legt sie ab und salzt sie ein. Seit 1848 folgenlos."
+    />
+    <meta
+      property="og:image"
+      content="https://salzamt.vip/assets/img/oval-600.jpg"
+    />
+    <link rel="icon" href="assets/img/badge-96.png" type="image/png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/home.css" />
+  </head>
+  <body class="page-home">
+    <a class="skip-link" href="#main">Zum Inhalt</a>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/img/badge-96.png"
+            width="48"
+            height="48"
+            alt="Amtssiegel des Salzamtes"
+          />
+          <span class="brand__text">
+            <span class="brand__wordmark">Salzamt</span>
+            <span class="brand__sub">Wünsche und Beschwerden aller Art</span>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+        >
+          Menü
+        </button>
+        <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="beschwerde.html">Beschwerde einreichen</a></li>
+            <li><a href="shop.html">Amtsshop</a></li>
+            <li><a href="team.html">Bedienstete</a></li>
+            <li>
+              <a href="kassa.html" class="cart-link"
+                >Warenkorb <span class="cart-badge" data-cart-count>0</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Hero -->
+      <section class="section home-hero" aria-labelledby="hero-title">
+        <div class="container home-hero__inner">
+          <div class="home-hero__figure">
+            <div class="frame home-hero__frame">
+              <img
+                src="assets/img/poster-900.jpg"
+                width="900"
+                height="1269"
+                fetchpriority="high"
+                decoding="async"
+                alt="Plakat des Salzamtes: Doppeladler mit Salzfass-Wappen, darunter der Leitspruch „Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.“ und die Losung „Seit 1848 folgenlos.“"
+              />
+            </div>
+          </div>
+          <div class="home-hero__text">
+            <p class="eyebrow">
+              K.k. Salzamt · Wünsche und Beschwerden aller Art
+            </p>
+            <h1 id="hero-title">Salzamt</h1>
+            <p class="home-hero__subtitle">Wünsche und Beschwerden aller Art</p>
+            <p class="lead home-hero__lead">Seit 1848 folgenlos.</p>
+            <p class="home-hero__intro">
+              Sie haben ein Anliegen? Ausgezeichnet. Wir haben ein Formular. Das
+              Salzamt nimmt Beschwerden aller Art entgegen, prüft sie mit der
+              gebotenen Sorgfalt, befindet sich für nicht zuständig, legt sie ab
+              und salzt sie ein. Verlässlich. Seit 1848.
+            </p>
+            <div class="home-hero__actions">
+              <a class="btn btn--lg" href="beschwerde.html"
+                >Beschwerde einreichen</a
+              >
+              <a class="btn btn--ghost" href="shop.html">Zum Amtsshop</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Über das Amt -->
+      <section class="section home-about" aria-labelledby="about-title">
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="about-title" class="text-center">Über das Amt</h2>
+          <div class="frame home-about__frame">
+            <p>
+              „Geh, beschwer di beim Salzamt!“ – wer diesen Satz hört,
+              weiß: Hier hilft niemand mehr. Das Salzamt ist die letzte
+              Anlaufstelle für alle Anliegen, die sonst niemand haben will. Wir
+              nehmen sie. Wir tun nichts damit. Aber wir nehmen sie.
+            </p>
+            <p>
+              Unser Haus vereint die Gründlichkeit einer k.k. Hofkanzlei mit der
+              Erledigungsquote eines Fensterbretts. Jede Eingabe durchläuft den
+              vollständigen Amtsweg in fünf Schritten und erreicht am Ende
+              zuverlässig den Papierkorb – amtlich versiegelt, ordnungsgemäß
+              abgelegt und mit vorzüglicher Hochachtung.
+            </p>
+            <span class="stamp home-about__stamp">Amtlich bestätigt</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Der Amtsweg -->
+      <section
+        class="section home-process home-band"
+        aria-labelledby="process-title"
+      >
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="process-title" class="text-center">Der Amtsweg</h2>
+          <ol class="amtsweg home-process__steps">
+            <li>
+              <strong>Eingelangt</strong>
+              <span>Ihre Beschwerde ist da. Das ist schon einmal etwas.</span>
+            </li>
+            <li>
+              <strong>Geprüft</strong>
+              <span>Ein Blick, ein Seufzer, ein Stempel.</span>
+            </li>
+            <li>
+              <strong>Nicht zuständig</strong>
+              <span>Waren wir nie. Werden wir nie.</span>
+            </li>
+            <li>
+              <strong>Abgelegt</strong>
+              <span>Ordnung muss sein. Hilfe nicht.</span>
+            </li>
+            <li>
+              <strong>Eingesalzen</strong>
+              <span>Haltbar gemacht für die Ewigkeit.</span>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Amtsstatistik -->
+      <section class="section home-stats" aria-labelledby="stats-title">
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="stats-title" class="text-center">Amtsstatistik</h2>
+          <dl class="grid grid--4 home-stats__grid">
+            <div class="card home-stat">
+              <dt class="home-stat__label">Eingelangte Beschwerden</dt>
+              <dd class="home-stat__value" data-stat="complaints">3.412.876</dd>
+            </div>
+            <div class="card home-stat">
+              <dt class="home-stat__label">Davon erledigt</dt>
+              <dd class="home-stat__value">0</dd>
+            </div>
+            <div class="card home-stat">
+              <dt class="home-stat__label">
+                Durchschnittliche Bearbeitungsdauer
+              </dt>
+              <dd class="home-stat__value">∞</dd>
+            </div>
+            <div class="card home-stat">
+              <dt class="home-stat__label">Zufriedenheit der Parteien</dt>
+              <dd class="home-stat__value">k. A.</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- Parteienverkehr -->
+      <section
+        class="section home-hours home-band"
+        aria-labelledby="hours-title"
+      >
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="hours-title" class="text-center">Parteienverkehr</h2>
+          <div class="home-hours__box">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">Montag bis Freitag</th>
+                  <td class="num">09:00 – 09:15 Uhr</td>
+                </tr>
+                <tr>
+                  <th scope="row">Samstag, Sonntag</th>
+                  <td class="num">geschlossen</td>
+                </tr>
+                <tr>
+                  <th scope="row">Nachtdienst</th>
+                  <td class="num">geschlossen</td>
+                </tr>
+                <tr>
+                  <th scope="row">Telefonische Erreichbarkeit</th>
+                  <td class="num">Die Durchwahl ist nicht vergeben.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="home-hours__note">
+              Ausgenommen bei Regen, Sonne, Nebel, Föhn, an Feiertagen,
+              Fenstertagen, im Fasching, in den Ferien, während Dienstreisen
+              sowie während der Amtsstunden. Voranmeldung schriftlich
+              erforderlich. Voranmeldungen werden nicht bearbeitet.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Aus dem Amtsshop -->
+      <section class="section home-shop-teaser" aria-labelledby="shop-title">
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="shop-title" class="text-center">Aus dem Amtsshop</h2>
+          <div class="grid grid--3 home-products">
+            <article class="card home-product">
+              <div class="card__media home-product__media">
+                <svg
+                  class="home-icon"
+                  viewBox="0 0 100 100"
+                  width="100"
+                  height="100"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <!-- cap with sprinkle holes -->
+                  <path d="M33 34 C33 18 40 12 50 12 C60 12 67 18 67 34 Z" />
+                  <circle
+                    cx="44"
+                    cy="24"
+                    r="1.8"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="50"
+                    cy="20"
+                    r="1.8"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="56"
+                    cy="24"
+                    r="1.8"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="50"
+                    cy="28"
+                    r="1.8"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <!-- official seal band across the cap -->
+                  <path d="M29 30 L71 20" stroke-width="4" />
+                  <!-- collar -->
+                  <path d="M31 34 H69 V41 H31 Z" />
+                  <!-- body -->
+                  <path
+                    d="M33 41 L29 82 C29 87 33 90 38 90 H62 C67 90 71 87 71 82 L67 41 Z"
+                  />
+                  <!-- calibration label -->
+                  <path d="M37 56 H63 M37 72 H63" />
+                  <circle cx="50" cy="64" r="6" />
+                </svg>
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Amtlicher Salzstreuer</h3>
+                <p class="home-product__subtitle">
+                  Geeicht, Streuöffnungen amtlich versiegelt
+                </p>
+                <div class="home-product__foot">
+                  <p class="home-product__price">€ 4.711,00</p>
+                  <a class="home-product__link" href="shop.html"
+                    >Zum Amtsshop</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article class="card home-product">
+              <div class="card__media home-product__media">
+                <img
+                  src="assets/img/postkarte-1.jpg"
+                  width="900"
+                  height="639"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Postkarte Nr. 1: das Salzamt am Ufer der Salzach im Abendlicht, mit der Festung Hohensalzburg im Hintergrund"
+                />
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">
+                  Postkarte Nr. 1 „Salzamt an der Salzach“
+                </h3>
+                <p class="home-product__subtitle">
+                  Ansichtskarte, A6, ungelaufen
+                </p>
+                <div class="home-product__foot">
+                  <p class="home-product__price">€ 184,80</p>
+                  <a class="home-product__link" href="shop.html"
+                    >Zum Amtsshop</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article class="card home-product">
+              <div class="card__media home-product__media">
+                <svg
+                  class="home-icon"
+                  viewBox="0 0 100 100"
+                  width="100"
+                  height="100"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <!-- knob -->
+                  <path d="M43 12 C43 5 57 5 57 12 V26 H43 Z" />
+                  <!-- handle waist -->
+                  <path d="M40 26 H60 L65 42 H35 Z" />
+                  <!-- base plate -->
+                  <rect x="24" y="42" width="52" height="11" rx="1.5" />
+                  <!-- rubber plate -->
+                  <path
+                    d="M27 53 H73 V58 H27 Z"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <!-- impression on the paper, slightly askew -->
+                  <g transform="rotate(-5 50 79)">
+                    <rect x="21" y="68" width="58" height="22" rx="2" />
+                    <path d="M29 76 H71 M29 83 H60" />
+                  </g>
+                </svg>
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Stempel „NICHT ZUSTÄNDIG“</h3>
+                <p class="home-product__subtitle">
+                  Holzgriff, Gummiplatte, ohne Stempelkissen
+                </p>
+                <div class="home-product__foot">
+                  <p class="home-product__price">€ 1.848,00</p>
+                  <a class="home-product__link" href="shop.html"
+                    >Zum Amtsshop</a
+                  >
+                </div>
+              </div>
+            </article>
+          </div>
+          <p class="text-center home-section-cta">
+            <a class="btn" href="shop.html">Zum Amtsshop</a>
+          </p>
+        </div>
+      </section>
+
+      <!-- Die Bediensteten -->
+      <section
+        class="section home-team-teaser home-band"
+        aria-labelledby="team-title"
+      >
+        <div class="container">
+          <div class="ornament-rule" aria-hidden="true">❦</div>
+          <h2 id="team-title" class="text-center">Die Bediensteten</h2>
+          <ul class="grid grid--4 home-team-teaser__list">
+            <li class="home-member">
+              <img
+                class="circle-photo"
+                src="assets/img/team-martin-gattermeier.jpg"
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                alt="Lichtbild Martin Gattermeier"
+                data-fallback="lichtbild"
+              />
+              <h3 class="home-member__name">Martin Gattermeier</h3>
+              <p class="home-member__title">Präsident i.R.</p>
+            </li>
+            <li class="home-member">
+              <img
+                class="circle-photo"
+                src="assets/img/team-alexander-fellner.jpg"
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                alt="Lichtbild Alexander Fellner"
+                data-fallback="lichtbild"
+              />
+              <h3 class="home-member__name">Alexander Fellner</h3>
+              <p class="home-member__title">Vizepräsident</p>
+            </li>
+            <li class="home-member">
+              <img
+                class="circle-photo"
+                src="assets/img/team-katharina-gattermeier.jpg"
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                alt="Lichtbild Katharina Gattermeier"
+                data-fallback="lichtbild"
+              />
+              <h3 class="home-member__name">Katharina Gattermeier</h3>
+              <p class="home-member__title">Abteilungsleiterin</p>
+            </li>
+            <li class="home-member">
+              <img
+                class="circle-photo"
+                src="assets/img/team-irmgard-gattermeier.jpg"
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                alt="Lichtbild Irmgard Gattermeier"
+                data-fallback="lichtbild"
+              />
+              <h3 class="home-member__name">Irmgard Gattermeier</h3>
+              <p class="home-member__title">Kanzleidirektorin</p>
+            </li>
+          </ul>
+          <p class="text-center home-section-cta">
+            <a class="btn btn--ghost" href="team.html">Alle Bediensteten</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="site-footer__motto">
+          Mit vorzüglicher Hochachtung, und ohne jede Absicht zu helfen.
+        </p>
+        <p class="site-footer__line">
+          K.k. Salzamt · Wünsche und Beschwerden aller Art · Seit 1848
+          folgenlos.
+        </p>
+        <p class="site-footer__small">
+          Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite
+          speichert nichts, sendet nichts und hilft niemandem. Ihre Eingaben
+          verbleiben ausschließlich in Ihrem Browser.
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+    <script src="assets/home.js"></script>
+  </body>
 </html>

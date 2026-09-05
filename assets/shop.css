@@ -1,0 +1,598 @@
+/* ==========================================================================
+   Salzamt – Amtsshop (shop.html) and Kassa (kassa.html)
+   Page styles on top of assets/style.css. Prefixes: .shop-*, .checkout-*
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Shop: head, terms, grid
+   -------------------------------------------------------------------------- */
+
+.shop-head {
+  padding-bottom: 1rem;
+}
+
+.shop-head__intro {
+  max-width: 46rem;
+}
+
+.shop-terms {
+  max-width: 46rem;
+  margin-top: 1.5rem;
+}
+
+.shop-catalogue {
+  padding-top: 1rem;
+}
+
+.shop-grid {
+  gap: 2rem 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Product card
+   -------------------------------------------------------------------------- */
+
+.shop-product {
+  height: 100%;
+}
+
+.shop-product__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-color: var(--parchment-2);
+  background-image: var(--noise);
+}
+
+/* Whole product visible, never cropped; the drop shadow hugs the artwork */
+.shop-product .card__media img {
+  position: absolute;
+  inset: 1.5rem;
+  width: calc(100% - 3rem);
+  height: calc(100% - 3rem);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(40, 25, 5, 0.35));
+}
+
+.shop-product__icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--burgundy);
+}
+
+.shop-product__icon svg {
+  width: 62%;
+  height: 62%;
+  transform: rotate(-2deg);
+}
+
+.shop-product__tag {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  z-index: 1;
+  box-shadow: 0 0 0 1px var(--gold-2);
+}
+
+.shop-product__sku {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.7rem;
+  z-index: 1;
+  font-family: var(--font-type);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  opacity: 0.8;
+}
+
+.shop-product .card__title {
+  font-size: 1.55rem;
+  line-height: 1.15;
+}
+
+.shop-product__subtitle {
+  font-family: var(--font-type);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.shop-product__description {
+  font-size: 1rem;
+  color: var(--ink-2);
+}
+
+.shop-price {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--gold);
+  font-family: var(--font-type);
+  font-size: 1.35rem;
+  color: var(--burgundy);
+  letter-spacing: 0.04em;
+}
+
+.shop-product__actions {
+  margin: 0.25rem 0 0;
+}
+
+.shop-cta {
+  padding-top: 1rem;
+}
+
+/* The shared .toast is centred with left: 50% and no width, so on narrow
+   screens it shrink-wraps to half the viewport; let it take its natural width. */
+.page-shop .toast,
+.page-checkout .toast {
+  width: max-content;
+}
+
+.shop-cta__count {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Kassa: head, empty state, cart table
+   -------------------------------------------------------------------------- */
+
+.checkout-head {
+  padding-bottom: 1rem;
+}
+
+.checkout-head .lead {
+  max-width: 46rem;
+  margin-bottom: 0;
+}
+
+.checkout-body {
+  padding-top: 1rem;
+}
+
+.checkout-empty .notice {
+  margin-top: 0;
+}
+
+.checkout-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
+.checkout-table {
+  box-shadow: var(--shadow);
+}
+
+.checkout-table .checkout-table__qty-head {
+  text-align: center;
+}
+
+.checkout-table td {
+  vertical-align: middle;
+}
+
+.checkout-line__name {
+  display: block;
+  font-weight: 600;
+}
+
+.checkout-line__subtitle {
+  display: block;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.checkout-line__unit {
+  display: none;
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.checkout-line__sum {
+  font-weight: 600;
+}
+
+.checkout-qty {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--ink-2);
+  background: #fffdf7;
+}
+
+.checkout-qty__btn {
+  width: 2.4rem;
+  font-family: var(--font-type);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--burgundy);
+  background: var(--parchment);
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.checkout-qty__btn:hover {
+  background: var(--parchment-2);
+}
+
+.checkout-qty__btn:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Beats the generic input rule in style.css (id selector on purpose) */
+#checkout-cart input.checkout-qty__input {
+  width: 3.6rem;
+  text-align: center;
+  font-family: var(--font-type);
+  font-size: 1rem;
+  border: 0;
+  border-inline: 1px solid var(--ink-2);
+  padding: 0.45rem 0.25rem;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+#checkout-cart input.checkout-qty__input:focus {
+  outline-offset: -2px;
+}
+
+.checkout-qty__input::-webkit-outer-spin-button,
+.checkout-qty__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.checkout-remove {
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom-color: var(--burgundy);
+  padding: 0.3rem 0.2rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checkout-remove:hover {
+  color: var(--burgundy-2);
+  background: rgba(110, 26, 26, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Kassa: summary (notice + totals + order button)
+   -------------------------------------------------------------------------- */
+
+.checkout-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: 1.5rem 2.5rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+
+.checkout-summary__notice .notice {
+  margin: 0;
+}
+
+.checkout-totals {
+  margin: 0 0 1.25rem;
+}
+
+.checkout-totals th[scope="row"] {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 400;
+}
+
+.checkout-totals tfoot th[scope="row"],
+.checkout-totals tfoot td {
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-top: 2px solid var(--gold);
+  border-bottom: 0;
+  background: var(--parchment);
+}
+
+.checkout-totals tfoot td {
+  color: var(--burgundy);
+  font-size: 1.2rem;
+}
+
+.checkout-order-btn {
+  margin-inline: 5px;
+}
+
+/* --------------------------------------------------------------------------
+   Bestellbestätigung
+   -------------------------------------------------------------------------- */
+
+.checkout-confirmation {
+  max-width: 52rem;
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
+.checkout-confirmation__frame {
+  margin-block: 1rem 2.5rem;
+}
+
+.checkout-confirmation__stamp {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+}
+
+.checkout-confirmation__title {
+  margin-bottom: 1rem;
+  padding-right: 11rem;
+}
+
+.checkout-confirmation .akte dd[data-order-number] {
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.checkout-order {
+  margin: 1.5rem 0 0;
+}
+
+.checkout-order__caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 0 0 0.5rem;
+}
+
+.checkout-order__sub td {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  padding-block: 0.35rem;
+  border-bottom: 0;
+}
+
+.checkout-order__sub td:first-child,
+.checkout-denominations tfoot td:first-child,
+.checkout-order tfoot td:first-child {
+  text-align: right;
+}
+
+.checkout-order__sub:first-of-type td,
+.checkout-order tbody tr:has(+ .checkout-order__sub) td {
+  padding-top: 0.75rem;
+}
+
+.checkout-order tfoot td,
+.checkout-denominations tfoot td {
+  background: var(--parchment);
+}
+
+.checkout-order tfoot td.num {
+  color: var(--burgundy);
+  font-size: 1.1rem;
+}
+
+.checkout-confirmation__section {
+  margin-bottom: 2.25rem;
+}
+
+.checkout-confirmation__section h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--gold);
+}
+
+.checkout-instructions {
+  padding-left: 1.6rem;
+  margin: 0;
+}
+
+.checkout-instructions li {
+  margin-bottom: 0.6rem;
+  padding-left: 0.3rem;
+}
+
+.checkout-instructions li::marker {
+  font-family: var(--font-type);
+  color: var(--burgundy);
+}
+
+.checkout-denominations {
+  max-width: 34rem;
+}
+
+.checkout-weight {
+  font-family: var(--font-type);
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+
+.checkout-address {
+  display: inline-block;
+  min-width: min(100%, 24rem);
+  line-height: 1.8;
+}
+
+.checkout-confirmation__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .checkout-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .checkout-summary__totals {
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Cart lines stack: name on top, then quantity | sum | remove */
+  .checkout-table thead {
+    display: none;
+  }
+
+  .checkout-table,
+  .checkout-table tbody {
+    display: block;
+  }
+
+  .checkout-table tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "item item item"
+      "qty sum remove";
+    align-items: center;
+    gap: 0.6rem 0.75rem;
+    padding: 0.8rem 0.8rem;
+    border-bottom: 1px solid var(--gold-2);
+  }
+
+  .checkout-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .checkout-table td {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .checkout-line__item {
+    grid-area: item;
+  }
+
+  .checkout-table .checkout-line__price {
+    display: none;
+  }
+
+  .checkout-line__unit {
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .checkout-line__qty {
+    grid-area: qty;
+  }
+
+  .checkout-line__sum {
+    grid-area: sum;
+    text-align: right;
+    font-family: var(--font-type);
+  }
+
+  .checkout-line__remove {
+    grid-area: remove;
+  }
+}
+
+@media (max-width: 640px) {
+  .shop-grid {
+    gap: 1.75rem;
+  }
+
+  .shop-product .card__media img {
+    inset: 1rem;
+    width: calc(100% - 2rem);
+    height: calc(100% - 2rem);
+  }
+
+  .checkout-confirmation__stamp {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+  }
+
+  .checkout-confirmation__title {
+    padding-right: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Print: only the Bestellbestätigung
+   -------------------------------------------------------------------------- */
+
+@media print {
+  @page {
+    margin: 15mm;
+  }
+
+  .checkout-ordered .checkout-head,
+  .checkout-ordered #checkout-cart,
+  .checkout-ordered #checkout-empty {
+    display: none !important;
+  }
+
+  .checkout-confirmation {
+    max-width: none;
+  }
+
+  .checkout-confirmation__frame {
+    margin: 0 0 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .checkout-confirmation__frame::before,
+  .checkout-confirmation__frame::after {
+    color: #000;
+  }
+
+  .checkout-confirmation__stamp {
+    color: #000;
+    border-color: #000;
+    opacity: 1;
+  }
+
+  .checkout-confirmation .eyebrow,
+  .checkout-confirmation .table th,
+  .checkout-confirmation .akte dt,
+  .checkout-confirmation .akte dd[data-order-number],
+  .checkout-confirmation .checkout-order tfoot td.num,
+  .checkout-confirmation .checkout-instructions li::marker,
+  .checkout-confirmation .checkout-weight {
+    color: #000;
+  }
+
+  .checkout-confirmation .table,
+  .checkout-confirmation .akte,
+  .checkout-confirmation .table th,
+  .checkout-confirmation .table tfoot td {
+    background: #fff;
+  }
+
+  .checkout-confirmation__section {
+    break-inside: avoid;
+  }
+
+  .checkout-confirmation__section h2 {
+    break-after: avoid;
+  }
+}
