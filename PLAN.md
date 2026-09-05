@@ -839,7 +839,7 @@ Buttons: `Bestellung ausdrucken` · `Weiter einkaufen`.
 Intro: `Das Salzamt beschäftigt ausschließlich Bedienstete mit langjähriger Erfahrung in der Nichtbearbeitung. Sprechstunden finden nach schriftlicher Voranmeldung statt. Voranmeldungen werden nicht bearbeitet.`
 
 1. **Martin Gattermeier** — function `Präsident i.R.` — line `Präsident des Salzamtes in Ruhestand` —
-   facts: Zimmer `ehemals 1, nunmehr keines`; Durchwahl `nicht vergeben`; Sprechstunde
+   facts: Zimmer `ehemals 1, nunmehr keins`; Durchwahl `nicht vergeben`; Sprechstunde
    `entfällt seit Amtsantritt`; Zuständigkeit `ehemals keine, nunmehr auch keine` — motto
    `„Ich habe in 40 Dienstjahren nichts erledigt, aber alles abgelegt."`
    Photo `assets/img/team-martin-gattermeier.jpg`, alt `Lichtbild Martin Gattermeier`.
