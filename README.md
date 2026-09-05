@@ -15,6 +15,7 @@ Bestellungen werden nur im Browser „bearbeitet“, nichts wird gespeichert ode
 | `shop.html`       | Amtsshop                                                  |
 | `kassa.html`      | Warenkorb, Kassa und Zahlungsanweisung (Bargeld per Post) |
 | `team.html`       | Die Bediensteten                                          |
+| `mail/`, `email/` | Weiterleitung nach https://mail.salzamt.vip/              |
 
 `PLAN.md` beschreibt Aufbau, Design-System und Arbeitspakete im Detail.
 
