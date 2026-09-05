@@ -1,12 +1,42 @@
-// Generates web-sized derivatives of the original artworks in assets/img/.
+// Generates the web-sized images in assets/img/ from the sources in originals/.
 // Usage: NODE_PATH=/opt/node22/lib/node_modules node tools/resize-images.js
 const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
+const src = path.join(root, "originals");
 const out = path.join(root, "assets/img");
 fs.mkdirSync(out, { recursive: true });
+
+// Which portrait variant the pages show: "sketch" (ink drawing) or "photo".
+const TEAM_VARIANT = "sketch";
+
+// Per-person square crops as fractions of the source image: centre (cx, cy)
+// and edge length (size, relative to the shorter side).
+const STAFF = [
+  {
+    slug: "martin-gattermeier",
+    crop: {
+      sketch: { cx: 0.4, cy: 0.52, size: 0.7 },
+      photo: { cx: 0.42, cy: 0.55, size: 0.7 },
+    },
+  },
+  {
+    slug: "alexander-fellner",
+    crop: {
+      sketch: { cx: 0.52, cy: 0.48, size: 0.82 },
+      photo: { cx: 0.53, cy: 0.5, size: 0.8 },
+    },
+  },
+  {
+    slug: "katharina-gattermeier",
+    crop: {
+      sketch: { cx: 0.5, cy: 0.5, size: 0.95 },
+      photo: { cx: 0.5, cy: 0.55, size: 0.9 },
+    },
+  },
+];
 
 const jobs = [
   {
@@ -65,6 +95,14 @@ const jobs = [
     type: "jpeg",
     quality: 0.82,
   },
+  ...STAFF.map((person) => ({
+    src: `team-${person.slug}-${TEAM_VARIANT}.jpg`,
+    name: `team-${person.slug}.jpg`,
+    w: 440,
+    type: "jpeg",
+    quality: 0.85,
+    crop: person.crop[TEAM_VARIANT],
+  })),
 ];
 
 (async () => {
@@ -72,33 +110,39 @@ const jobs = [
   const page = await browser.newPage();
   await page.setContent("<html><body></body></html>");
   for (const job of jobs) {
-    const b64 = fs.readFileSync(path.join(root, job.src)).toString("base64");
+    const file = path.join(src, job.src);
+    const mime = job.src.toLowerCase().endsWith(".png")
+      ? "image/png"
+      : "image/jpeg";
+    const b64 = fs.readFileSync(file).toString("base64");
     const res = await page.evaluate(
-      async ({ src, w, type, quality, circle }) => {
+      async ({ dataUrl, w, type, quality, circle, crop }) => {
         const img = new Image();
-        await new Promise((r) => {
-          img.onload = r;
-          img.src = src;
+        await new Promise((resolve) => {
+          img.onload = resolve;
+          img.src = dataUrl;
         });
-        let sx = 0,
-          sy = 0,
-          sw = img.naturalWidth,
-          sh = img.naturalHeight;
+        const nw = img.naturalWidth;
+        const nh = img.naturalHeight;
+        let sx = 0;
+        let sy = 0;
+        let sw = nw;
+        let sh = nh;
         if (circle) {
           // crop to the bounding box of non-white pixels, squared and centred
           const c = document.createElement("canvas");
-          c.width = sw;
-          c.height = sh;
+          c.width = nw;
+          c.height = nh;
           const ctx = c.getContext("2d");
           ctx.drawImage(img, 0, 0);
-          const d = ctx.getImageData(0, 0, sw, sh).data;
-          let minX = sw,
-            minY = sh,
-            maxX = 0,
-            maxY = 0;
-          for (let y = 0; y < sh; y++)
-            for (let x = 0; x < sw; x++) {
-              const i = (y * sw + x) * 4;
+          const d = ctx.getImageData(0, 0, nw, nh).data;
+          let minX = nw;
+          let minY = nh;
+          let maxX = 0;
+          let maxY = 0;
+          for (let y = 0; y < nh; y++) {
+            for (let x = 0; x < nw; x++) {
+              const i = (y * nw + x) * 4;
               if (d[i] < 225 || d[i + 1] < 225 || d[i + 2] < 225) {
                 if (x < minX) minX = x;
                 if (x > maxX) maxX = x;
@@ -106,32 +150,40 @@ const jobs = [
                 if (y > maxY) maxY = y;
               }
             }
+          }
           const s = Math.max(maxX - minX + 1, maxY - minY + 1);
           sx = Math.round((minX + maxX) / 2 - s / 2);
           sy = Math.round((minY + maxY) / 2 - s / 2);
           sw = s;
           sh = s;
+        } else if (crop) {
+          // square crop around a focus point
+          const s = Math.round(Math.min(nw, nh) * crop.size);
+          sx = Math.min(Math.max(Math.round(nw * crop.cx - s / 2), 0), nw - s);
+          sy = Math.min(Math.max(Math.round(nh * crop.cy - s / 2), 0), nh - s);
+          sw = s;
+          sh = s;
         }
-        const h = circle ? w : Math.round((w * sh) / sw);
+        const h = circle || crop ? w : Math.round((w * sh) / sw);
         // stepwise halving for smooth downscaling
         let cur = document.createElement("canvas");
         cur.width = sw;
         cur.height = sh;
         cur.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-        let cw = sw,
-          ch = sh;
+        let cw = sw;
+        let ch = sh;
         while (cw / 2 > w) {
-          const nw = Math.round(cw / 2),
-            nh = Math.round(ch / 2);
-          const n = document.createElement("canvas");
-          n.width = nw;
-          n.height = nh;
-          const nctx = n.getContext("2d");
+          const halfW = Math.round(cw / 2);
+          const halfH = Math.round(ch / 2);
+          const next = document.createElement("canvas");
+          next.width = halfW;
+          next.height = halfH;
+          const nctx = next.getContext("2d");
           nctx.imageSmoothingQuality = "high";
-          nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, nw, nh);
-          cur = n;
-          cw = nw;
-          ch = nh;
+          nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, halfW, halfH);
+          cur = next;
+          cw = halfW;
+          ch = halfH;
         }
         const o = document.createElement("canvas");
         o.width = w;
@@ -157,17 +209,18 @@ const jobs = [
         };
       },
       {
-        src: "data:image/png;base64," + b64,
+        dataUrl: `data:${mime};base64,${b64}`,
         w: job.w,
         type: job.type,
         quality: job.quality,
         circle: !!job.circle,
+        crop: job.crop || null,
       },
     );
     const buf = Buffer.from(res.data.split(",")[1], "base64");
     fs.writeFileSync(path.join(out, job.name), buf);
     console.log(
-      job.name.padEnd(18),
+      job.name.padEnd(30),
       `${res.w}x${res.h}`.padEnd(10),
       `${Math.round(buf.length / 1024)} KB`,
     );
