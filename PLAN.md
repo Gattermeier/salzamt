@@ -99,6 +99,9 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
   it once WP0 is pushed (`claude/salzamt-wp1-home`, `…-wp2-complaint`, `…-wp3-shop`, `…-wp4-team`)
   and are merged back into the base branch (fast-forward or merge commit; no rebasing of shared
   history). WP5 runs on the base branch after all merges.
+- When one orchestrator runs WP1–WP4 as parallel subagents in a single checkout (how the first
+  build was done), the per-WP branches are skipped: the subagents only write their own files and
+  never run git, and the orchestrator commits each WP separately on the base branch.
 - Each WP touches **only the files it owns** (listed per WP). Never edit `assets/style.css` or
   `assets/site.js` outside WP0; if you need something shared that is missing, add it to your own
   page CSS/JS with your page prefix and note it in your final report.
