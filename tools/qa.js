@@ -336,9 +336,9 @@ async function teamFlow(browser) {
     ".team-member .circle-photo",
     (els) => els.length,
   );
-  if (circles !== 3)
-    fail(`team: expected 3 circle photos or placeholders, found ${circles}`);
-  else ok("team: three portrait circles rendered");
+  if (circles !== 4)
+    fail(`team: expected 4 circle photos or placeholders, found ${circles}`);
+  else ok("team: four portrait circles rendered");
   errors.forEach(fail);
   await ctx.close();
 }

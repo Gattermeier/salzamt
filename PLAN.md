@@ -392,11 +392,12 @@ Staff portraits: the owner supplied a photo and an ink sketch per person, kept a
 the variant selected by its `TEAM_VARIANT` constant (currently `sketch`, which matches the site's
 illustrated artwork) with a per-person face crop:
 
-| File                                        | Size    | Fallback                    |
-| ------------------------------------------- | ------- | --------------------------- |
-| `assets/img/team-martin-gattermeier.jpg`    | 440×440 | `data-fallback="lichtbild"` |
-| `assets/img/team-alexander-fellner.jpg`     | 440×440 | `data-fallback="lichtbild"` |
-| `assets/img/team-katharina-gattermeier.jpg` | 440×440 | `data-fallback="lichtbild"` |
+| File                                        | Size    | Fallback                                                                   |
+| ------------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| `assets/img/team-martin-gattermeier.jpg`    | 440×440 | `data-fallback="lichtbild"`                                                |
+| `assets/img/team-alexander-fellner.jpg`     | 440×440 | `data-fallback="lichtbild"`                                                |
+| `assets/img/team-katharina-gattermeier.jpg` | 440×440 | `data-fallback="lichtbild"`                                                |
+| `assets/img/team-irmgard-gattermeier.jpg`   | 440×440 | `data-fallback="lichtbild"` (source not supplied yet; the script skips it) |
 
 The fallback contract stays in the markup so a missing file degrades to the "Lichtbild in
 Bearbeitung" circle without code changes.
@@ -853,6 +854,12 @@ Intro: `Das Salzamt beschäftigt ausschließlich Bedienstete mit langjähriger E
    `nach Vereinbarung, Vereinbarungen ausgeschlossen`; Zuständigkeit `Kenntnisnahme` — motto
    `„Zur Kenntnis genommen. Ohne weitere Veranlassung."`
    Photo `assets/img/team-katharina-gattermeier.jpg`, alt `Lichtbild Katharina Gattermeier`.
+4. **Irmgard Gattermeier** — function `Kanzleidirektorin` — lines
+   `Abteilung für Bedenkzeit und Nachfrist` / `Referat für unbefristete Vertagung` — facts: Zimmer
+   `Vorzimmer, dahinter keines`; Durchwahl `nicht vergeben`; Sprechstunde `täglich, jedoch vertagt`;
+   Zuständigkeit `Vertagung, auf Wunsch auch mehrfach` — motto
+   `„Kommen Sie morgen wieder. Morgen sind wir auch nicht zuständig.“`
+   Photo `assets/img/team-irmgard-gattermeier.jpg`, alt `Lichtbild Irmgard Gattermeier`.
 
 Organigramm (nested list):
 
@@ -864,6 +871,8 @@ Präsidium (Präsident i.R. Martin Gattermeier · Vizepräsident Alexander Felln
 ├─ Amt für aussichtslose Anliegen (Katharina Gattermeier)
 │  ├─ Referat für Kenntnisnahme ohne weitere Veranlassung
 │  └─ Referat für Ablage und Einsalzung
+├─ Abteilung für Bedenkzeit und Nachfrist (Irmgard Gattermeier)
+│  └─ Referat für unbefristete Vertagung
 └─ Abteilung für Bareingang und Ratlosigkeit
    └─ Referat Stückelung
 ```
