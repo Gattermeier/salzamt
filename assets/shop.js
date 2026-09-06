@@ -84,7 +84,7 @@
     ),
   };
 
-  /* ---------- catalogue (prices in integer cents) ---------- */
+  /* ---------- catalogue (prices in integer Groschen; 100 Groschen = 1 Schilling) ---------- */
 
   var PRODUCTS = [
     {
@@ -295,7 +295,7 @@
       esc(product.description) +
       "</p>" +
       '<p class="shop-price">' +
-      esc(S.formatEuro(product.price)) +
+      esc(S.formatMoney(product.price)) +
       "</p>" +
       '<p class="shop-product__actions">' +
       '<button class="btn btn--block" type="button" data-add="' +

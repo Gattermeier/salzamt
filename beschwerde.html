@@ -203,12 +203,17 @@
                     <input
                       id="birth-date"
                       name="birth-date"
-                      type="date"
+                      type="text"
+                      class="complaint-date"
+                      inputmode="numeric"
+                      placeholder="TT.MM.JJJJ"
+                      maxlength="10"
                       required
                       aria-describedby="birth-date-hint"
                     />
                     <span class="field__hint" id="birth-date-hint"
-                      >Bitte das tatsächliche Datum, nicht das gefühlte.</span
+                      >Tag, Monat, Jahr (TT.MM.JJJJ). Bitte das tatsächliche
+                      Datum, nicht das gefühlte.</span
                     >
                   </div>
                   <div
@@ -747,13 +752,17 @@
                     <input
                       id="date"
                       name="date"
-                      type="date"
+                      type="text"
+                      class="complaint-date"
+                      inputmode="numeric"
+                      placeholder="TT.MM.JJJJ"
+                      maxlength="10"
                       required
                       aria-describedby="date-hint"
                     />
                     <span class="field__hint" id="date-hint"
-                      >Das Datum darf weder in der Vergangenheit noch in der
-                      Zukunft liegen.</span
+                      >Tag, Monat, Jahr (TT.MM.JJJJ). Das Datum darf weder in
+                      der Vergangenheit noch in der Zukunft liegen.</span
                     >
                   </div>
                   <div class="field field--required complaint-col-4">

@@ -61,8 +61,11 @@
     {
       name: "birth-date",
       check: function (v) {
-        return isIsoDate(v) && v <= todayIso();
+        var d = parseShortDate(v);
+        return !!d && d.getTime() <= startOfToday().getTime();
       },
+      message:
+        "Das Geburtsdatum ist in der Form TT.MM.JJJJ anzugeben und darf nicht in der Zukunft liegen.",
     },
     { name: "citizenship" },
     { name: "street" },
@@ -116,8 +119,10 @@
     {
       name: "date",
       check: function (v) {
-        return v === todayIso();
+        return isToday(v);
       },
+      message:
+        "Das Datum ist in der Form TT.MM.JJJJ anzugeben und hat dem heutigen Tag zu entsprechen.",
     },
     {
       name: "signature",
@@ -170,15 +175,42 @@
     return (n < 10 ? "0" : "") + n;
   }
 
-  function todayIso() {
+  /* Dates are typed the Austrian way: day, month, year (TT.MM.JJJJ). */
+  function startOfToday() {
     var d = new Date();
-    return (
-      d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate())
-    );
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
 
-  function isIsoDate(v) {
-    return /^\d{4}-\d{2}-\d{2}$/.test(v);
+  function todayShort() {
+    return Salzamt.formatDateShort(new Date());
+  }
+
+  function parseShortDate(v) {
+    var m = /^\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\s*$/.exec(v || "");
+    if (!m) return null;
+    var day = parseInt(m[1], 10);
+    var month = parseInt(m[2], 10);
+    var year = parseInt(m[3], 10);
+    var d = new Date(year, month - 1, day);
+    if (
+      d.getFullYear() !== year ||
+      d.getMonth() !== month - 1 ||
+      d.getDate() !== day
+    ) {
+      return null;
+    }
+    return d;
+  }
+
+  function isToday(v) {
+    var d = parseShortDate(v);
+    return !!d && d.getTime() === startOfToday().getTime();
+  }
+
+  /* "5.9.2026" becomes "05.09.2026" once the field is left */
+  function normalizeDateInput(event) {
+    var d = parseShortDate(event.target.value);
+    if (d) event.target.value = Salzamt.formatDateShort(d);
   }
 
   function scrollBehavior() {
@@ -289,12 +321,9 @@
   }
 
   function setDateDefaults() {
-    var today = todayIso();
+    var today = todayShort();
     el.date.setAttribute("value", today);
     el.date.value = today;
-    el.date.min = today;
-    el.date.max = today;
-    el.birthDate.max = today;
   }
 
   function updatePreviousCaseRequirement() {
@@ -579,6 +608,8 @@
     el.category.addEventListener("input", populateSubcategories);
     el.text.addEventListener("input", updateCounter);
     el.signature.addEventListener("input", uppercaseSignature);
+    el.birthDate.addEventListener("change", normalizeDateInput);
+    el.date.addEventListener("change", normalizeDateInput);
     form.addEventListener("input", onFieldChange);
     form.addEventListener("change", onFieldChange);
     form.addEventListener("submit", onSubmit);

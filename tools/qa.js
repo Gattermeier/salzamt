@@ -135,7 +135,14 @@ async function complaintFlow(browser) {
     form
       .querySelectorAll("input[type='text'], input[type='number']")
       .forEach((el) => {
-        if (!el.value) el.value = el.id === "postal-code" ? "1010" : "MUSTER";
+        if (!el.value) {
+          el.value =
+            el.id === "postal-code"
+              ? "1010"
+              : el.id === "birth-date"
+                ? "18.08.1984"
+                : "MUSTER";
+        }
       });
     form.querySelectorAll("input[type='date']").forEach((el) => {
       if (!el.value) el.value = "1984-08-18";
@@ -290,7 +297,7 @@ async function shopFlow(browser) {
   const sum = sums.reduce((a, b) => a + b, 0);
   if (!sums.length || sum !== grand)
     fail(`kassa: denominations sum to ${sum}, total is ${grand}`);
-  else ok(`kassa: Stückelung sums to ${grand} cents`);
+  else ok(`kassa: Stückelung sums to ${grand} Groschen`);
   const delivery = await page
     .$eval("[data-delivery-date]", (el) => el.textContent.trim())
     .catch(() => "");

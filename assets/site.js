@@ -54,8 +54,10 @@
     return (value < 0 ? "−" : "") + out;
   }
 
-  function formatEuro(cents) {
-    return "€ " + formatNumber(Math.round(Number(cents) || 0) / 100, 2);
+  /* Amounts are kept in Groschen (1 Schilling = 100 Groschen) and shown as
+     "S 1.848,00". formatEuro remains as an alias for older callers. */
+  function formatMoney(groschen) {
+    return "S " + formatNumber(Math.round(Number(groschen) || 0) / 100, 2);
   }
 
   function pad2(n) {
@@ -323,7 +325,8 @@
     STORAGE_KEYS: STORAGE_KEYS,
     MONTHS: MONTHS,
     formatNumber: formatNumber,
-    formatEuro: formatEuro,
+    formatMoney: formatMoney,
+    formatEuro: formatMoney,
     formatDateLong: formatDateLong,
     formatDateShort: formatDateShort,
     formatTime: formatTime,

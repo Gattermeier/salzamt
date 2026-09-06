@@ -260,6 +260,18 @@
   letter-spacing: 0;
 }
 
+/* dates are typed as TT.MM.JJJJ in typewriter figures */
+.complaint-date {
+  font-family: var(--font-type) !important;
+  letter-spacing: 0.08em;
+}
+
+.complaint-date::placeholder {
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  opacity: 0.6;
+}
+
 .complaint-note {
   font-size: 0.95rem;
   font-style: italic;
