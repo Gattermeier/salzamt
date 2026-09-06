@@ -59,7 +59,8 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
 - CSS: custom properties, Grid, Flexbox, `clamp()`. Mobile-first. One committed look (parchment),
   **no dark mode**. Respect `prefers-reduced-motion`.
 - No backend, no analytics, no cookies, no third-party requests of any kind. The three web fonts
-  (UnifrakturCook, EB Garamond, Special Elite; OFL / Apache licensed) are self-hosted as woff2 files
+  (Manufacturing Consent for the Salzamt wordmark and all headings, UnifrakturCook for display
+  accents, EB Garamond, Special Elite; OFL / Apache licensed) are self-hosted as woff2 files
   in `assets/fonts/` and declared with `@font-face` in `assets/style.css`, so pages need no font
   `<link>`. All user input stays in the browser (`localStorage`, section 4.6). Complaint texts are
   never stored anywhere, not even in `localStorage`.
@@ -263,6 +264,7 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
 --salt: #fbf7ee;        --ink: #1c1712;           --ink-2: #4a3f33;
 --burgundy: #6e1a1a;    --burgundy-2: #4b0f0f;    --gold: #b8892f;   --gold-2: #dcbd68;
 --font-display: "UnifrakturCook", "Old English Text MT", serif;
+--font-wordmark: "Manufacturing Consent", "UnifrakturCook", serif;   /* headings, card/dialog titles, .wordmark */
 --font-body: "EB Garamond", Garamond, "Times New Roman", serif;
 --font-type: "Special Elite", "Courier New", Courier, monospace;
 --container: 1120px;
@@ -270,7 +272,10 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
 
 Body: parchment background with a subtle noise texture (inline SVG `feTurbulence` data URI at
 ~8 % opacity) and a faint light radial gradient at the top; body text in `--font-body` at 18px/1.55.
-Headings (`h1`–`h3`) in `--font-display`, `--ink`; `h1` = `clamp(2.6rem, 7vw, 4.5rem)`.
+Headings (`h1`–`h3`), card titles and dialog titles in `--font-wordmark` (Manufacturing Consent,
+weight 400, its only weight), `--ink`; `h1` = `clamp(2.6rem, 7vw, 4.5rem)`. `--font-display`
+(UnifrakturCook) remains for display accents: hero subtitle, Amtsweg step names, footer motto,
+the `.display` utility.
 
 **Class catalogue** WP0 must provide (WP1–WP4 may rely on all of them):
 
