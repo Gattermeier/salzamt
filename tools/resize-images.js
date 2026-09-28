@@ -163,19 +163,24 @@ const jobs = [
     quality: 0.85,
   },
   {
-    // Both A6 cards at the same size, the Salzach view lying on the
-    // Doppeladler low enough to keep the eagle in sight. Positions are in
-    // card long sides; the stack is fitted into the square automatically.
-    name: "postkarten-set.webp",
+    // Frame, title and caption of shop_postkarten.png around the real
+    // postcards: `clear` (source pixels, between title and caption) is
+    // repainted from its own edges, then both A6 cards are laid into `area`,
+    // the Salzach view on the Doppeladler, low enough to keep the eagle in
+    // sight. Card positions are in card long sides.
+    name: "shop_postkarten.jpg",
     w: 600,
-    type: "webp",
+    type: "jpeg",
     quality: 0.85,
     stack: {
+      backdrop: "shop_postkarten.png",
+      clear: [33, 85, 567, 521],
+      grain: 2,
+      area: [63, 104, 537, 500],
       cards: [
         { src: "Wappen-Postkarte-A6.png", cx: 0, cy: 0, angle: -6 },
-        { src: "Salzbug_Postkarte_A6.png", cx: 0.3, cy: 0.56, angle: 4 },
+        { src: "Salzbug_Postkarte_A6.png", cx: 0.45, cy: 0.56, angle: 4 },
       ],
-      margin: 0.03,
       shadow: "rgba(40, 25, 5, 0.4)",
     },
   },
@@ -194,7 +199,9 @@ const jobs = [
   const page = await browser.newPage();
   await page.setContent("<html><body></body></html>");
   for (const job of jobs) {
-    const files = job.stack ? job.stack.cards.map((c) => c.src) : [job.src];
+    const files = job.stack
+      ? [job.stack.backdrop, ...job.stack.cards.map((c) => c.src)]
+      : [job.src];
     const missing = files.find((f) => !fs.existsSync(path.join(src, f)));
     if (missing) {
       console.log(
@@ -222,6 +229,23 @@ const jobs = [
               }),
           ),
         );
+        // stepwise halving for smooth downscaling, stopping above w
+        const halve = (cur, cw, ch, target) => {
+          while (cw / 2 > target) {
+            const halfW = Math.round(cw / 2);
+            const halfH = Math.round(ch / 2);
+            const next = document.createElement("canvas");
+            next.width = halfW;
+            next.height = halfH;
+            const nctx = next.getContext("2d");
+            nctx.imageSmoothingQuality = "high";
+            nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, halfW, halfH);
+            cur = next;
+            cw = halfW;
+            ch = halfH;
+          }
+          return [cur, cw, ch];
+        };
         const img = imgs[0];
         const nw = img.naturalWidth;
         const nh = img.naturalHeight;
@@ -280,102 +304,139 @@ const jobs = [
           sw = s;
           sh = s;
         } else if (stack) {
+          const composed = document.createElement("canvas");
+          composed.width = nw;
+          composed.height = nh;
+          const cctx = composed.getContext("2d");
+          cctx.drawImage(img, 0, 0);
+          // Coons patch: blend the four edges (each averaged 3 px deep)
+          // across the area, plus grain as fine as the backdrop's own
+          const [x0, y0, x1, y1] = stack.clear;
+          const pw = x1 - x0;
+          const ph = y1 - y0;
+          const patch = cctx.getImageData(x0, y0, pw, ph);
+          const d = patch.data;
+          const edge = (x, y, dx, dy, c) =>
+            (d[(y * pw + x) * 4 + c] +
+              d[((y + dy) * pw + x + dx) * 4 + c] +
+              d[((y + 2 * dy) * pw + x + 2 * dx) * 4 + c]) /
+            3;
+          const edges = [0, 1, 2].map((c) => {
+            const top = Array.from({ length: pw }, (_, x) =>
+              edge(x, 0, 0, 1, c),
+            );
+            const bottom = Array.from({ length: pw }, (_, x) =>
+              edge(x, ph - 1, 0, -1, c),
+            );
+            const left = Array.from({ length: ph }, (_, y) =>
+              edge(0, y, 1, 0, c),
+            );
+            const right = Array.from({ length: ph }, (_, y) =>
+              edge(pw - 1, y, -1, 0, c),
+            );
+            const corners = [
+              (top[0] + left[0]) / 2,
+              (top[pw - 1] + right[0]) / 2,
+              (bottom[0] + left[ph - 1]) / 2,
+              (bottom[pw - 1] + right[ph - 1]) / 2,
+            ];
+            return { top, bottom, left, right, corners };
+          });
+          let seed = 1848;
+          const rand = () =>
+            (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32;
+          for (let y = 0; y < ph; y++) {
+            const v = y / (ph - 1);
+            for (let x = 0; x < pw; x++) {
+              const u = x / (pw - 1);
+              edges.forEach((e, c) => {
+                d[(y * pw + x) * 4 + c] =
+                  (1 - v) * e.top[x] +
+                  v * e.bottom[x] +
+                  (1 - u) * e.left[y] +
+                  u * e.right[y] -
+                  ((1 - u) * (1 - v) * e.corners[0] +
+                    u * (1 - v) * e.corners[1] +
+                    (1 - u) * v * e.corners[2] +
+                    u * v * e.corners[3]) +
+                  (rand() * 2 - 1) * stack.grain;
+              });
+            }
+          }
+          cctx.putImageData(patch, x0, y0);
           // cards scaled to a common long side of 1, rotated about their
-          // centres, the whole stack centred on a transparent square at 2x
+          // centres, the whole stack centred in `area` as large as it fits
           const cards = stack.cards.map((c, i) => {
-            const long = Math.max(imgs[i].naturalWidth, imgs[i].naturalHeight);
+            const im = imgs[i + 1];
+            const long = Math.max(im.naturalWidth, im.naturalHeight);
             return {
               ...c,
-              im: imgs[i],
-              w: imgs[i].naturalWidth / long,
-              h: imgs[i].naturalHeight / long,
+              im,
+              w: im.naturalWidth / long,
+              h: im.naturalHeight / long,
               rad: (c.angle * Math.PI) / 180,
             };
           });
-          let x0 = Infinity;
-          let y0 = Infinity;
-          let x1 = -Infinity;
-          let y1 = -Infinity;
+          let bx0 = Infinity;
+          let by0 = Infinity;
+          let bx1 = -Infinity;
+          let by1 = -Infinity;
           cards.forEach((c) => {
             const cos = Math.abs(Math.cos(c.rad));
             const sin = Math.abs(Math.sin(c.rad));
             const ex = (c.w * cos + c.h * sin) / 2;
             const ey = (c.w * sin + c.h * cos) / 2;
-            x0 = Math.min(x0, c.cx - ex);
-            x1 = Math.max(x1, c.cx + ex);
-            y0 = Math.min(y0, c.cy - ey);
-            y1 = Math.max(y1, c.cy + ey);
+            bx0 = Math.min(bx0, c.cx - ex);
+            bx1 = Math.max(bx1, c.cx + ex);
+            by0 = Math.min(by0, c.cy - ey);
+            by1 = Math.max(by1, c.cy + ey);
           });
-          const D = w * 2;
-          const k = (D * (1 - 2 * stack.margin)) / Math.max(x1 - x0, y1 - y0);
-          const composed = document.createElement("canvas");
-          composed.width = D;
-          composed.height = D;
-          const cctx = composed.getContext("2d");
+          const [ax0, ay0, ax1, ay1] = stack.area;
+          const scale = Math.min(
+            (ax1 - ax0) / (bx1 - bx0),
+            (ay1 - ay0) / (by1 - by0),
+          );
           cctx.imageSmoothingQuality = "high";
-          const place = (c) => {
+          cctx.shadowColor = stack.shadow;
+          cctx.shadowBlur = 16;
+          cctx.shadowOffsetX = 5;
+          cctx.shadowOffsetY = 9;
+          cards.forEach((c) => {
+            const cardW = c.w * scale;
+            const cardH = c.h * scale;
+            const [small, smallW, smallH] = halve(
+              c.im,
+              c.im.naturalWidth,
+              c.im.naturalHeight,
+              cardW,
+            );
+            cctx.save();
             cctx.translate(
-              D / 2 + (c.cx - (x0 + x1) / 2) * k,
-              D / 2 + (c.cy - (y0 + y1) / 2) * k,
+              (ax0 + ax1) / 2 + (c.cx - (bx0 + bx1) / 2) * scale,
+              (ay0 + ay1) / 2 + (c.cy - (by0 + by1) / 2) * scale,
             );
             cctx.rotate(c.rad);
-          };
-          const outline = (c) => [
-            (-c.w * k) / 2,
-            (-c.h * k) / 2,
-            c.w * k,
-            c.h * k,
-          ];
-          cards.forEach((c, i) => {
-            if (i > 0) {
-              // shadow only on the cards below; the page's drop-shadow does the outside
-              cctx.save();
-              cctx.beginPath();
-              cards.slice(0, i).forEach((below) => {
-                cctx.save();
-                place(below);
-                cctx.rect(...outline(below));
-                cctx.restore();
-              });
-              cctx.clip();
-              cctx.shadowColor = stack.shadow;
-              cctx.shadowBlur = D * 0.02;
-              cctx.shadowOffsetX = D * 0.004;
-              cctx.shadowOffsetY = D * 0.01;
-              place(c);
-              cctx.drawImage(c.im, ...outline(c));
-              cctx.restore();
-            }
-            cctx.save();
-            place(c);
-            cctx.drawImage(c.im, ...outline(c));
+            cctx.drawImage(
+              small,
+              0,
+              0,
+              smallW,
+              smallH,
+              -cardW / 2,
+              -cardH / 2,
+              cardW,
+              cardH,
+            );
             cctx.restore();
           });
           source = composed;
-          sw = D;
-          sh = D;
         }
         const h = seal || crop ? w : Math.round((w * sh) / sw);
-        // stepwise halving for smooth downscaling
-        let cur = document.createElement("canvas");
-        cur.width = sw;
-        cur.height = sh;
-        cur.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
-        let cw = sw;
-        let ch = sh;
-        while (cw / 2 > w) {
-          const halfW = Math.round(cw / 2);
-          const halfH = Math.round(ch / 2);
-          const next = document.createElement("canvas");
-          next.width = halfW;
-          next.height = halfH;
-          const nctx = next.getContext("2d");
-          nctx.imageSmoothingQuality = "high";
-          nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, halfW, halfH);
-          cur = next;
-          cw = halfW;
-          ch = halfH;
-        }
+        const region = document.createElement("canvas");
+        region.width = sw;
+        region.height = sh;
+        region.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
+        const [cur, cw, ch] = halve(region, sw, sh, w);
         const o = document.createElement("canvas");
         o.width = w;
         o.height = h;
@@ -385,13 +446,16 @@ const jobs = [
           octx.beginPath();
           octx.arc(w / 2, h / 2, w / 2 - 0.5, 0, Math.PI * 2);
           octx.clip();
-        } else if (type === "jpeg") {
+        } else {
           octx.fillStyle = "#fff";
           octx.fillRect(0, 0, w, h);
         }
         octx.drawImage(cur, 0, 0, cw, ch, 0, 0, w, h);
         return {
-          data: o.toDataURL(`image/${type}`, quality),
+          data: o.toDataURL(
+            type === "jpeg" ? "image/jpeg" : "image/png",
+            quality,
+          ),
           w,
           h,
         };
