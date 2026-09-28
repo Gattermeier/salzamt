@@ -135,7 +135,12 @@
       description:
         "Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.",
       price: 471100,
-      icon: "salt-shaker",
+      image: {
+        src: "assets/img/salzstreuer-600.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtlicher Salzstreuer mit Eichstempel und dem Wappen des Salzamtes",
+      },
       tag: "Bestseller",
     },
     {
@@ -145,7 +150,12 @@
       description:
         "Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.",
       price: 99999,
-      icon: "salt-grain",
+      image: {
+        src: "assets/img/salzkorn-600.jpg",
+        width: 600,
+        height: 600,
+        alt: "Ein einzelnes Salzkorn im Etui des Salzamtes",
+      },
     },
     {
       id: "stempel",
@@ -212,7 +222,12 @@
       description:
         "Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.",
       price: 61200,
-      icon: "mug",
+      image: {
+        src: "assets/img/haeferl-600.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtliches Häferl „Kein Parteienverkehr“ mit dem Wappen des Salzamtes",
+      },
     },
   ];
 

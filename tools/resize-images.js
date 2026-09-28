@@ -120,6 +120,27 @@ const jobs = [
     type: "jpeg",
     quality: 0.82,
   },
+  {
+    src: "shop_salzstreuer_photo.png",
+    name: "salzstreuer-600.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.85,
+  },
+  {
+    src: "shop_salzkorn_photo.png",
+    name: "salzkorn-600.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.85,
+  },
+  {
+    src: "shop_haeferl_photo.png",
+    name: "haeferl-600.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.85,
+  },
   ...STAFF.map((person) => ({
     src: `team-${person.slug}-${TEAM_VARIANT}.jpg`,
     name: `team-${person.slug}.jpg`,
