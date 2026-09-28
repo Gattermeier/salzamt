@@ -164,7 +164,12 @@
       description:
         "Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.",
       price: 184800,
-      icon: "stamp",
+      image: {
+        src: "assets/img/shop_stempel.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtsstempel mit Holzgriff und dem Abdruck „NICHT ZUSTÄNDIG“",
+      },
     },
     {
       id: "stempelmarke",
@@ -189,7 +194,12 @@
       description:
         "Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.",
       price: 4711,
-      icon: "ticket",
+      image: {
+        src: "assets/img/shop_wartenummer.jpg",
+        width: 600,
+        height: 600,
+        alt: "Zerknitterte Wartenummer des k. u. k. Salzamtes, Aufrufnummer 4.000.000 vom 13.03.1848, darunter: „Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit.“",
+      },
     },
     {
       id: "aktenordner",
@@ -198,7 +208,12 @@
       description:
         "Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.",
       price: 38000,
-      icon: "folder",
+      image: {
+        src: "assets/img/shop_aktenordner.jpg",
+        width: 600,
+        height: 600,
+        alt: "Marmorierter Aktenordner mit dem Rückenschild „Erledigt“, darunter: „Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.“",
+      },
     },
     {
       id: "poster",
