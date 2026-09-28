@@ -125,7 +125,13 @@
       description:
         "Beide Motive in einer Mappe. Sparen Sie nicht: Das Set kostet fünfmal so viel wie die Einzelkarten, enthält dafür aber eine Mappe.",
       price: 184800,
-      icon: "postcard-set",
+      image: {
+        src: "assets/img/postkarten-set.webp",
+        width: 600,
+        height: 600,
+        alt: "Beide Postkarten übereinander: hinten der Doppeladler, vorne das Salzamt an der Salzach im Abendlicht",
+        fallback: "assets/img/postkarte-1.jpg",
+      },
       tag: "Amtlich",
     },
     {
