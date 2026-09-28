@@ -136,10 +136,10 @@
         "Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.",
       price: 471100,
       image: {
-        src: "assets/img/salzstreuer-600.jpg",
+        src: "assets/img/shop_salzstreuer.jpg",
         width: 600,
         height: 600,
-        alt: "Amtlicher Salzstreuer mit Eichstempel und dem Wappen des Salzamtes",
+        alt: "Amtlicher Salzstreuer mit dem Eichstempel des Salzamtes, darunter: „Der einzige Salzstreuer mit Eichstempel des Salzamtes.“",
       },
       tag: "Bestseller",
     },
@@ -151,10 +151,10 @@
         "Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.",
       price: 99999,
       image: {
-        src: "assets/img/salzkorn-600.jpg",
+        src: "assets/img/shop_salzkorn.jpg",
         width: 600,
         height: 600,
-        alt: "Ein einzelnes Salzkorn im Etui des Salzamtes",
+        alt: "Ein einziges Salzkorn im Etui des k. u. k. Salzamtes, darunter: „Streng limitiert · Stück für Stück“",
       },
     },
     {
@@ -223,10 +223,10 @@
         "Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.",
       price: 61200,
       image: {
-        src: "assets/img/haeferl-600.jpg",
+        src: "assets/img/shop_haeferl.jpg",
         width: 600,
         height: 600,
-        alt: "Amtliches Häferl „Kein Parteienverkehr“ mit dem Wappen des Salzamtes",
+        alt: "Amtliches Häferl „Kein Parteienverkehr“ mit dem Wappen des Salzamtes, darunter: „Amtlich geeicht auf eine Melange. Nachschenken: nicht zuständig.“",
       },
     },
   ];
