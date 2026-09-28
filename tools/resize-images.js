@@ -162,6 +162,28 @@ const jobs = [
     type: "jpeg",
     quality: 0.85,
   },
+  {
+    // Frame, title and caption of shop_postkarten.png around the real
+    // postcards: `clear` (source pixels, between title and caption) is
+    // repainted from its own edges, then both A6 cards are laid into `area`,
+    // the Salzach view on the Doppeladler, low enough to keep the eagle in
+    // sight. Card positions are in card long sides.
+    name: "shop_postkarten.jpg",
+    w: 600,
+    type: "jpeg",
+    quality: 0.85,
+    stack: {
+      backdrop: "shop_postkarten.png",
+      clear: [33, 85, 567, 521],
+      grain: 2,
+      area: [63, 104, 537, 500],
+      cards: [
+        { src: "Wappen-Postkarte-A6.png", cx: 0, cy: 0, angle: -6 },
+        { src: "Salzbug_Postkarte_A6.png", cx: 0.45, cy: 0.56, angle: 4 },
+      ],
+      shadow: "rgba(40, 25, 5, 0.4)",
+    },
+  },
   ...STAFF.map((person) => ({
     src: `team-${person.slug}-${TEAM_VARIANT}.jpg`,
     name: `team-${person.slug}.jpg`,
@@ -177,25 +199,54 @@ const jobs = [
   const page = await browser.newPage();
   await page.setContent("<html><body></body></html>");
   for (const job of jobs) {
-    const file = path.join(src, job.src);
-    if (!fs.existsSync(file)) {
+    const files = job.stack
+      ? [job.stack.backdrop, ...job.stack.cards.map((c) => c.src)]
+      : [job.src];
+    const missing = files.find((f) => !fs.existsSync(path.join(src, f)));
+    if (missing) {
       console.log(
         job.name.padEnd(30),
-        `skipped, source missing: originals/${job.src}`,
+        `skipped, source missing: originals/${missing}`,
       );
       continue;
     }
-    const mime = job.src.toLowerCase().endsWith(".png")
-      ? "image/png"
-      : "image/jpeg";
-    const b64 = fs.readFileSync(file).toString("base64");
+    const dataUrls = files.map((f) => {
+      const mime = f.toLowerCase().endsWith(".png")
+        ? "image/png"
+        : "image/jpeg";
+      const b64 = fs.readFileSync(path.join(src, f)).toString("base64");
+      return `data:${mime};base64,${b64}`;
+    });
     const res = await page.evaluate(
-      async ({ dataUrl, w, type, quality, seal, crop }) => {
-        const img = new Image();
-        await new Promise((resolve) => {
-          img.onload = resolve;
-          img.src = dataUrl;
-        });
+      async ({ dataUrls, w, type, quality, seal, crop, stack }) => {
+        const imgs = await Promise.all(
+          dataUrls.map(
+            (url) =>
+              new Promise((resolve) => {
+                const im = new Image();
+                im.onload = () => resolve(im);
+                im.src = url;
+              }),
+          ),
+        );
+        // stepwise halving for smooth downscaling, stopping above w
+        const halve = (cur, cw, ch, target) => {
+          while (cw / 2 > target) {
+            const halfW = Math.round(cw / 2);
+            const halfH = Math.round(ch / 2);
+            const next = document.createElement("canvas");
+            next.width = halfW;
+            next.height = halfH;
+            const nctx = next.getContext("2d");
+            nctx.imageSmoothingQuality = "high";
+            nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, halfW, halfH);
+            cur = next;
+            cw = halfW;
+            ch = halfH;
+          }
+          return [cur, cw, ch];
+        };
+        const img = imgs[0];
         const nw = img.naturalWidth;
         const nh = img.naturalHeight;
         let source = img;
@@ -252,28 +303,140 @@ const jobs = [
           sy = Math.min(Math.max(Math.round(nh * crop.cy - s / 2), 0), nh - s);
           sw = s;
           sh = s;
+        } else if (stack) {
+          const composed = document.createElement("canvas");
+          composed.width = nw;
+          composed.height = nh;
+          const cctx = composed.getContext("2d");
+          cctx.drawImage(img, 0, 0);
+          // Coons patch: blend the four edges (each averaged 3 px deep)
+          // across the area, plus grain as fine as the backdrop's own
+          const [x0, y0, x1, y1] = stack.clear;
+          const pw = x1 - x0;
+          const ph = y1 - y0;
+          const patch = cctx.getImageData(x0, y0, pw, ph);
+          const d = patch.data;
+          const edge = (x, y, dx, dy, c) =>
+            (d[(y * pw + x) * 4 + c] +
+              d[((y + dy) * pw + x + dx) * 4 + c] +
+              d[((y + 2 * dy) * pw + x + 2 * dx) * 4 + c]) /
+            3;
+          const edges = [0, 1, 2].map((c) => {
+            const top = Array.from({ length: pw }, (_, x) =>
+              edge(x, 0, 0, 1, c),
+            );
+            const bottom = Array.from({ length: pw }, (_, x) =>
+              edge(x, ph - 1, 0, -1, c),
+            );
+            const left = Array.from({ length: ph }, (_, y) =>
+              edge(0, y, 1, 0, c),
+            );
+            const right = Array.from({ length: ph }, (_, y) =>
+              edge(pw - 1, y, -1, 0, c),
+            );
+            const corners = [
+              (top[0] + left[0]) / 2,
+              (top[pw - 1] + right[0]) / 2,
+              (bottom[0] + left[ph - 1]) / 2,
+              (bottom[pw - 1] + right[ph - 1]) / 2,
+            ];
+            return { top, bottom, left, right, corners };
+          });
+          let seed = 1848;
+          const rand = () =>
+            (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32;
+          for (let y = 0; y < ph; y++) {
+            const v = y / (ph - 1);
+            for (let x = 0; x < pw; x++) {
+              const u = x / (pw - 1);
+              edges.forEach((e, c) => {
+                d[(y * pw + x) * 4 + c] =
+                  (1 - v) * e.top[x] +
+                  v * e.bottom[x] +
+                  (1 - u) * e.left[y] +
+                  u * e.right[y] -
+                  ((1 - u) * (1 - v) * e.corners[0] +
+                    u * (1 - v) * e.corners[1] +
+                    (1 - u) * v * e.corners[2] +
+                    u * v * e.corners[3]) +
+                  (rand() * 2 - 1) * stack.grain;
+              });
+            }
+          }
+          cctx.putImageData(patch, x0, y0);
+          // cards scaled to a common long side of 1, rotated about their
+          // centres, the whole stack centred in `area` as large as it fits
+          const cards = stack.cards.map((c, i) => {
+            const im = imgs[i + 1];
+            const long = Math.max(im.naturalWidth, im.naturalHeight);
+            return {
+              ...c,
+              im,
+              w: im.naturalWidth / long,
+              h: im.naturalHeight / long,
+              rad: (c.angle * Math.PI) / 180,
+            };
+          });
+          let bx0 = Infinity;
+          let by0 = Infinity;
+          let bx1 = -Infinity;
+          let by1 = -Infinity;
+          cards.forEach((c) => {
+            const cos = Math.abs(Math.cos(c.rad));
+            const sin = Math.abs(Math.sin(c.rad));
+            const ex = (c.w * cos + c.h * sin) / 2;
+            const ey = (c.w * sin + c.h * cos) / 2;
+            bx0 = Math.min(bx0, c.cx - ex);
+            bx1 = Math.max(bx1, c.cx + ex);
+            by0 = Math.min(by0, c.cy - ey);
+            by1 = Math.max(by1, c.cy + ey);
+          });
+          const [ax0, ay0, ax1, ay1] = stack.area;
+          const scale = Math.min(
+            (ax1 - ax0) / (bx1 - bx0),
+            (ay1 - ay0) / (by1 - by0),
+          );
+          cctx.imageSmoothingQuality = "high";
+          cctx.shadowColor = stack.shadow;
+          cctx.shadowBlur = 16;
+          cctx.shadowOffsetX = 5;
+          cctx.shadowOffsetY = 9;
+          cards.forEach((c) => {
+            const cardW = c.w * scale;
+            const cardH = c.h * scale;
+            const [small, smallW, smallH] = halve(
+              c.im,
+              c.im.naturalWidth,
+              c.im.naturalHeight,
+              cardW,
+            );
+            cctx.save();
+            cctx.translate(
+              (ax0 + ax1) / 2 + (c.cx - (bx0 + bx1) / 2) * scale,
+              (ay0 + ay1) / 2 + (c.cy - (by0 + by1) / 2) * scale,
+            );
+            cctx.rotate(c.rad);
+            cctx.drawImage(
+              small,
+              0,
+              0,
+              smallW,
+              smallH,
+              -cardW / 2,
+              -cardH / 2,
+              cardW,
+              cardH,
+            );
+            cctx.restore();
+          });
+          source = composed;
         }
         const h = seal || crop ? w : Math.round((w * sh) / sw);
-        // stepwise halving for smooth downscaling
-        let cur = document.createElement("canvas");
-        cur.width = sw;
-        cur.height = sh;
-        cur.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
-        let cw = sw;
-        let ch = sh;
-        while (cw / 2 > w) {
-          const halfW = Math.round(cw / 2);
-          const halfH = Math.round(ch / 2);
-          const next = document.createElement("canvas");
-          next.width = halfW;
-          next.height = halfH;
-          const nctx = next.getContext("2d");
-          nctx.imageSmoothingQuality = "high";
-          nctx.drawImage(cur, 0, 0, cw, ch, 0, 0, halfW, halfH);
-          cur = next;
-          cw = halfW;
-          ch = halfH;
-        }
+        const region = document.createElement("canvas");
+        region.width = sw;
+        region.height = sh;
+        region.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
+        const [cur, cw, ch] = halve(region, sw, sh, w);
         const o = document.createElement("canvas");
         o.width = w;
         o.height = h;
@@ -298,12 +461,13 @@ const jobs = [
         };
       },
       {
-        dataUrl: `data:${mime};base64,${b64}`,
+        dataUrls,
         w: job.w,
         type: job.type,
         quality: job.quality,
         seal: job.seal || null,
         crop: job.crop || null,
+        stack: job.stack || null,
       },
     );
     const buf = Buffer.from(res.data.split(",")[1], "base64");
