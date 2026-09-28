@@ -135,7 +135,12 @@
       description:
         "Der einzige Salzstreuer mit Eichstempel des Salzamtes. Die Öffnungen sind zu Ihrer Sicherheit versiegelt. Salz nicht enthalten. Entsiegelung nicht vorgesehen.",
       price: 471100,
-      icon: "salt-shaker",
+      image: {
+        src: "assets/img/shop_salzstreuer.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtlicher Salzstreuer mit dem Eichstempel des Salzamtes, darunter: „Der einzige Salzstreuer mit Eichstempel des Salzamtes.“",
+      },
       tag: "Bestseller",
     },
     {
@@ -145,7 +150,12 @@
       description:
         "Ein einzelnes Korn aus den Beständen des Amtes, nummeriert und in Seidenpapier gewickelt. Nicht zum Verzehr bestimmt. Zum Einsalzen ausreichend.",
       price: 99999,
-      icon: "salt-grain",
+      image: {
+        src: "assets/img/shop_salzkorn.jpg",
+        width: 600,
+        height: 600,
+        alt: "Ein einziges Salzkorn im Etui des k. u. k. Salzamtes, darunter: „Streng limitiert · Stück für Stück“",
+      },
     },
     {
       id: "stempel",
@@ -154,7 +164,12 @@
       description:
         "Für den Hausgebrauch: Beenden Sie jedes Gespräch mit einem Handgriff. Stempelkissen separat erhältlich, jedoch nicht bei uns.",
       price: 184800,
-      icon: "stamp",
+      image: {
+        src: "assets/img/shop_stempel.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtsstempel mit Holzgriff und dem Abdruck „NICHT ZUSTÄNDIG“",
+      },
     },
     {
       id: "stempelmarke",
@@ -179,7 +194,12 @@
       description:
         "Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit. Nummer nicht wählbar.",
       price: 4711,
-      icon: "ticket",
+      image: {
+        src: "assets/img/shop_wartenummer.jpg",
+        width: 600,
+        height: 600,
+        alt: "Zerknitterte Wartenummer des k. u. k. Salzamtes, Aufrufnummer 4.000.000 vom 13.03.1848, darunter: „Eine originale Wartenummer aus unserem Parteienverkehr. Bereits aufgerufen, daher ohne Wartezeit.“",
+      },
     },
     {
       id: "aktenordner",
@@ -188,7 +208,12 @@
       description:
         "Der Ordner, in dem beim Salzamt nichts abgelegt wird. Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.",
       price: 38000,
-      icon: "folder",
+      image: {
+        src: "assets/img/shop_aktenordner.jpg",
+        width: 600,
+        height: 600,
+        alt: "Marmorierter Aktenordner mit dem Rückenschild „Erledigt“, darunter: „Liefert das gute Gefühl der Erledigung ohne den Umweg über die Arbeit.“",
+      },
     },
     {
       id: "poster",
@@ -212,7 +237,12 @@
       description:
         "Für Amtsstunden, in denen niemand kommen soll. Aufschrift auf beiden Seiten, damit auch Ihr Gegenüber Bescheid weiß.",
       price: 61200,
-      icon: "mug",
+      image: {
+        src: "assets/img/shop_haeferl.jpg",
+        width: 600,
+        height: 600,
+        alt: "Amtliches Häferl „Kein Parteienverkehr“ mit dem Wappen des Salzamtes, darunter: „Amtlich geeicht auf eine Melange. Nachschenken: nicht zuständig.“",
+      },
     },
   ];
 
