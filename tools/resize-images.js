@@ -162,6 +162,23 @@ const jobs = [
     type: "jpeg",
     quality: 0.85,
   },
+  {
+    // Both A6 cards at the same size, the Salzach view lying on the
+    // Doppeladler low enough to keep the eagle in sight. Positions are in
+    // card long sides; the stack is fitted into the square automatically.
+    name: "postkarten-set.webp",
+    w: 600,
+    type: "webp",
+    quality: 0.85,
+    stack: {
+      cards: [
+        { src: "Wappen-Postkarte-A6.png", cx: 0, cy: 0, angle: -6 },
+        { src: "Salzbug_Postkarte_A6.png", cx: 0.3, cy: 0.56, angle: 4 },
+      ],
+      margin: 0.03,
+      shadow: "rgba(40, 25, 5, 0.4)",
+    },
+  },
   ...STAFF.map((person) => ({
     src: `team-${person.slug}-${TEAM_VARIANT}.jpg`,
     name: `team-${person.slug}.jpg`,
@@ -177,25 +194,35 @@ const jobs = [
   const page = await browser.newPage();
   await page.setContent("<html><body></body></html>");
   for (const job of jobs) {
-    const file = path.join(src, job.src);
-    if (!fs.existsSync(file)) {
+    const files = job.stack ? job.stack.cards.map((c) => c.src) : [job.src];
+    const missing = files.find((f) => !fs.existsSync(path.join(src, f)));
+    if (missing) {
       console.log(
         job.name.padEnd(30),
-        `skipped, source missing: originals/${job.src}`,
+        `skipped, source missing: originals/${missing}`,
       );
       continue;
     }
-    const mime = job.src.toLowerCase().endsWith(".png")
-      ? "image/png"
-      : "image/jpeg";
-    const b64 = fs.readFileSync(file).toString("base64");
+    const dataUrls = files.map((f) => {
+      const mime = f.toLowerCase().endsWith(".png")
+        ? "image/png"
+        : "image/jpeg";
+      const b64 = fs.readFileSync(path.join(src, f)).toString("base64");
+      return `data:${mime};base64,${b64}`;
+    });
     const res = await page.evaluate(
-      async ({ dataUrl, w, type, quality, seal, crop }) => {
-        const img = new Image();
-        await new Promise((resolve) => {
-          img.onload = resolve;
-          img.src = dataUrl;
-        });
+      async ({ dataUrls, w, type, quality, seal, crop, stack }) => {
+        const imgs = await Promise.all(
+          dataUrls.map(
+            (url) =>
+              new Promise((resolve) => {
+                const im = new Image();
+                im.onload = () => resolve(im);
+                im.src = url;
+              }),
+          ),
+        );
+        const img = imgs[0];
         const nw = img.naturalWidth;
         const nh = img.naturalHeight;
         let source = img;
@@ -252,6 +279,81 @@ const jobs = [
           sy = Math.min(Math.max(Math.round(nh * crop.cy - s / 2), 0), nh - s);
           sw = s;
           sh = s;
+        } else if (stack) {
+          // cards scaled to a common long side of 1, rotated about their
+          // centres, the whole stack centred on a transparent square at 2x
+          const cards = stack.cards.map((c, i) => {
+            const long = Math.max(imgs[i].naturalWidth, imgs[i].naturalHeight);
+            return {
+              ...c,
+              im: imgs[i],
+              w: imgs[i].naturalWidth / long,
+              h: imgs[i].naturalHeight / long,
+              rad: (c.angle * Math.PI) / 180,
+            };
+          });
+          let x0 = Infinity;
+          let y0 = Infinity;
+          let x1 = -Infinity;
+          let y1 = -Infinity;
+          cards.forEach((c) => {
+            const cos = Math.abs(Math.cos(c.rad));
+            const sin = Math.abs(Math.sin(c.rad));
+            const ex = (c.w * cos + c.h * sin) / 2;
+            const ey = (c.w * sin + c.h * cos) / 2;
+            x0 = Math.min(x0, c.cx - ex);
+            x1 = Math.max(x1, c.cx + ex);
+            y0 = Math.min(y0, c.cy - ey);
+            y1 = Math.max(y1, c.cy + ey);
+          });
+          const D = w * 2;
+          const k = (D * (1 - 2 * stack.margin)) / Math.max(x1 - x0, y1 - y0);
+          const composed = document.createElement("canvas");
+          composed.width = D;
+          composed.height = D;
+          const cctx = composed.getContext("2d");
+          cctx.imageSmoothingQuality = "high";
+          const place = (c) => {
+            cctx.translate(
+              D / 2 + (c.cx - (x0 + x1) / 2) * k,
+              D / 2 + (c.cy - (y0 + y1) / 2) * k,
+            );
+            cctx.rotate(c.rad);
+          };
+          const outline = (c) => [
+            (-c.w * k) / 2,
+            (-c.h * k) / 2,
+            c.w * k,
+            c.h * k,
+          ];
+          cards.forEach((c, i) => {
+            if (i > 0) {
+              // shadow only on the cards below; the page's drop-shadow does the outside
+              cctx.save();
+              cctx.beginPath();
+              cards.slice(0, i).forEach((below) => {
+                cctx.save();
+                place(below);
+                cctx.rect(...outline(below));
+                cctx.restore();
+              });
+              cctx.clip();
+              cctx.shadowColor = stack.shadow;
+              cctx.shadowBlur = D * 0.02;
+              cctx.shadowOffsetX = D * 0.004;
+              cctx.shadowOffsetY = D * 0.01;
+              place(c);
+              cctx.drawImage(c.im, ...outline(c));
+              cctx.restore();
+            }
+            cctx.save();
+            place(c);
+            cctx.drawImage(c.im, ...outline(c));
+            cctx.restore();
+          });
+          source = composed;
+          sw = D;
+          sh = D;
         }
         const h = seal || crop ? w : Math.round((w * sh) / sw);
         // stepwise halving for smooth downscaling
@@ -283,27 +385,25 @@ const jobs = [
           octx.beginPath();
           octx.arc(w / 2, h / 2, w / 2 - 0.5, 0, Math.PI * 2);
           octx.clip();
-        } else {
+        } else if (type === "jpeg") {
           octx.fillStyle = "#fff";
           octx.fillRect(0, 0, w, h);
         }
         octx.drawImage(cur, 0, 0, cw, ch, 0, 0, w, h);
         return {
-          data: o.toDataURL(
-            type === "jpeg" ? "image/jpeg" : "image/png",
-            quality,
-          ),
+          data: o.toDataURL(`image/${type}`, quality),
           w,
           h,
         };
       },
       {
-        dataUrl: `data:${mime};base64,${b64}`,
+        dataUrls,
         w: job.w,
         type: job.type,
         quality: job.quality,
         seal: job.seal || null,
         crop: job.crop || null,
+        stack: job.stack || null,
       },
     );
     const buf = Buffer.from(res.data.split(",")[1], "base64");
