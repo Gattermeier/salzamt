@@ -277,22 +277,15 @@
   color: var(--burgundy);
 }
 
+.home-product__media--square {
+  aspect-ratio: 1 / 1;
+}
+
 .home-product__media img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.home-icon {
-  width: 42%;
-  height: auto;
-  max-height: 80%;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .home-product .card__title {
