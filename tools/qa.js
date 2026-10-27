@@ -31,6 +31,37 @@ function ok(msg) {
   console.log("ok  ", msg);
 }
 
+// Third-party traffic (Web3Forms, hCaptcha) is never allowed to leave the QA
+// run. The Web3Forms client and hCaptcha scripts are replaced by empty files,
+// the submit endpoint answers with `submitResponse`, everything else gets an
+// empty 204.
+const QA_ACCESS_KEY = "qa-access-key";
+let submitResponse = { status: 200, body: { success: true, message: "ok" } };
+async function stubExternal(page, submissions) {
+  await page.route(
+    (url) => !url.href.startsWith(BASE),
+    (route) => {
+      const url = route.request().url();
+      if (/api\.web3forms\.com\/submit/.test(url)) {
+        if (submissions) submissions.push(route.request());
+        return route.fulfill({
+          status: submitResponse.status,
+          contentType: "application/json",
+          body: JSON.stringify(submitResponse.body),
+        });
+      }
+      if (/\.js(\?|$)/.test(url)) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/javascript",
+          body: "",
+        });
+      }
+      return route.fulfill({ status: 204, body: "" });
+    },
+  );
+}
+
 function watch(page, label) {
   const errors = [];
   page.on("console", (m) => {
@@ -58,6 +89,7 @@ async function screenshotsAndLinks(browser) {
     for (const p of PAGES) {
       const page = await ctx.newPage();
       const errors = watch(page, `${p}@${width}`);
+      await stubExternal(page);
       await page.goto(BASE + p, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
       const current = await page.$$eval(
@@ -103,33 +135,8 @@ async function screenshotsAndLinks(browser) {
   );
 }
 
-async function complaintFlow(browser) {
-  const ctx = await browser.newContext({
-    viewport: { width: 1280, height: 900 },
-  });
-  const page = await ctx.newPage();
-  const errors = watch(page, "complaint");
-  await page.goto(BASE + "beschwerde.html", { waitUntil: "networkidle" });
-  const requests = [];
-  page.on("request", (r) => {
-    if (!r.url().startsWith(BASE)) requests.push(r.url());
-  });
-
-  // 1) empty submit must be blocked with the protocol
-  await page.click("#complaint-form button[type='submit']");
-  await page.waitForTimeout(300);
-  const protocolShown = await page
-    .$eval("#complaint-errors", (el) => !el.hidden && el.offsetHeight > 0)
-    .catch(() => false);
-  if (!protocolShown)
-    fail("complaint: Fehlerprotokoll not shown on empty submit");
-  const confirmVisible = await page
-    .$eval("#confirmation", (el) => !el.hidden && el.offsetHeight > 0)
-    .catch(() => false);
-  if (confirmVisible)
-    fail("complaint: confirmation shown although the form was invalid");
-
-  // 2) fill everything validly
+// Fills every field of SA-47/B with valid values (used by both complaint flows).
+async function fillComplaintForm(page) {
   await page.evaluate(() => {
     const form = document.getElementById("complaint-form");
     form
@@ -197,6 +204,46 @@ async function complaintFlow(browser) {
       .querySelectorAll("input, select, textarea")
       .forEach((el) => el.dispatchEvent(new Event("input", { bubbles: true })));
   });
+}
+
+async function complaintFlow(browser) {
+  const ctx = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+  });
+  const page = await ctx.newPage();
+  const errors = watch(page, "complaint");
+  const submissions = [];
+  await stubExternal(page, submissions);
+  await page.goto(BASE + "beschwerde.html", { waitUntil: "networkidle" });
+  // the public access key is configured by the owner; QA injects its own
+  await page.evaluate(
+    (key) =>
+      document
+        .getElementById("complaint-form")
+        .setAttribute("data-access-key", key),
+    QA_ACCESS_KEY,
+  );
+  const requests = [];
+  page.on("request", (r) => {
+    if (!r.url().startsWith(BASE)) requests.push(r.url());
+  });
+
+  // 1) empty submit must be blocked with the protocol
+  await page.click("#complaint-form button[type='submit']");
+  await page.waitForTimeout(300);
+  const protocolShown = await page
+    .$eval("#complaint-errors", (el) => !el.hidden && el.offsetHeight > 0)
+    .catch(() => false);
+  if (!protocolShown)
+    fail("complaint: Fehlerprotokoll not shown on empty submit");
+  const confirmVisible = await page
+    .$eval("#confirmation", (el) => !el.hidden && el.offsetHeight > 0)
+    .catch(() => false);
+  if (confirmVisible)
+    fail("complaint: confirmation shown although the form was invalid");
+
+  // 2) fill everything validly
+  await fillComplaintForm(page);
   await page.click("#complaint-form button[type='submit']");
   await page
     .waitForSelector("#confirm-dialog[open]", { timeout: 3000 })
@@ -234,13 +281,130 @@ async function complaintFlow(browser) {
   );
   if (stored !== "1")
     fail(`complaint: local counter is ${stored}, expected "1"`);
-  if (requests.length)
-    fail(`complaint: external requests on submit: ${requests.join(", ")}`);
+  const foreign = requests.filter(
+    (u) => !/api\.web3forms\.com\/submit/.test(u),
+  );
+  if (foreign.length)
+    fail(`complaint: unexpected external requests: ${foreign.join(", ")}`);
+  if (submissions.length !== 1) {
+    fail(
+      `complaint: expected 1 delivery to Web3Forms, saw ${submissions.length}`,
+    );
+  } else {
+    let payload = null;
+    try {
+      payload = JSON.parse(submissions[0].postData() || "null");
+    } catch (e) {
+      /* reported below */
+    }
+    const problems = [];
+    if (!payload) problems.push("body is not JSON");
+    else {
+      if (payload.access_key !== QA_ACCESS_KEY) problems.push("access_key");
+      if ("botcheck" in payload) problems.push("honeypot must stay absent");
+      if (!/^SA-\d{4}\/\d{3}\.\d{3}-II\/3-NB$/.test(payload.Aktenzeichen || ""))
+        problems.push("Aktenzeichen");
+      if (payload.Aktenzeichen !== caseNumber)
+        problems.push("Aktenzeichen differs from the confirmation");
+      if (!/^Beschwerde SA-47\/B · SA-/.test(payload.subject || ""))
+        problems.push("subject");
+      if (payload["Abschnitt A · Vorname"] !== "MUSTER")
+        problems.push("Abschnitt A · Vorname");
+      if (payload["Abschnitt F · Erklärung Nr. 5"] !== "Ja")
+        problems.push("Abschnitt F · Erklärung Nr. 5");
+      if (!/nichts bearbeitet/.test(payload["Abschnitt C · Sachverhalt"] || ""))
+        problems.push("Abschnitt C · Sachverhalt");
+    }
+    if (problems.length)
+      fail(`complaint: delivery payload: ${problems.join(", ")}`);
+    else ok(`complaint: delivered ${Object.keys(payload).length} fields`);
+    if (process.env.QA_DUMP_PAYLOAD)
+      console.log(JSON.stringify(payload, null, 2));
+  }
   await page.screenshot({
     path: path.join(OUT, "flow-complaint-confirmation.png"),
     fullPage: true,
   });
   errors.forEach(fail);
+  await ctx.close();
+}
+
+// A delivery failure must keep the form, show "Postlauf gestört" and never
+// show the Eingangsbestätigung.
+async function complaintFailureFlow(browser) {
+  const ctx = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    reducedMotion: "reduce",
+  });
+  const page = await ctx.newPage();
+  const errors = watch(page, "complaint-failure");
+  const submissions = [];
+  submitResponse = {
+    status: 500,
+    body: { success: false, message: "Amtsbote verschollen" },
+  };
+  await stubExternal(page, submissions);
+  await page.goto(BASE + "beschwerde.html", { waitUntil: "networkidle" });
+  await page.evaluate(
+    (key) =>
+      document
+        .getElementById("complaint-form")
+        .setAttribute("data-access-key", key),
+    QA_ACCESS_KEY,
+  );
+  await fillComplaintForm(page);
+  await page.click("#complaint-form button[type='submit']");
+  await page
+    .waitForSelector("#confirm-dialog[open]", { timeout: 3000 })
+    .catch(() => fail("complaint-failure: confirm dialog did not open"));
+  const buttons = await page.$$("#confirm-dialog button");
+  if (buttons.length) await buttons[buttons.length - 1].click();
+  await page
+    .waitForFunction(
+      () => {
+        const n = document.getElementById("complaint-delivery-error");
+        return n && !n.hidden && n.offsetHeight > 0;
+      },
+      { timeout: 8000 },
+    )
+    .catch(() => fail("complaint-failure: Postlauf notice did not appear"));
+  const detail = await page
+    .$eval("[data-delivery-detail]", (el) => el.textContent)
+    .catch(() => "");
+  if (!/Amtsbote verschollen/.test(detail))
+    fail(`complaint-failure: detail does not carry the reason: "${detail}"`);
+  const confirmShown = await page.$eval(
+    "#confirmation",
+    (el) => !el.hidden && el.offsetHeight > 0,
+  );
+  if (confirmShown)
+    fail("complaint-failure: confirmation shown although delivery failed");
+  const kept = await page.$eval("#given-name", (el) => el.value);
+  if (kept !== "MUSTER")
+    fail(`complaint-failure: form was reset (Vorname is "${kept}")`);
+  const busy = await page.$eval("#complaint-form", (f) =>
+    f.getAttribute("aria-busy"),
+  );
+  if (busy) fail("complaint-failure: form still aria-busy after failure");
+  const stored = await page.evaluate(() =>
+    localStorage.getItem("salzamt_beschwerden_lokal"),
+  );
+  if (stored !== null)
+    fail(`complaint-failure: counter incremented to ${stored} on failure`);
+  if (submissions.length !== 1)
+    fail(
+      `complaint-failure: expected 1 delivery attempt, saw ${submissions.length}`,
+    );
+  else ok("complaint-failure: Postlauf gestört shown, form kept");
+  await page.screenshot({
+    path: path.join(OUT, "flow-complaint-failure.png"),
+    fullPage: true,
+  });
+  // the stubbed 500 is the point of this flow, not a defect
+  errors
+    .filter((e) => !/api\.web3forms\.com|status of 500/.test(e))
+    .forEach(fail);
+  submitResponse = { status: 200, body: { success: true, message: "ok" } };
   await ctx.close();
 }
 
@@ -356,6 +520,7 @@ async function teamFlow(browser) {
   try {
     await screenshotsAndLinks(browser);
     await complaintFlow(browser);
+    await complaintFailureFlow(browser);
     await shopFlow(browser);
     await teamFlow(browser);
   } finally {

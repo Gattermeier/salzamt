@@ -58,7 +58,10 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
   Shared code lives on the `window.Salzamt` namespace (section 4.5). No inline `onclick=` handlers.
 - CSS: custom properties, Grid, Flexbox, `clamp()`. Mobile-first. One committed look (parchment),
   **no dark mode**. Respect `prefers-reduced-motion`.
-- No backend, no analytics, no cookies, no third-party requests of any kind. The three web fonts
+- No backend of our own, no analytics, no cookies. The only third-party requests are the ones
+  the complaint form needs to reach the Einlaufstelle mailbox: the Web3Forms client script (which
+  renders hCaptcha) on `beschwerde.html` and the JSON POST to `api.web3forms.com` on submit; see
+  WP2 and the README section "Einlaufstelle". Everything else stays first-party. The three web fonts
   (Manufacturing Consent for the Salzamt wordmark and all headings, UnifrakturCook for display
   accents, EB Garamond, Special Elite; OFL / Apache licensed) are self-hosted as woff2 files
   in `assets/fonts/` and declared with `@font-face` in `assets/style.css`, so pages need no font
@@ -114,7 +117,8 @@ sarcasm or winking at the reader. Every paragraph should read as if a real offic
 
 ### 2.5 Things that are out of scope
 
-- No real personal data collection, no email sending, no real payment processing, no real address.
+- No data collection beyond the complaint itself (delivered by e-mail to the Einlaufstelle via
+  Web3Forms, nothing stored elsewhere), no real payment processing, no real address.
 - No cookie banner, no Impressum with real data, no legal text beyond the jokes in the copy.
 - No CMS, no i18n, no English version.
 
@@ -248,8 +252,9 @@ Body classes: `page-home`, `page-complaint`, `page-shop`, `page-checkout`, `page
     </p>
     <p class="site-footer__small">
       Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite speichert
-      nichts, sendet nichts und hilft niemandem. Ihre Eingaben verbleiben
-      ausschließlich in Ihrem Browser.
+      nichts und hilft niemandem. Beschwerden werden der Einlaufstelle
+      zugestellt und dort nicht bearbeitet; alle übrigen Eingaben verbleiben in
+      Ihrem Browser.
     </p>
   </div>
 </footer>
@@ -376,7 +381,8 @@ All `localStorage` access is wrapped in try/catch; the site must work with stora
 | `salzamt_warenkorb`         | JSON `{ "salzstreuer": 1, "postkarte-1": 2 }` | WP3 via `Salzamt` cart API            |
 | `salzamt_beschwerden_lokal` | integer                                       | WP2 via `Salzamt.registerComplaint()` |
 
-Nothing else is stored. Complaint form contents are never persisted.
+Nothing else is stored. Complaint form contents are never persisted in the browser; they are
+sent once to Web3Forms (WP2) and otherwise discarded.
 
 ### 4.7 Images (`assets/img/`)
 
@@ -543,13 +549,29 @@ whose five steps get `.is-done` one after another 200 ms apart; the line
 "Bearbeitungsdauer: 0,8 Sekunden – Amtsrekord."; the closing sentences from 6.2; a line
 "Papierkorb-Füllstand: 3.412.877 Beschwerden" using `Salzamt.complaintsTotal()` **after**
 `Salzamt.registerComplaint()`; buttons "Weitere Beschwerde einreichen" (reloads the page) and
-"Zum Amtsshop". The submitted values are read only for validation and are discarded.
+"Zum Amtsshop".
+
+**Delivery (Einlaufstelle).** After the dialog, `complaint.js` generates the case number, builds
+a JSON payload (`access_key`, `subject`, `from_name`, `Aktenzeichen`, `Eingelangt am`, then one
+"Abschnitt X · Label" entry per control group in document order with human-readable values,
+`botcheck`, and the hCaptcha token when present) and POSTs it to the endpoint in
+`data-endpoint` on the form (`https://api.web3forms.com/submit`) with the public key from
+`data-access-key`, while the trash sequence plays. Success (HTTP 2xx and `success: true`) shows
+the Eingangsbestätigung with the same case number; any failure or a 20 s timeout keeps the form
+and its values, shows `#complaint-delivery-error` ("Postlauf gestört", with the reason) and resets
+the captcha. With an empty `data-access-key` nothing is sent and the confirmation shows as before
+(console warning at load). Bot defence: an off-screen honeypot checkbox `botcheck` outside the
+fieldsets, and the "Automatenprüfung" field in Abschnitt F (`div.h-captcha` rendered by the
+Web3Forms client script, loaded last in `beschwerde.html`); the captcha is required by
+validation only once the widget has rendered an iframe, so a blocked script never locks the form.
 
 Acceptance: validation blocks with the protocol when a declaration is missing or the security
 answer is wrong; a fully valid form → dialog → animation completes in ~4 s → confirmation shows a
 case number in the specified format, five completed steps, and the counter incremented (verify
-`localStorage.salzamt_beschwerden_lokal`). Works at 390px. No network requests on submit
-(check the Network panel). With reduced motion enabled the confirmation appears immediately.
+`localStorage.salzamt_beschwerden_lokal`). Exactly one POST to `api.web3forms.com/submit` on
+submit, nothing else (check the Network panel). A failing POST shows "Postlauf gestört" and keeps
+the form. Works at 390px. With reduced motion enabled the confirmation appears as soon as the
+delivery is answered.
 
 ### WP3 — Amtsshop and Kassa (`shop.html`, `kassa.html`)
 

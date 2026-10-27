@@ -287,6 +287,37 @@
 }
 
 /* --------------------------------------------------------------------------
+   Automatenprüfung (hCaptcha) and honeypot
+   -------------------------------------------------------------------------- */
+
+.complaint-captcha {
+  margin-top: 1.25rem;
+}
+
+.complaint-captcha .h-captcha {
+  min-height: 78px;
+  margin: 0.25rem 0 0.35rem;
+}
+
+.complaint-captcha.field--error .h-captcha {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 4px;
+  width: max-content;
+  max-width: 100%;
+}
+
+/* Off-screen rather than display:none, so the field still "exists" for the
+   bots that look for it, while people and screen readers never meet it. */
+.complaint-honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
    Fehlerprotokoll
    -------------------------------------------------------------------------- */
 

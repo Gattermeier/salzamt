@@ -102,12 +102,18 @@
             >
           </div>
 
+          <!-- Complaints are delivered to the Einlaufstelle mailbox through
+               Web3Forms (see README, "Einlaufstelle"). data-access-key holds
+               the public Web3Forms access key; while it is empty, nothing is
+               sent and the form only plays its part. -->
           <form
             id="complaint-form"
             class="complaint-form"
             novalidate
             autocomplete="off"
             aria-describedby="complaint-required-note"
+            data-endpoint="https://api.web3forms.com/submit"
+            data-access-key=""
           >
             <p class="complaint-required-note" id="complaint-required-note">
               Mit <span class="complaint-required-mark">*</span> gekennzeichnete
@@ -780,8 +786,52 @@
                     />
                   </div>
                 </div>
+
+                <div
+                  class="field field--required complaint-captcha"
+                  id="complaint-captcha"
+                  data-error-label="Automatenprüfung"
+                >
+                  <span class="field__label" id="complaint-captcha-label"
+                    >Automatenprüfung</span
+                  >
+                  <div
+                    class="h-captcha"
+                    data-captcha="true"
+                    data-theme="light"
+                    data-callback="salzamtCaptchaVerified"
+                    data-expired-callback="salzamtCaptchaExpired"
+                    aria-labelledby="complaint-captcha-label"
+                    aria-describedby="complaint-captcha-hint"
+                  ></div>
+                  <span class="field__hint" id="complaint-captcha-hint"
+                    >Bestätigen Sie, dass Sie kein Automat sind. Eingaben von
+                    Automaten werden nicht bearbeitet. Eingaben von Menschen
+                    ebenfalls nicht.</span
+                  >
+                </div>
               </div>
             </fieldset>
+
+            <!-- Honeypot: invisible to people, irresistible to bots.
+                 Web3Forms discards submissions where it is checked. -->
+            <div class="complaint-honeypot" aria-hidden="true">
+              <label for="botcheck">Nicht ausfüllen</label>
+              <input
+                id="botcheck"
+                name="botcheck"
+                type="checkbox"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
+
+            <p class="complaint-note">
+              Hinweis zur Übermittlung: Ihre Angaben werden auf elektronischem
+              Dienstweg an die Einlaufstelle des Salzamtes übermittelt und dort
+              in einem Postfach abgelegt. Eine Weitergabe erfolgt nicht. Eine
+              Bearbeitung ebenfalls nicht.
+            </p>
 
             <div class="form-actions">
               <button class="btn btn--lg" type="submit">
@@ -809,6 +859,25 @@
             <p class="complaint-errors__foot">
               <span data-error-count>Mängel gesamt: 0.</span> Der Antrag gilt
               bis zur Behebung als nicht eingebracht.
+            </p>
+          </div>
+
+          <div
+            id="complaint-delivery-error"
+            class="notice notice--error complaint-errors"
+            role="alert"
+            tabindex="-1"
+            hidden
+          >
+            <p class="notice__title">Postlauf gestört</p>
+            <p>
+              Ihre Beschwerde konnte der Einlaufstelle nicht zugestellt werden.
+              Der Amtsbote ist unterwegs verloren gegangen. Ihre Angaben bleiben
+              im Formular erhalten; bitte bringen Sie die Beschwerde erneut ein.
+            </p>
+            <p class="complaint-errors__foot">
+              <span data-delivery-detail></span> Der Antrag gilt bis zur
+              erfolgreichen Zustellung als nicht eingebracht.
             </p>
           </div>
 
@@ -1049,13 +1118,16 @@
         </p>
         <p class="site-footer__small">
           Für den Inhalt nicht verantwortlich: das Salzamt. Diese Seite
-          speichert nichts, sendet nichts und hilft niemandem. Ihre Eingaben
-          verbleiben ausschließlich in Ihrem Browser.
+          speichert nichts und hilft niemandem. Beschwerden werden der
+          Einlaufstelle zugestellt und dort nicht bearbeitet; alle übrigen
+          Eingaben verbleiben in Ihrem Browser.
         </p>
       </div>
     </footer>
 
     <script src="assets/site.js"></script>
     <script src="assets/complaint.js"></script>
+    <!-- Web3Forms client: renders the hCaptcha widget above. -->
+    <script src="https://web3forms.com/client/script.js" async defer></script>
   </body>
 </html>
