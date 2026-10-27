@@ -3,8 +3,9 @@
 Die Website des Salzamtes: Wünsche und Beschwerden aller Art. Seit 1848 folgenlos.
 
 Eine rein statische Seite (HTML, CSS, JavaScript ohne Build-Schritt), gehostet über GitHub Pages
-unter [salzamt.vip](https://salzamt.vip). Es gibt kein Backend: Beschwerden landen im Papierkorb,
-Bestellungen werden nur im Browser „bearbeitet“, nichts wird gespeichert oder versendet.
+unter [salzamt.vip](https://salzamt.vip). Es gibt kein eigenes Backend: Beschwerden werden über
+den Formulardienst [Web3Forms](https://web3forms.com/) als E-Mail an die Einlaufstelle zugestellt
+(siehe unten), Bestellungen werden nur im Browser „bearbeitet“, sonst wird nichts gespeichert.
 
 ## Seiten
 
@@ -18,6 +19,31 @@ Bestellungen werden nur im Browser „bearbeitet“, nichts wird gespeichert ode
 | `mail/`, `email/` | Weiterleitung nach https://mail.salzamt.vip/              |
 
 `PLAN.md` beschreibt Aufbau, Design-System und Arbeitspakete im Detail.
+
+## Einlaufstelle (Zustellung der Beschwerden)
+
+Das Formular SA-47/B schickt jede gültige Beschwerde per `fetch` als JSON an
+`https://api.web3forms.com/submit`; Web3Forms stellt sie als E-Mail an die beim Access Key
+hinterlegte Adresse zu. Die Zustellung läuft während der Papierkorb-Animation. Gelingt sie,
+erscheint die Eingangsbestätigung (mit demselben Aktenzeichen wie in der E-Mail); scheitert sie,
+bleibt das Formular samt Eingaben stehen und ein Hinweis „Postlauf gestört“ bittet um erneutes
+Einbringen.
+
+Einrichtung:
+
+1. Auf [web3forms.com](https://web3forms.com/) einen Access Key für die Empfangsadresse
+   (z. B. `einlaufstelle@salzamt.vip`) erzeugen. Der Key ist öffentlich und darf im HTML stehen.
+2. Den Key in `beschwerde.html` am `<form id="complaint-form">` in `data-access-key` eintragen.
+   Solange das Attribut leer ist, wird nichts versendet; das Formular spielt dann nur seine Rolle
+   (praktisch für lokale Entwicklung) und die Konsole meldet es als Warnung.
+3. Sollen mehrere Adressen die Beschwerden erhalten, in Private Email eine Weiterleitungsregel
+   für die Empfangsadresse anlegen (der kostenlose Web3Forms-Plan kennt nur einen Empfänger).
+
+Schutz vor Automaten: ein unsichtbares Honeypot-Feld (`botcheck`, von Web3Forms ausgewertet) und
+die „Automatenprüfung“ (hCaptcha, gerendert durch `https://web3forms.com/client/script.js`).
+Das Captcha wird nur verlangt, wenn das Widget tatsächlich geladen wurde; kann es nicht laden,
+bleibt das Formular benutzbar und Web3Forms verlässt sich auf den Honeypot. Die E-Mail enthält
+alle Felder in Formularreihenfolge („Abschnitt A · Vorname“ …), Aktenzeichen und Eingangszeit.
 
 ## Lokal ansehen
 
@@ -49,8 +75,11 @@ node tools/resize-images.js
 ## Qualitätsprüfung
 
 `tools/qa.js` prüft alle Seiten mit Playwright (Screenshots bei 390 und 1280 Pixel Breite in
-`qa-screenshots/`, Konsolenfehler, fehlende Ressourcen, interne Verweise) und spielt die drei
-Abläufe durch: Beschwerde einbringen, Bestellung aufgeben, Bedienstete anzeigen.
+`qa-screenshots/`, Konsolenfehler, fehlende Ressourcen, interne Verweise) und spielt die Abläufe
+durch: Beschwerde einbringen (Zustellung gelingt; Zustellung scheitert), Bestellung aufgeben,
+Bedienstete anzeigen. Web3Forms und hCaptcha werden dabei nicht kontaktiert: der Lauf ersetzt
+die Skripte durch leere Dateien und beantwortet den Submit-Endpunkt selbst; er prüft, dass genau
+eine Zustellung mit den erwarteten Feldern abgeht. `QA_DUMP_PAYLOAD=1` gibt die Nutzlast aus.
 
 ```bash
 npx http-server -p 8080 -s -c-1 .     # in einem zweiten Terminal
